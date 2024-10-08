@@ -35,7 +35,7 @@ export default function ProjectCard({
       {/* Flex container to center the DialogTrigger */}
       <div className="mt-4 flex justify-center">
         <Dialog>
-          <DialogTrigger className="row-span-1 w-full rounded-2xl border bg-blue-400 p-2">Open</DialogTrigger>
+          <DialogTrigger className="row-span-1 w-full rounded-2xl border bg-blue-400 p-2">Expand</DialogTrigger>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Project Description</DialogTitle>
