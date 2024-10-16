@@ -14,7 +14,7 @@ export default async function Navbar({ className, ...props }: React.HTMLAttribut
         Home
       </Link>
       {user && (
-        <Link href="/dashboard" className="text-sm font-medium transition-colors hover:text-primary">
+        <Link href="/projectdashboard" className="text-sm font-medium transition-colors hover:text-primary">
           Dashboard
         </Link>
       )}
