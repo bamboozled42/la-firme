@@ -62,6 +62,7 @@ export type Database = {
           dimension_y: number | null;
           floor_id: number | null;
           id: number;
+          name: string | null;
           pipes: boolean | null;
         };
         Insert: {
@@ -71,6 +72,7 @@ export type Database = {
           dimension_y?: number | null;
           floor_id?: number | null;
           id?: number;
+          name?: string | null;
           pipes?: boolean | null;
         };
         Update: {
@@ -80,6 +82,7 @@ export type Database = {
           dimension_y?: number | null;
           floor_id?: number | null;
           id?: number;
+          name?: string | null;
           pipes?: boolean | null;
         };
         Relationships: [
@@ -158,22 +161,22 @@ export type Database = {
       };
       floors: {
         Row: {
-          floor_level: number | null;
           floors_project_id: number | null;
           id: number;
           materials: string | null;
+          name: string | null;
         };
         Insert: {
-          floor_level?: number | null;
           floors_project_id?: number | null;
           id?: number;
           materials?: string | null;
+          name?: string | null;
         };
         Update: {
-          floor_level?: number | null;
           floors_project_id?: number | null;
           id?: number;
           materials?: string | null;
+          name?: string | null;
         };
         Relationships: [
           {

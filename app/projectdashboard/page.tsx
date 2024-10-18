@@ -5,7 +5,7 @@ import {  Project, Column, Beam, Wall, Ceiling} from "../../lib/utils";
 import { useState, useEffect } from "react";
 import { PostgrestError } from "@supabase/supabase-js";
 
-type ProjectDashboardType = Project & {
+export type ProjectDashboardType = Project & {
   // I don't think I need to pass in anything else
   architect: { first_name: string; last_name: string };
   clients: { first_name: string; last_name: string };
@@ -28,10 +28,10 @@ export default function ProjectDashboard() {
     *,
     architect:architect_id(first_name, last_name),
     clients:client_id(first_name, last_name),
-    walls(walls_project_id, id, name, height, length),
-    columns(columns_project_id, id, name, height, condition),
-    beams(beams_project_id, id, name, length),
-    ceilings(ceilings_project_id, id, cracks, dimension_x, dimension_y)`);
+    walls(name, height, length),
+    columns(name, height, condition),
+    beams(name, length),
+    ceilings(cracks, dimension_x, dimension_y)`);
 
     if (error) {
       setError(error);
