@@ -1,32 +1,48 @@
 "use client";
 import ProjectCard from "./projectCard";
 import { createBrowserSupabaseClient } from "../../lib/client-utils";
-import { type Project, type Users } from "../../lib/utils";
+import {  Project, Column, Beam, Wall, Ceiling} from "../../lib/utils";
 import { useState, useEffect } from "react";
 import { PostgrestError } from "@supabase/supabase-js";
 
+type ProjectDashboardType = Project & {
+  architect: { first_name: string; last_name: string };
+  clients: { first_name: string; last_name: string };
+  walls: Wall[] ;
+  columns: Column[];
+  beams: Beam[];
+  ceilings: Ceiling[];
+};
+
 export default function ProjectDashboard() {
   const supabase = createBrowserSupabaseClient();
-  const [projects, setProjects] = useState<Project[] | null>(null);
+  const [projects, setProjects] = useState<ProjectDashboardType[] | null>(null);
   const [error, setError] = useState<PostgrestError | null>(null);
-  const [componentDidMount, setComponentDidMount] = useState(false);
 
   useEffect( () => {
     const fetchProjects = async () => {
     let { data: projects, error } = await supabase
     .from('projects')
-    .select('*')
+    .select(`
+    *,
+    architect:architect_id(first_name, last_name),
+    clients:client_id(first_name, last_name),
+    walls(walls_project_id, id, name, height, length),
+    columns(columns_project_id, id, name, height, condition),
+    beams(beams_project_id, id, name, length),
+    ceilings(ceilings_project_id, id, cracks, dimension_x, dimension_y)`);
+
     if (error) {
       setError(error);
     }
     else {
-      setProjects(projects);
+      setProjects(projects as unknown as ProjectDashboardType[]);
     }
     }
     fetchProjects();
-  }, [componentDidMount]);
+  }, [supabase]);
 
-
+  console.log(projects);
   if (error) {
     console.error('Error fetching projects:', error);
     return <div>Error loading projects...</div>;
@@ -34,20 +50,24 @@ export default function ProjectDashboard() {
 
   return (
     <div className="flex flex-wrap justify-center">
-      <h1 className="text-4xl font-semibold mt-8">Projects</h1>
-      {projects?.map((project : Project) => (
-        <ProjectCard
-          key={project.id}
-          title={project.title}
-          startDate={project.start_date}
-          architect={"Architect"}
-          location={project.location}
-          clients={
-            "dsds"}
-          status={project.status}
-          description={project.description}
-        />
-      ))}
+      {
+        projects === null ? (
+          <div>Loading...</div>
+        ) : projects.length === 0 ? (
+          <div>No projects found.</div>
+        ) : (
+          projects?.map((project: Project) => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+              walls={project.walls || []}
+              columns={project.columns || []}
+              beams={project.beams || []}
+              ceilings={project.ceilings || []}
+            />
+          ))
+        )
+      }
     </div>
   );
 }

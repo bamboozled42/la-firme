@@ -5,6 +5,7 @@ export type Database = {
     Tables: {
       beams: {
         Row: {
+          beams_project_id: number | null;
           condition: string | null;
           floor_id: number | null;
           height: number | null;
@@ -13,9 +14,9 @@ export type Database = {
           length: number | null;
           name: string | null;
           pipes: boolean | null;
-          project_id: number | null;
         };
         Insert: {
+          beams_project_id?: number | null;
           condition?: string | null;
           floor_id?: number | null;
           height?: number | null;
@@ -24,9 +25,9 @@ export type Database = {
           length?: number | null;
           name?: string | null;
           pipes?: boolean | null;
-          project_id?: number | null;
         };
         Update: {
+          beams_project_id?: number | null;
           condition?: string | null;
           floor_id?: number | null;
           height?: number | null;
@@ -35,9 +36,15 @@ export type Database = {
           length?: number | null;
           name?: string | null;
           pipes?: boolean | null;
-          project_id?: number | null;
         };
         Relationships: [
+          {
+            foreignKeyName: "beams_beams_project_id_fkey";
+            columns: ["beams_project_id"];
+            isOneToOne: false;
+            referencedRelation: "projects";
+            referencedColumns: ["id"];
+          },
           {
             foreignKeyName: "beams_floor_id_fkey";
             columns: ["floor_id"];
@@ -45,44 +52,44 @@ export type Database = {
             referencedRelation: "floors";
             referencedColumns: ["id"];
           },
-          {
-            foreignKeyName: "beams_project_id_fkey";
-            columns: ["project_id"];
-            isOneToOne: false;
-            referencedRelation: "projects";
-            referencedColumns: ["id"];
-          },
         ];
       };
       ceilings: {
         Row: {
+          ceilings_project_id: number | null;
           cracks: boolean | null;
           dimension_x: number | null;
           dimension_y: number | null;
           floor_id: number | null;
           id: number;
           pipes: boolean | null;
-          project_id: number | null;
         };
         Insert: {
+          ceilings_project_id?: number | null;
           cracks?: boolean | null;
           dimension_x?: number | null;
           dimension_y?: number | null;
           floor_id?: number | null;
           id?: number;
           pipes?: boolean | null;
-          project_id?: number | null;
         };
         Update: {
+          ceilings_project_id?: number | null;
           cracks?: boolean | null;
           dimension_x?: number | null;
           dimension_y?: number | null;
           floor_id?: number | null;
           id?: number;
           pipes?: boolean | null;
-          project_id?: number | null;
         };
         Relationships: [
+          {
+            foreignKeyName: "ceilings_ceilings_project_id_fkey";
+            columns: ["ceilings_project_id"];
+            isOneToOne: false;
+            referencedRelation: "projects";
+            referencedColumns: ["id"];
+          },
           {
             foreignKeyName: "ceilings_floor_id_fkey";
             columns: ["floor_id"];
@@ -90,17 +97,11 @@ export type Database = {
             referencedRelation: "floors";
             referencedColumns: ["id"];
           },
-          {
-            foreignKeyName: "ceilings_project_id_fkey";
-            columns: ["project_id"];
-            isOneToOne: false;
-            referencedRelation: "projects";
-            referencedColumns: ["id"];
-          },
         ];
       };
       columns: {
         Row: {
+          columns_project_id: number | null;
           condition: string | null;
           floor_id: number | null;
           height: number | null;
@@ -109,11 +110,11 @@ export type Database = {
           name: string | null;
           notes: string | null;
           pipes: boolean | null;
-          project_id: number | null;
           vertical_cracks: boolean | null;
           width: number | null;
         };
         Insert: {
+          columns_project_id?: number | null;
           condition?: string | null;
           floor_id?: number | null;
           height?: number | null;
@@ -122,11 +123,11 @@ export type Database = {
           name?: string | null;
           notes?: string | null;
           pipes?: boolean | null;
-          project_id?: number | null;
           vertical_cracks?: boolean | null;
           width?: number | null;
         };
         Update: {
+          columns_project_id?: number | null;
           condition?: string | null;
           floor_id?: number | null;
           height?: number | null;
@@ -135,11 +136,17 @@ export type Database = {
           name?: string | null;
           notes?: string | null;
           pipes?: boolean | null;
-          project_id?: number | null;
           vertical_cracks?: boolean | null;
           width?: number | null;
         };
         Relationships: [
+          {
+            foreignKeyName: "columns_columns_project_id_fkey";
+            columns: ["columns_project_id"];
+            isOneToOne: false;
+            referencedRelation: "projects";
+            referencedColumns: ["id"];
+          },
           {
             foreignKeyName: "columns_floor_id_fkey";
             columns: ["floor_id"];
@@ -147,38 +154,31 @@ export type Database = {
             referencedRelation: "floors";
             referencedColumns: ["id"];
           },
-          {
-            foreignKeyName: "columns_project_id_fkey";
-            columns: ["project_id"];
-            isOneToOne: false;
-            referencedRelation: "projects";
-            referencedColumns: ["id"];
-          },
         ];
       };
       floors: {
         Row: {
           floor_level: number | null;
+          floors_project_id: number | null;
           id: number;
           materials: string | null;
-          project_id: number | null;
         };
         Insert: {
           floor_level?: number | null;
+          floors_project_id?: number | null;
           id?: number;
           materials?: string | null;
-          project_id?: number | null;
         };
         Update: {
           floor_level?: number | null;
+          floors_project_id?: number | null;
           id?: number;
           materials?: string | null;
-          project_id?: number | null;
         };
         Relationships: [
           {
-            foreignKeyName: "floors_project_id_fkey";
-            columns: ["project_id"];
+            foreignKeyName: "floors_floors_project_id_fkey";
+            columns: ["floors_project_id"];
             isOneToOne: false;
             referencedRelation: "projects";
             referencedColumns: ["id"];
@@ -265,23 +265,23 @@ export type Database = {
       tags: {
         Row: {
           id: number;
-          project_id: number | null;
           tag: string | null;
+          tags_project_id: number | null;
         };
         Insert: {
           id?: number;
-          project_id?: number | null;
           tag?: string | null;
+          tags_project_id?: number | null;
         };
         Update: {
           id?: number;
-          project_id?: number | null;
           tag?: string | null;
+          tags_project_id?: number | null;
         };
         Relationships: [
           {
-            foreignKeyName: "tags_project_id_fkey";
-            columns: ["project_id"];
+            foreignKeyName: "tags_tags_project_id_fkey";
+            columns: ["tags_project_id"];
             isOneToOne: false;
             referencedRelation: "projects";
             referencedColumns: ["id"];
@@ -325,8 +325,8 @@ export type Database = {
           location: string | null;
           material: string | null;
           name: string | null;
-          project_id: number | null;
           stucco: boolean | null;
+          walls_project_id: number | null;
           width: number | null;
           window_size_x: number | null;
           window_size_y: number | null;
@@ -340,8 +340,8 @@ export type Database = {
           location?: string | null;
           material?: string | null;
           name?: string | null;
-          project_id?: number | null;
           stucco?: boolean | null;
+          walls_project_id?: number | null;
           width?: number | null;
           window_size_x?: number | null;
           window_size_y?: number | null;
@@ -355,8 +355,8 @@ export type Database = {
           location?: string | null;
           material?: string | null;
           name?: string | null;
-          project_id?: number | null;
           stucco?: boolean | null;
+          walls_project_id?: number | null;
           width?: number | null;
           window_size_x?: number | null;
           window_size_y?: number | null;
@@ -370,8 +370,8 @@ export type Database = {
             referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "walls_project_id_fkey";
-            columns: ["project_id"];
+            foreignKeyName: "walls_walls_project_id_fkey";
+            columns: ["walls_project_id"];
             isOneToOne: false;
             referencedRelation: "projects";
             referencedColumns: ["id"];
