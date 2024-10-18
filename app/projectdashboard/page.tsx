@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { PostgrestError } from "@supabase/supabase-js";
 
 type ProjectDashboardType = Project & {
+  // I don't think I need to pass in anything else
   architect: { first_name: string; last_name: string };
   clients: { first_name: string; last_name: string };
   walls: Wall[] ;
@@ -56,7 +57,7 @@ export default function ProjectDashboard() {
         ) : projects.length === 0 ? (
           <div>No projects found.</div>
         ) : (
-          projects?.map((project: Project) => (
+          projects?.map((project: ProjectDashboardType) => (
             <ProjectCard
               key={project.id}
               project={project}
