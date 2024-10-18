@@ -6,7 +6,8 @@ import { twMerge } from "tailwind-merge";
 import { type Database } from "./schema";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
-
+export type Project = Database['public']['Tables']['projects']['Row'];
+export type Users = Database['public']['Tables']['users']['Row'];
 // helper to make it easier to conditionally add Tailwind CSS classes
 // https://ui.shadcn.com/docs/installation
 // More usage: https://www.neorepo.com/blog/how-to-build-a-button-with-nextjs-and-shadcn-ui
