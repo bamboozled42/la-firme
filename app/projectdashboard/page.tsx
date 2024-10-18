@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { PostgrestError } from "@supabase/supabase-js";
 
 export type ProjectDashboardType = Project & {
-  // I don't think I need to pass in anything else
+  // I don't think I need to pass in anything other than name
   architect: { first_name: string; last_name: string };
   clients: { first_name: string; last_name: string };
   walls: Wall[] ;

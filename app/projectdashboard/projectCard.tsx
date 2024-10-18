@@ -40,19 +40,21 @@ export default function ProjectCard({
               <DialogTitle>Project Description</DialogTitle>
               <DialogDescription>{project.description}</DialogDescription>
               <DialogTitle>Walls</DialogTitle>
-              <DialogDescription>
-                <ContentBlob content={walls} />
-              </DialogDescription>
+                <DialogDescription>
+                  <ContentBlob content={walls} />
+                </DialogDescription>
               <DialogTitle>Columns</DialogTitle>
-              <DialogDescription>
-                <ContentBlob content={columns} />
-              </DialogDescription>
+                <DialogDescription>
+                  <ContentBlob content={columns} />
+                </DialogDescription>
               <DialogTitle>Beams</DialogTitle>
-                <ContentBlob content={beams} />
+                <DialogDescription>
+                  <ContentBlob content={beams} />
+                </DialogDescription>
               <DialogTitle>Ceilings</DialogTitle>
-              <DialogDescription>
-                <ContentBlob content={ceilings} />
-              </DialogDescription>
+                <DialogDescription>
+                  <ContentBlob content={ceilings} />
+                </DialogDescription>
             </DialogHeader>
           </DialogContent>
         </Dialog>

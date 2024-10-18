@@ -11,20 +11,26 @@ function ContentBlob({ content }: { content: any[] }) {
     setDisplay(display === index ? null : index);
   };
 
+  const itemDisplay = (item: any) => {
+    const filteredKeys = Object.keys(item).filter((key) => key !== "name");
+    return filteredKeys.map((key) => (
+      <div key={key}>
+        <h3 style={{ marginRight: "8px" }}>{key}:</h3>
+        <p>{item[key]}</p>
+      </div>
+    ));
+  };
+
   return (
     <div>
       {content?.map((item: any, index: number) => (
         <div key={index}>
-          <div onClick={() => toggleItem(index)} style={{ cursor: "pointer" }}>
+          <div onClick={() => toggleItem(index)}>
             <h1>{item.name}</h1>
           </div>
           {display === index && (
             <div>
-              {Object.keys(item).map((key) => (
-                <p key={key}>
-                  <strong>{key}: </strong> {item[key]}
-                </p>
-              ))}
+              {itemDisplay(item)}
             </div>
           )}
         </div>
