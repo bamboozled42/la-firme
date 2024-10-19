@@ -2,6 +2,7 @@ import {
   AlertTriangle,
   ArrowRight,
   Check,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   Command,
@@ -14,6 +15,7 @@ import {
   Loader2,
   Moon,
   MoreVertical,
+  Pencil,
   Pizza,
   Plus,
   Settings,
@@ -21,6 +23,7 @@ import {
   Trash,
   Twitter,
   User,
+  Upload,
   X,
   type LucideProps,
 } from "lucide-react";
@@ -66,4 +69,7 @@ export const Icons = {
   ),
   twitter: Twitter,
   check: Check,
+  upload: Upload,
+  chevronDown: ChevronDown,
+  pencil: Pencil,
 };
