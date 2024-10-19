@@ -40,22 +40,23 @@ export default async function Dashboard() {
 
           <TypographyH2 className="text-center font-bold mt-2">[Project Title]</TypographyH2>
 
-          {!null && <TypographyP className="mt-6 mb-5 text-lg font-medium text-center text-green-500">{"[Assigned architect]"}</TypographyP>}
+          {/* Replace true with !architect to check if it exists */}
+          {true && <TypographyP className="mt-6 mb-5 text-lg font-medium text-center text-green-500">{"[Assigned architect]"}</TypographyP>}
 
-          {!null && ( // replace !null with image to check if it exists
+          {true && (
             <div className="relative h-64 w-full">
               <Image src="/placeholder_img.jpg" alt="otter" fill style={{ objectFit: "contain"}} />
             </div>
           )}
 
           <div className="space-y-2 mt-6">
-            {!null && <TypographyP><b>Status: </b>{"Ongoing"}</TypographyP>}
-            {!null && <TypographyP><b>Start date: </b>{"October 10, 2024"}</TypographyP>}
-            {!null && <TypographyP><b>Location: </b>{"Cambridge, MA"}</TypographyP>}
-            {!null && <TypographyP><b>Clients: </b>{"John Doe"}</TypographyP>}
+            {true && <TypographyP><b>Status: </b>{"Ongoing"}</TypographyP>}
+            {true && <TypographyP><b>Start date: </b>{"October 10, 2024"}</TypographyP>}
+            {true && <TypographyP><b>Location: </b>{"Cambridge, MA"}</TypographyP>}
+            {true && <TypographyP><b>Clients: </b>{"John Doe"}</TypographyP>}
           </div>
 
-          {!null && <TypographyP>{"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."}</TypographyP>}
+          {true && <TypographyP>{"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."}</TypographyP>}
         </div>
       </div>
     </>
