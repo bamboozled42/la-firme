@@ -6,23 +6,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Column, Beam, Wall, Ceiling } from "@/lib/utils";
 import { ProjectDashboardType } from "./page";
-import ContentBlob from "./contentBlob";
+// import ContentBlob from "./contentBlob";
 
 export default function ProjectCard({
   project,
-  walls,
-  columns,
-  beams,
-  ceilings,
 }: {
-  project : ProjectDashboardType;
-  walls: Wall[];
-  columns: Column[];
-  beams: Beam[];
-  ceilings: Ceiling[];
-}) {
+  project : ProjectDashboardType;}) {
   return (
     <div className="m-4 w-72 min-w-72 flex-none rounded-lg border-2 p-3 shadow">
       <h3 className="mt-3 text-2xl font-semibold">{project.title}</h3>
@@ -37,25 +27,14 @@ export default function ProjectCard({
           <DialogTrigger className="row-span-1 w-full rounded-2xl border bg-blue-400 p-2">Expand</DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Project Description</DialogTitle>
+              <DialogTitle className="text-center">{project.title}</DialogTitle>
+              </DialogHeader>
+              <DialogTitle>Description</DialogTitle>
               <DialogDescription>{project.description}</DialogDescription>
-              <DialogTitle>Walls</DialogTitle>
-                <DialogDescription>
-                  <ContentBlob content={walls} />
-                </DialogDescription>
-              <DialogTitle>Columns</DialogTitle>
-                <DialogDescription>
-                  <ContentBlob content={columns} />
-                </DialogDescription>
-              <DialogTitle>Beams</DialogTitle>
-                <DialogDescription>
-                  <ContentBlob content={beams} />
-                </DialogDescription>
-              <DialogTitle>Ceilings</DialogTitle>
-                <DialogDescription>
-                  <ContentBlob content={ceilings} />
-                </DialogDescription>
-            </DialogHeader>
+              <DialogTitle>Location</DialogTitle>
+            <DialogDescription>{project.location}</DialogDescription>
+            <DialogTitle>Clients</DialogTitle>
+            <DialogDescription>{`${project.clients.first_name} ${project.clients.last_name}`}</DialogDescription>
           </DialogContent>
         </Dialog>
       </div>

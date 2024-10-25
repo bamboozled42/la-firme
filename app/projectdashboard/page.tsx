@@ -43,7 +43,6 @@ export default function ProjectDashboard() {
     fetchProjects();
   }, [supabase]);
 
-  console.log(projects);
   if (error) {
     console.error('Error fetching projects:', error);
     return <div>Error loading projects...</div>;
@@ -61,10 +60,6 @@ export default function ProjectDashboard() {
             <ProjectCard
               key={project.id}
               project={project}
-              walls={project.walls || []}
-              columns={project.columns || []}
-              beams={project.beams || []}
-              ceilings={project.ceilings || []}
             />
           ))
         )
