@@ -56,7 +56,7 @@ export default async function Dashboard({ params }: { params: { projectId: strin
     walls (name, height, length),
     columns (name, height, condition),
     beams (name, length),
-    ceilings (cracks, dimension_x, dimension_y),
+    ceilings (name, cracks, dimension_x, dimension_y),
     floors (name, materials)
   `)
   .eq("id", params.projectId)
@@ -79,7 +79,7 @@ export default async function Dashboard({ params }: { params: { projectId: strin
             </Button>
           </Link>
 
-          <TypographyH2 className="font-bold mt-2">{"[Project Name]"}</TypographyH2>
+          <TypographyH2 className="font-bold mt-2">{data?.title}</TypographyH2>
 
           <div className="mt-4 mb-6">
             <Select defaultValue="1">
@@ -115,65 +115,70 @@ export default async function Dashboard({ params }: { params: { projectId: strin
 
             <AccordionItem value="walls" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
               <div className="flex items-center justify-between">
-                <AccordionTrigger className="flex-grow">Walls {"(" + "2" + ")"}</AccordionTrigger>
+                <AccordionTrigger className="flex-grow">Walls {"(" + data?.walls?.length + ")"}</AccordionTrigger>
                 <AddDialog/>
               </div>
               <AccordionContent>
                 <div className="flex flex-col gap-1">
-                  <Subcomponent name={"Wall X"}></Subcomponent>
-                  <Subcomponent name={"Wall X"}></Subcomponent>
+                  {data?.walls?.map((wall) => (
+                    <Subcomponent name={wall.name || ""}></Subcomponent>
+                  ))}
                 </div>
               </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="columns" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
               <div className="flex items-center justify-between">
-                <AccordionTrigger className="flex-grow">Columns {"(" + "2" + ")"}</AccordionTrigger>
+                <AccordionTrigger className="flex-grow">Columns {"(" + data?.columns?.length + ")"}</AccordionTrigger>
                 <AddDialog/>
               </div>
               <AccordionContent>
                 <div className="flex flex-col gap-1">
-                  <Subcomponent name={"Column X"}></Subcomponent>
-                  <Subcomponent name={"Column X"}></Subcomponent>
+                {data?.columns?.map((column) => (
+                    <Subcomponent name={column.name || ""}></Subcomponent>
+                  ))}
                 </div>
               </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="beams" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
               <div className="flex items-center justify-between">
-                <AccordionTrigger className="flex-grow">Beams {"(" + "2" + ")"}</AccordionTrigger>
+                <AccordionTrigger className="flex-grow">Beams {"(" + data?.beams?.length + ")"}</AccordionTrigger>
                 <AddDialog/>
               </div>
               <AccordionContent>
                 <div className="flex flex-col gap-1">
-                  <Subcomponent name={"Beam X"}></Subcomponent>
-                  <Subcomponent name={"Beam X"}></Subcomponent>
+                {data?.beams?.map((beam) => (
+                    <Subcomponent name={beam.name || ""}></Subcomponent>
+                  ))}
                 </div>
               </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="ceilings" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
               <div className="flex items-center justify-between">
-                <AccordionTrigger className="flex-grow">Ceilings {"(" + "2" + ")"}</AccordionTrigger>
+                <AccordionTrigger className="flex-grow">Ceilings {"(" + data?.ceilings?.length + ")"}</AccordionTrigger>
                 <AddDialog/>
               </div>
               <AccordionContent>
                 <div className="flex flex-col gap-1">
-                  <Subcomponent name={"Ceiling X"}></Subcomponent>
-                  <Subcomponent name={"Ceiling X"}></Subcomponent>
+                {data?.ceilings?.map((ceiling) => (
+                    <Subcomponent name={ceiling.name || ""}></Subcomponent>
+                  ))}
                 </div>
               </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="floors" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
               <div className="flex items-center justify-between">
-                <AccordionTrigger className="flex-grow">Floors {"(" + "2" + ")"}</AccordionTrigger>
+                <AccordionTrigger className="flex-grow">Floors {"(" + data?.floors?.length + ")"}</AccordionTrigger>
                 <AddDialog/>
               </div>
               <AccordionContent>
                 <div className="flex flex-col gap-1">
-                  <Subcomponent name={"Floor X"}></Subcomponent>
-                  <Subcomponent name={"Floor X"}></Subcomponent>
+                {data?.floors?.map((floor) => (
+                    <Subcomponent name={floor.name || ""}></Subcomponent>
+                  ))}
                 </div>
               </AccordionContent>
             </AccordionItem>

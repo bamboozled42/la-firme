@@ -161,19 +161,19 @@ export type Database = {
       };
       floors: {
         Row: {
-          floors_project_id: number | null;
+          floors_project_id: number;
           id: number;
           materials: string | null;
           name: string;
         };
         Insert: {
-          floors_project_id?: number | null;
+          floors_project_id: number;
           id?: number;
           materials?: string | null;
           name: string;
         };
         Update: {
-          floors_project_id?: number | null;
+          floors_project_id?: number;
           id?: number;
           materials?: string | null;
           name?: string;
