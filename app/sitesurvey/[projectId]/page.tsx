@@ -1,3 +1,4 @@
+"use server";
 import { TypographyH2, TypographyP } from "@/components/ui/typography";
 import { createServerSupabaseClient } from "@/lib/server-utils";
 import { redirect } from "next/navigation";
@@ -21,9 +22,14 @@ import {
 } from "@/components/ui/accordion"
 import Subcomponent from "./subcomponent";
 import AddDialog from "./add-subcomponent";
+import {  Project, Column, Beam, Wall, Ceiling, Floor } from "../../../lib/utils";
 
-export default async function Dashboard() {
+export default async function Dashboard({ params }: { params: { projectId: string } }) {
   // Create supabase server component client and obtain user session from Supabase Auth
+
+  if (!params.projectId) {
+    return <div>Project not found</div>;
+  }
   const supabase = createServerSupabaseClient();
   const {
     data: { user },
@@ -42,13 +48,32 @@ export default async function Dashboard() {
     redirect("/");
   }
 
-  const userEmail = user.email;
+  let { data, error } = await supabase
+  .from("projects")
+  .select(`
+    *,
+    architect:architect_id (first_name, last_name),
+    walls (name, height, length),
+    columns (name, height, condition),
+    beams (name, length),
+    ceilings (cracks, dimension_x, dimension_y),
+    floors (name, materials)
+  `)
+  .eq("id", params.projectId)
+  .single();
+  console.log(data);
+
+  if (error) {
+    console.error('Error fetching projects:', error);
+    return <div>Error loading projedsdscts...</div>;
+  }
+
 
   return (
     <>
       <div className="flex justify-center items-center">
-        <div className="w-full max-w-lg"> 
-          <Link href="/dashboard" className="text-sm font-medium transition-colors hover:text-primary">
+        <div className="w-full max-w-lg">
+          <Link href="/projectdashboard" className="text-sm font-medium transition-colors hover:text-primary">
             <Button type="button" className="mb-6 text-muted-foreground" variant="link" size={null}>
               <Icons.chevronLeft className="h-5 w-5"/> Back
             </Button>
@@ -59,18 +84,21 @@ export default async function Dashboard() {
           <div className="mt-4 mb-6">
             <Select defaultValue="1">
               <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select a floor" />
+              <SelectValue placeholder="All"/>
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="1">Floor 1</SelectItem>
-                  <SelectItem value="2">Floor 2</SelectItem>
-                  <SelectItem value="3">Floor 3</SelectItem>
+                  {data?.floors?.map((floor) => (
+                    <SelectItem key={floor.name} value={floor.name}>
+                      {floor.name}
+                    </SelectItem>
+                  ))}
+
                 </SelectGroup>
               </SelectContent>
             </Select>
           </div>
-          
+
           {!null && ( // replace !null with image to check if it exists
             <div className="relative h-64 w-full">
               <Image src="/placeholder_img.jpg" alt="otter" fill style={{ objectFit: "contain"}} />
@@ -97,7 +125,7 @@ export default async function Dashboard() {
                 </div>
               </AccordionContent>
             </AccordionItem>
-            
+
             <AccordionItem value="columns" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
               <div className="flex items-center justify-between">
                 <AccordionTrigger className="flex-grow">Columns {"(" + "2" + ")"}</AccordionTrigger>

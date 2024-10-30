@@ -4,8 +4,16 @@ import { type SupabaseClient, type User } from "@supabase/supabase-js";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { type Database } from "./schema";
+import { type } from "os";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
+export type Project = Database['public']['Tables']['projects']['Row'];
+export type Users = Database['public']['Tables']['users']['Row'];
+export type Wall = Database['public']['Tables']['walls']['Row'];
+export type Column = Database['public']['Tables']['columns']['Row'];
+export type Beam = Database['public']['Tables']['beams']['Row'];
+export type Ceiling = Database['public']['Tables']['ceilings']['Row'];
+export type Floor = Database['public']['Tables']['floors']['Row'];
 
 // helper to make it easier to conditionally add Tailwind CSS classes
 // https://ui.shadcn.com/docs/installation
