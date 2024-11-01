@@ -44,16 +44,16 @@ const WallForm: React.FC<WallFormProps> = ({ onNext, onCancel }) => {
     <form onSubmit={handleFormSubmit} className="space-y-4">
       {/* Number Field */}
       <div>
-        <label htmlFor="number" className="block text-sm font-medium text-gray-700">
-          Number
+        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+          Name
         </label>
         <input
-          type="number"
-          id="number"
-          {...register("number", { valueAsNumber: true })}
+          type="name"
+          id="name"
+          {...register("name", )}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
         />
-        {errors.number && <p className="mt-1 text-sm text-red-600">{errors.number.message}</p>}
+        {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
       </div>
 
       {/* Direction Field */}

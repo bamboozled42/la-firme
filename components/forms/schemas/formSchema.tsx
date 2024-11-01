@@ -7,7 +7,9 @@ export const generalFormSchema = z.object({
   number: z
     .number({ required_error: "Number is required" })
     .int("Number must be an integer")
-    .positive("Number must be positive"),
+    .positive("Number must be positive")
+    .nullable()
+    .optional(),
   floor: z.string().min(1, "Floor selection is required"),
 });
 
@@ -33,7 +35,7 @@ export const columnDetailsFormSchema = z.object({
   length: z.number({ required_error: "Length is required" }).positive("Length must be positive"),
   width: z.number({ required_error: "Width is required" }).positive("Width must be positive"),
   height: z.number({ required_error: "Height is required" }).positive("Height must be positive"),
-  condition: z.enum(["Seleccionar"], {
+  condition: z.enum(["Good", "Fair", "Poor"], {
     errorMap: () => ({ message: "Condition is required" }),
   }),
   verticalCracks: z.enum(["Yes", "No"], {
@@ -54,7 +56,7 @@ export const beamDetailsFormSchema = z.object({
   supportRightSide: z.enum(["Yes", "No"], {
     errorMap: () => ({ message: "Support right side is required" }),
   }),
-  condition: z.enum(["Seleccionar"], {
+  condition: z.enum(["Good", "Fair", "Poor"], {
     errorMap: () => ({ message: "Condition is required" }),
   }),
 });

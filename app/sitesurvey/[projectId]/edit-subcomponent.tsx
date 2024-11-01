@@ -10,28 +10,58 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import { useSupabase } from "@/app/providers";
 
 interface AddDetailsDialogProps {
+  onUpdate: (updatedData: any) => void;
   elementType: string; // Extend as needed
   DetailsForm: React.ComponentType<DetailsFormProps>;
+  itemData: any; // data to be passed in and rendered in the details form
   // Optional: You can add more props for customization if needed
 
   buttonName?: string;
 }
 
 export interface DetailsFormProps {
+  itemData: any;
   onSave: (data: any) => void;
   onCancel: () => void;
   onDelete?: () => void; // Optional: Not all forms might need delete
 }
 
-export default function EditDialog({ elementType, DetailsForm, buttonName }: AddDetailsDialogProps) {
+export function EditDialog({ elementType, DetailsForm, itemData, onUpdate, buttonName }: AddDetailsDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const supabase = useSupabase();
+  const getTableName = (type: string) => {
+    return type.toLowerCase() + 's';
+  };
 
-  const handleSave = (data: any) => {
-    console.log("Wall Details Data:", data);
-    // Handle save logic here
-    setIsOpen(false);
+  const handleSave = async (data: any) => {
+    try {
+      const tableName = getTableName(elementType);
+      const { data: updatedData, error } = await supabase
+        .from(tableName)
+        .update({ ...data })
+        .eq('id', itemData.id)
+        .select()
+        .single();
+      if (error) {
+        console.log("Error updating data:", error);
+      }
+      console.log("Updated Data:", updatedData);
+      if (error) throw error;
+
+      onUpdate({
+        ...itemData,
+        ...updatedData,
+        elementType,
+      });
+
+      setIsOpen(false);
+      }
+      catch (error) {
+      console.error('Error updating item:', error);
+    }
   };
 
   const handleCancel = () => {
@@ -59,8 +89,14 @@ export default function EditDialog({ elementType, DetailsForm, buttonName }: Add
           <DialogTitle className="mb-2 text-left leading-relaxed">{elementType} Details</DialogTitle>
         </DialogHeader>
         <DialogDescription />
-        <DetailsForm onSave={handleSave} onCancel={handleCancel} onDelete={handleDelete} />
+          <DetailsForm
+            onSave={handleSave}
+            onCancel={handleCancel}
+            onDelete={handleDelete}
+            itemData={itemData }
+          />
       </DialogContent>
     </Dialog>
   );
 }
+

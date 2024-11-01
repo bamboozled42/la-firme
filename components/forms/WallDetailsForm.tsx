@@ -1,25 +1,28 @@
 // src/components/forms/WallDetailsForm.tsx
 "use client";
-
 import { wallDetailsFormSchema, type WallDetailsFormSchema } from "@/components/forms/schemas/formSchema";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { Wall, toCamelCase } from "../../lib/utils";
 
 interface WallDetailsFormProps {
+  itemData : Wall;
   onSave: (data: WallDetailsFormSchema) => void;
   onCancel: () => void;
   onDelete: () => void;
 }
 
-const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onDelete }) => {
+const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onDelete, itemData }) => {
+  const defaultValues = toCamelCase(itemData);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<WallDetailsFormSchema>({
     resolver: zodResolver(wallDetailsFormSchema),
+    defaultValues
   });
 
   const onSubmit = (data: WallDetailsFormSchema) => {
