@@ -16,21 +16,21 @@ import Image from "next/image";
 import Link from "next/link";
 import AddDialog from "./add-subcomponent";
 import { useEffect, useState } from 'react';
-import { createBrowserSupabaseClient } from "../../../lib/client-utils";
-import { Floor, ProjectDashboardType} from "../../../lib/utils";
+import { useSupabase } from "@/app/providers";
+import { Floor, ProjectDashboardType, type ElementTypeKeys} from "../../../lib/utils";
 import Subcomponent from "./subcomponent";
 
 
 
 export default function Dashboard({ params }: { params: { projectId: string } }) {
-  const supabase = createBrowserSupabaseClient();
-  const [projectData, setData] = useState<ProjectDashboardType | null>(null);
+  const supabase = useSupabase();
+  const [projectData, setProjectData] = useState<ProjectDashboardType | null>(null);
   const [currentFloorData, setCurrentFloorData] = useState<ProjectDashboardType | null>(null);
-  const [currentFloorId , setCurrentFloorId] = useState<string>("all");
+  const [currentFloorId, setCurrentFloorId] = useState<string>("all");
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    const initialize = async () => {
+    const fetchProjectData = async () => {
       const { data, error } = await supabase
         .from("projects")
         .select(`
@@ -48,35 +48,66 @@ export default function Dashboard({ params }: { params: { projectId: string } })
         console.error("Error fetching project data:", error);
         return;
       }
-      console.log(data);
-      setData(data);
+
+      setProjectData(data);
       setCurrentFloorData(data);
     };
-    initialize();
-  }, [supabase,params.projectId]);
+    fetchProjectData();
+  }, [supabase, params.projectId]);
 
   const changeFloor = (value: string) => {
-    console.log(value);
+    console.log("Changing floor to:", value);
     setCurrentFloorId(value);
 
     if (value === "all") {
       setCurrentFloorData(projectData);
     } else {
       const floorId = parseInt(value);
-      const filteredData = {
-        ...projectData,
-        walls: projectData?.walls?.filter(wall => wall.floor_id === floorId) || [],
-        columns: projectData?.columns?.filter(column => column.floor_id === floorId) || [],
-        beams: projectData?.beams?.filter(beam => beam.floor_id === floorId) || [],
-        ceilings: projectData?.ceilings?.filter(ceiling => ceiling.floor_id === floorId) || [],
-      };
-      setCurrentFloorData(filteredData as ProjectDashboardType);
-      console.log(filteredData);
+      if (projectData) {
+        setCurrentFloorData({
+          ...projectData,
+          walls: projectData.walls?.filter(wall => wall.floor_id === floorId) || [],
+          columns: projectData.columns?.filter(column => column.floor_id === floorId) || [],
+          beams: projectData.beams?.filter(beam => beam.floor_id === floorId) || [],
+          ceilings: projectData.ceilings?.filter(ceiling => ceiling.floor_id === floorId) || [],
+        });
+      }
     }
   };
 
+  const handleUpdate = (updatedItem: any) => {
+    let updatedArray;
+    if (!projectData) {
+      return;
+    }
+    // just fuck the linter error this is voodoo shit here
+    const elementTypeKey = (updatedItem.elementType.toLowerCase() + 's') as ElementTypeKeys;
+    const itemsArray = projectData[elementTypeKey];
 
+    if (Array.isArray(itemsArray)) {
+      const updatedArray = itemsArray.map((item: any) =>
+        item.id === updatedItem.id ? updatedItem : item
+      );
+    }
 
+    const updatedData = {
+      ...projectData,
+      [updatedItem.elementType.toLowerCase() + 's']: updatedArray,
+    };
+    setProjectData(updatedData);
+    /*
+    basically currentFloorData is not updated when projectData is updated
+    and so it is necessary to update currentFloorData on database change
+    this is just better than requerying the db and updating there because
+    it is hard coded to have currentFloorData to be all the data in supabase
+    rather than the one corresponding to currentFloorId
+    */
+    if (currentFloorId !== "all") {
+      changeFloor(currentFloorId);
+    } else {
+      setCurrentFloorData(updatedData);
+    }
+  };
   if (error) {
     return <div>Error loading project data...</div>;
   }
@@ -147,27 +178,30 @@ export default function Dashboard({ params }: { params: { projectId: string } })
           <Accordion type="single" collapsible className="w-full">
 
             <AccordionItem value="walls" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
-              <div className="flex items-center justify-between">
-                <AccordionTrigger className="flex-grow">Walls {"(" + (currentFloorData?.walls ? currentFloorData?.walls.length : 0) + ")"}</AccordionTrigger>
-                <AddDialog
-                  Form1={WallForm}
-                  Form2={WallDetailsForm}
-                  form1Title="Add Wall Element"
-                  form2Title="Wall Details"
-                  form1Description="Please provide the basic information for the wall element."
-                  form2Description="Please provide detailed information about the wall."
-                />
-              </div>
-              <AccordionContent>
-                <div className="flex flex-col gap-1">
-                  {currentFloorData?.walls?.map(wall => (
-                    <Subcomponent
-                    key={wall.id}
-                    name={wall.name || "Unknown Wall"}
-                    />
-                  ))}
+                <div className="flex items-center justify-between">
+                  <AccordionTrigger className="flex-grow">Walls {"(" + (currentFloorData?.walls ? currentFloorData?.walls.length : 0) + ")"}</AccordionTrigger>
+                  <AddDialog
+                    Form1={WallForm}
+                    Form2={WallDetailsForm}
+                    form1Title="Add Wall Element"
+                    form2Title={"Wall Details"}
+                    form1Description="Please provide the basic information for the wall element."
+                    form2Description="Please provide detailed information about the wall."
+                  />
                 </div>
-              </AccordionContent>
+                <AccordionContent>
+                  <div className="flex flex-col gap-1">
+                    {currentFloorData?.walls?.map((wall) => (
+                      <Subcomponent
+                        key={wall.id}
+                        name={wall.name ?? 'Unknown Wall'}
+                        type="Wall"
+                        itemData={wall}
+                        onUpdate={handleUpdate}
+                      />
+                    ))}
+                  </div>
+                </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="columns" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
@@ -184,8 +218,14 @@ export default function Dashboard({ params }: { params: { projectId: string } })
               </div>
               <AccordionContent>
                 <div className="flex flex-col gap-1">
-                {currentFloorData?.columns?.map(columns => (
-                    <Subcomponent key={columns.id} name={columns.name || "Unknown Columns"} />
+                {currentFloorData?.columns?.map(column => (
+                    <Subcomponent
+                      key={column.id}
+                      name={column.name || "Unknown Columns"}
+                      type="Column"
+                      itemData={column}
+                      onUpdate={handleUpdate}
+                    />
                   ))}
                 </div>
               </AccordionContent>
@@ -205,8 +245,14 @@ export default function Dashboard({ params }: { params: { projectId: string } })
               </div>
               <AccordionContent>
                 <div className="flex flex-col gap-1">
-                {currentFloorData?.beams?.map(beams => (
-                    <Subcomponent key={beams.id} name={beams.name || "Unknown Beams"} />
+                {currentFloorData?.beams?.map(beam => (
+                    <Subcomponent
+                    key={beam.id}
+                    name={beam.name || "Unknown Beams"}
+                    type="Beam"
+                    itemData={beam}
+                    onUpdate={handleUpdate}
+                  />
                   ))}
                 </div>
               </AccordionContent>
@@ -226,8 +272,14 @@ export default function Dashboard({ params }: { params: { projectId: string } })
               </div>
               <AccordionContent>
                 <div className="flex flex-col gap-1">
-                {currentFloorData?.ceilings?.map(ceilings => (
-                    <Subcomponent key={ceilings.id} name={ceilings.name || "Unknown Ceilings"} />
+                {currentFloorData?.ceilings?.map(ceiling => (
+                    <Subcomponent
+                      key={ceiling.id}
+                      name={ceiling.name || "Unknown Ceilings"}
+                      type="Ceiling"
+                      itemData={ceiling}
+                      onUpdate={handleUpdate}
+                    />
                   ))}
                 </div>
               </AccordionContent>

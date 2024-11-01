@@ -1,6 +1,6 @@
 "use client";
 import ProjectCard from "./projectCard";
-import { createBrowserSupabaseClient } from "../../lib/client-utils";
+import { useSupabase } from "../providers";
 import {  Project, Column, Beam, Wall, Ceiling} from "../../lib/utils";
 import { useState, useEffect } from "react";
 import { PostgrestError } from "@supabase/supabase-js";
@@ -16,7 +16,7 @@ export type ProjectDashboardType = Project & {
 };
 
 export default function ProjectDashboard() {
-  const supabase = createBrowserSupabaseClient();
+  const supabase = useSupabase();
   const [projects, setProjects] = useState<ProjectDashboardType[] | null>(null);
   const [error, setError] = useState<PostgrestError | null>(null);
 

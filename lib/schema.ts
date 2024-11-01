@@ -9,33 +9,33 @@ export type Database = {
           condition: string | null;
           floor_id: number | null;
           height: number | null;
-          hoizontal_cracks: boolean | null;
           id: number;
           length: number | null;
           name: string | null;
-          pipes: boolean | null;
+          support_left_side: string | null;
+          support_right_side: string | null;
         };
         Insert: {
           beams_project_id?: number | null;
           condition?: string | null;
           floor_id?: number | null;
           height?: number | null;
-          hoizontal_cracks?: boolean | null;
           id?: number;
           length?: number | null;
           name?: string | null;
-          pipes?: boolean | null;
+          support_left_side?: string | null;
+          support_right_side?: string | null;
         };
         Update: {
           beams_project_id?: number | null;
           condition?: string | null;
           floor_id?: number | null;
           height?: number | null;
-          hoizontal_cracks?: boolean | null;
           id?: number;
           length?: number | null;
           name?: string | null;
-          pipes?: boolean | null;
+          support_left_side?: string | null;
+          support_right_side?: string | null;
         };
         Relationships: [
           {
@@ -57,33 +57,39 @@ export type Database = {
       ceilings: {
         Row: {
           ceilings_project_id: number | null;
-          cracks: boolean | null;
+          cracks: string | null;
           dimension_x: number | null;
           dimension_y: number | null;
+          direction_of_joints: string | null;
           floor_id: number | null;
+          height: number | null;
           id: number;
-          name: string | null;
-          pipes: boolean | null;
+          name: string;
+          pipes: string | null;
         };
         Insert: {
           ceilings_project_id?: number | null;
-          cracks?: boolean | null;
+          cracks?: string | null;
           dimension_x?: number | null;
           dimension_y?: number | null;
+          direction_of_joints?: string | null;
           floor_id?: number | null;
+          height?: number | null;
           id?: number;
-          name?: string | null;
-          pipes?: boolean | null;
+          name: string;
+          pipes?: string | null;
         };
         Update: {
           ceilings_project_id?: number | null;
-          cracks?: boolean | null;
+          cracks?: string | null;
           dimension_x?: number | null;
           dimension_y?: number | null;
+          direction_of_joints?: string | null;
           floor_id?: number | null;
+          height?: number | null;
           id?: number;
-          name?: string | null;
-          pipes?: boolean | null;
+          name?: string;
+          pipes?: string | null;
         };
         Relationships: [
           {
@@ -112,8 +118,8 @@ export type Database = {
           length: number | null;
           name: string | null;
           notes: string | null;
-          pipes: boolean | null;
-          vertical_cracks: boolean | null;
+          pipes: string | null;
+          vertical_cracks: string | null;
           width: number | null;
         };
         Insert: {
@@ -125,8 +131,8 @@ export type Database = {
           length?: number | null;
           name?: string | null;
           notes?: string | null;
-          pipes?: boolean | null;
-          vertical_cracks?: boolean | null;
+          pipes?: string | null;
+          vertical_cracks?: string | null;
           width?: number | null;
         };
         Update: {
@@ -138,8 +144,8 @@ export type Database = {
           length?: number | null;
           name?: string | null;
           notes?: string | null;
-          pipes?: boolean | null;
-          vertical_cracks?: boolean | null;
+          pipes?: string | null;
+          vertical_cracks?: string | null;
           width?: number | null;
         };
         Relationships: [
@@ -314,20 +320,22 @@ export type Database = {
       walls: {
         Row: {
           condition_of_bricks_cement: string | null;
+          cracks: string | null;
+          direction: string;
           floor_id: number | null;
           height: number | null;
           height_type: string | null;
           horizontal_crack_ceilng: boolean | null;
-          horizontal_crack_in_beam: boolean | null;
-          horizontal_crack_wall_ceiling: boolean | null;
+          horizontal_crack_in_beam: string | null;
+          horizontal_crack_wall_ceiling: string | null;
           id: number;
           length: number | null;
           location: string | null;
           material: string | null;
-          name: string | null;
+          name: string;
           stucco: string | null;
-          vertical_crack_column: boolean | null;
-          vertical_crack_column_wall: boolean | null;
+          vertical_crack_column: string | null;
+          vertical_crack_column_wall: string | null;
           walls_project_id: number | null;
           width: number | null;
           window_size_x: number | null;
@@ -335,20 +343,22 @@ export type Database = {
         };
         Insert: {
           condition_of_bricks_cement?: string | null;
+          cracks?: string | null;
+          direction: string;
           floor_id?: number | null;
           height?: number | null;
           height_type?: string | null;
           horizontal_crack_ceilng?: boolean | null;
-          horizontal_crack_in_beam?: boolean | null;
-          horizontal_crack_wall_ceiling?: boolean | null;
+          horizontal_crack_in_beam?: string | null;
+          horizontal_crack_wall_ceiling?: string | null;
           id?: number;
           length?: number | null;
           location?: string | null;
           material?: string | null;
-          name?: string | null;
+          name: string;
           stucco?: string | null;
-          vertical_crack_column?: boolean | null;
-          vertical_crack_column_wall?: boolean | null;
+          vertical_crack_column?: string | null;
+          vertical_crack_column_wall?: string | null;
           walls_project_id?: number | null;
           width?: number | null;
           window_size_x?: number | null;
@@ -356,20 +366,22 @@ export type Database = {
         };
         Update: {
           condition_of_bricks_cement?: string | null;
+          cracks?: string | null;
+          direction?: string;
           floor_id?: number | null;
           height?: number | null;
           height_type?: string | null;
           horizontal_crack_ceilng?: boolean | null;
-          horizontal_crack_in_beam?: boolean | null;
-          horizontal_crack_wall_ceiling?: boolean | null;
+          horizontal_crack_in_beam?: string | null;
+          horizontal_crack_wall_ceiling?: string | null;
           id?: number;
           length?: number | null;
           location?: string | null;
           material?: string | null;
-          name?: string | null;
+          name?: string;
           stucco?: string | null;
-          vertical_crack_column?: boolean | null;
-          vertical_crack_column_wall?: boolean | null;
+          vertical_crack_column?: string | null;
+          vertical_crack_column_wall?: string | null;
           walls_project_id?: number | null;
           width?: number | null;
           window_size_x?: number | null;

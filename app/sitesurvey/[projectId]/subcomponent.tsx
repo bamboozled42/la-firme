@@ -1,17 +1,44 @@
+import BeamDetailsForm from "@/components/forms/BeamDetails";
+import CeilingDetailsForm from "@/components/forms/CeilingDetails";
+import ColumnDetailsForm from "@/components/forms/ColumnsDetails";
+import FloorDetailsForm from "@/components/forms/FloorDetails";
+import WallDetailsForm from "@/components/forms/WallDetailsForm";
 import DeleteDialog from "./delete-subcomponent";
-import EditDialog from "./edit-subcomponent";
+import { EditDialog } from "./edit-subcomponent";
 
+export default function Subcomponent({
+  name,
+  type,
+  itemData,
+  onUpdate
+}: {
+  name: string,
+  type: "Wall" | "Column" | "Beam" | "Floor" | "Ceiling",
+  itemData: any,
+  onUpdate: (updatedData: any) => void
+}) {
+  const formMapping = {
+    Wall: WallDetailsForm,
+    Column: ColumnDetailsForm,
+    Beam: BeamDetailsForm,
+    Floor: FloorDetailsForm,
+    Ceiling: CeilingDetailsForm,
+  };
 
+  const dform : any = formMapping[type] as any;
 
-export default function Subcomponent({ name }: { name: string }) {
-    return (
-      <div className="mt-2 rounded-lg bg-secondary pl-4 p-3 flex justify-between items-center flex-wrap">
-        {name}
-        <div>
-            <EditDialog/>
-            <DeleteDialog/>
-        </div>
+  return (
+    <div className="mt-2 flex flex-wrap items-center justify-between rounded-lg bg-secondary p-3 pl-4">
+      {name}
+      <div>
+        <EditDialog
+          elementType={type}
+          DetailsForm={dform}
+          itemData={itemData}
+          onUpdate={onUpdate}
+          />
+        <DeleteDialog />
       </div>
-    );
-  }
-
+    </div>
+  );
+}

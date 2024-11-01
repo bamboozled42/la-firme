@@ -5,25 +5,31 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { Column, toCamelCase, toSnakeCase } from "../../lib/utils";
 
 interface ColumnDetailsFormProps {
+  itemData: Column;
   onSave: (data: ColumnDetailsFormSchema) => void;
   onCancel: () => void;
   onDelete: () => void;
 }
 
-const ColumnDetailsForm: React.FC<ColumnDetailsFormProps> = ({ onSave, onCancel, onDelete }) => {
+const ColumnDetailsForm: React.FC<ColumnDetailsFormProps> = ({ onSave, onCancel, onDelete, itemData}) => {
+  const defaultValues = toCamelCase(itemData);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<ColumnDetailsFormSchema>({
     resolver: zodResolver(columnDetailsFormSchema),
+    defaultValues
   });
 
   const onSubmit = (data: ColumnDetailsFormSchema) => {
+    const snakeData = toSnakeCase(data);
+    console.log("snakeData", snakeData);
     console.log("ColumnDetailsForm Submitted Data:", data); // Debugging
-    onSave(data);
+    onSave(snakeData as ColumnDetailsFormSchema);
   };
 
   return (
@@ -92,7 +98,9 @@ const ColumnDetailsForm: React.FC<ColumnDetailsFormProps> = ({ onSave, onCancel,
           <option value="" disabled>
             Select condition
           </option>
-          <option value="Seleccionar">Seleccionar</option>
+            <option value="Good">Good</option>
+            <option value="Fair">Fair</option>
+            <option value="Poor">Poor</option>
         </select>
         {errors.condition && <p className="mt-1 text-sm text-red-600">{errors.condition.message}</p>}
       </div>
@@ -103,7 +111,7 @@ const ColumnDetailsForm: React.FC<ColumnDetailsFormProps> = ({ onSave, onCancel,
           Vertical Cracks
         </label>
         <select
-          id="verticalCracks"
+          id="vertical_cracks"
           {...register("verticalCracks")}
           defaultValue=""
           className={`mt-1 block w-full rounded-md border ${

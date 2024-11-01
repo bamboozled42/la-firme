@@ -26,6 +26,7 @@ export type ProjectDashboardType = Project & {
 
 };
 
+export type ElementTypeKeys = keyof ProjectDashboardType;
 // helper to make it easier to conditionally add Tailwind CSS classes
 // https://ui.shadcn.com/docs/installation
 // More usage: https://www.neorepo.com/blog/how-to-build-a-button-with-nextjs-and-shadcn-ui
@@ -80,3 +81,21 @@ export async function getUserProfile(
 
   return { profile: profileData, error: null };
 }
+
+
+// Chatgpt camel and snake case conversion functions
+export const toCamelCase = (data: Record<string, any>): Record<string, any> => {
+  return Object.keys(data).reduce((acc, key) => {
+    const camelKey = key.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+    acc[camelKey] = data[key];
+    return acc;
+  }, {} as Record<string, any>);
+};
+
+export const toSnakeCase = (data: Record<string, any>): Record<string, any> => {
+  return Object.keys(data).reduce((acc, key) => {
+    const snakeKey = key.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
+    acc[snakeKey] = data[key];
+    return acc;
+  }, {} as Record<string, any>);
+};
