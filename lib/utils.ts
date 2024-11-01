@@ -15,6 +15,17 @@ export type Beam = Database['public']['Tables']['beams']['Row'];
 export type Ceiling = Database['public']['Tables']['ceilings']['Row'];
 export type Floor = Database['public']['Tables']['floors']['Row'];
 
+
+export type ProjectDashboardType = Project & {
+  walls?: Wall[];
+  columns?: Column[];
+  beams?: Beam[];
+  ceilings?: Ceiling[];
+  users?: Users[];
+  floors?: Floor[];
+
+};
+
 // helper to make it easier to conditionally add Tailwind CSS classes
 // https://ui.shadcn.com/docs/installation
 // More usage: https://www.neorepo.com/blog/how-to-build-a-button-with-nextjs-and-shadcn-ui

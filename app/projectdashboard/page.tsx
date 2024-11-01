@@ -5,10 +5,10 @@ import {  Project, Column, Beam, Wall, Ceiling} from "../../lib/utils";
 import { useState, useEffect } from "react";
 import { PostgrestError } from "@supabase/supabase-js";
 
+
 export type ProjectDashboardType = Project & {
   // I don't think I need to pass in anything other than name
   architect: { first_name: string; last_name: string };
-  clients: { first_name: string; last_name: string };
   walls: Wall[] ;
   columns: Column[];
   beams: Beam[];

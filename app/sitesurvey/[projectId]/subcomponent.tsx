@@ -14,3 +14,4 @@ export default function Subcomponent({ name }: { name: string }) {
       </div>
     );
   }
+
