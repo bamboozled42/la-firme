@@ -6,7 +6,7 @@ import WallDetailsForm from "@/components/forms/WallDetailsForm";
 import DeleteDialog from "./delete-subcomponent";
 import EditDialog from "./edit-subcomponent";
 
-export default function Subcomponent({ name }: { name: string }) {
+export default function Subcomponent({ name, type }: { name: string, type: string }) {
   const formMapping = {
     Wall: WallDetailsForm,
     Column: ColumnDetailsForm,
@@ -15,10 +15,10 @@ export default function Subcomponent({ name }: { name: string }) {
     Ceiling: CeilingDetailsForm,
   };
 
-  const dform = formMapping[name];
+  const dform = formMapping[type];
 
   return (
-    <div className="mt-2 flex flex-wrap items-center justify-between rounded-lg bg-secondary p-3 pl-4">
+    <div className="flex flex-wrap items-center justify-between rounded-lg bg-secondary p-3 pl-4">
       {name}
       <div>
         <EditDialog elementType={name} DetailsForm={dform} />

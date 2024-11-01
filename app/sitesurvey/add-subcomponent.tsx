@@ -77,7 +77,7 @@ export default function AddDialog({
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button size="sm" className={buttonClass || "bg-green-700 text-green-50"}>
-          <Icons.add className="mr-2 h-5 w-5"/> 
+          <Icons.add className="mr-2 h-4 w-4"/> 
           <span className="mr-1">
             {buttonName || "Add"}
           </span>

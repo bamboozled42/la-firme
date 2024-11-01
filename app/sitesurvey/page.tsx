@@ -120,7 +120,7 @@ export default async function Dashboard() {
 
           <TypographyH2 className="mt-2 font-bold">{"[Project Name]"}</TypographyH2>
 
-          <div className="mt-4 mb-6">
+          <div className="mt-4 mb-6 flex flex-row items-center space-x-3">
             <Select value={currentFloor} onValueChange={(value) => getComponents(value)}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select a floor" />
@@ -145,7 +145,7 @@ export default async function Dashboard() {
                 </div>
               </SelectContent>
             </Select>
-            {/* <EditDialog elementType={"name"} DetailsForm={dform}} /> */}
+            <EditDialog elementType={floors.find(floor => floor.id.toString() === currentFloor)?.name || "Unknown Floor"} DetailsForm={FloorDetailsForm} buttonName="Floor details"/>
           </div>
           
           {true && ( // replace true with !image to check if it exists
@@ -179,7 +179,7 @@ export default async function Dashboard() {
               <AccordionContent>
                 <div className="flex flex-col gap-1">
                   {walls?.map((wall) => (
-                    <Subcomponent name={wall.name ?? 'Unknown Wall'}/>
+                    <Subcomponent name={wall.name ?? 'Unknown Wall'} type="Wall"/>
                   ))}
                 </div>
               </AccordionContent>
@@ -200,7 +200,7 @@ export default async function Dashboard() {
               <AccordionContent>
                 <div className="flex flex-col gap-1">
                   {columns?.map((column) => (
-                    <Subcomponent name={column.name ?? 'Unknown Column'}/>
+                    <Subcomponent name={column.name ?? 'Unknown Column'} type="Column"/>
                   ))}
                 </div>
               </AccordionContent>
@@ -221,7 +221,7 @@ export default async function Dashboard() {
               <AccordionContent>
                 <div className="flex flex-col gap-1">
                   {beams?.map((beam) => (
-                    <Subcomponent name={beam.name ?? 'Unknown Beam'}/>
+                    <Subcomponent name={beam.name ?? 'Unknown Beam'} type="Beam"/>
                   ))}
                 </div>
               </AccordionContent>
@@ -242,28 +242,8 @@ export default async function Dashboard() {
               <AccordionContent>
                 <div className="flex flex-col gap-1">
                   {ceilings?.map((ceiling) => (
-                    <Subcomponent name={ceiling.name ?? 'Unknown Ceiling'}/>
+                    <Subcomponent name={ceiling.name ?? 'Unknown Ceiling'} type="Ceiling"/>
                   ))}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-
-            <AccordionItem value="floors" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
-              <div className="flex items-center justify-between">
-                <AccordionTrigger className="flex-grow">Floors {"(" + "2" + ")"}</AccordionTrigger>
-                <AddDialog
-                  Form1={ColumnsForm}
-                  Form2={FloorDetailsForm}
-                  form1Title="Add Floor Element"
-                  form2Title="Floor Details"
-                  form1Description="Please provide the basic information for the floor element."
-                  form2Description="Please provide detailed information about the floor."
-                />
-              </div>
-              <AccordionContent>
-                <div className="flex flex-col gap-1">
-                  <Subcomponent name={"Floor"}></Subcomponent>
-                  <Subcomponent name={"Floor"}></Subcomponent>
                 </div>
               </AccordionContent>
             </AccordionItem>

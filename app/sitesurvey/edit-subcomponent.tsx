@@ -15,6 +15,8 @@ interface AddDetailsDialogProps {
   elementType: string; // Extend as needed
   DetailsForm: React.ComponentType<DetailsFormProps>;
   // Optional: You can add more props for customization if needed
+
+  buttonName?: string;
 }
 
 export interface DetailsFormProps {
@@ -23,7 +25,7 @@ export interface DetailsFormProps {
   onDelete?: () => void; // Optional: Not all forms might need delete
 }
 
-export default function EditDialog({ elementType, DetailsForm }: AddDetailsDialogProps) {
+export default function EditDialog({ elementType, DetailsForm, buttonName }: AddDetailsDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSave = (data: any) => {
@@ -46,9 +48,9 @@ export default function EditDialog({ elementType, DetailsForm }: AddDetailsDialo
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button size="sm" className="ml-2 bg-blue-700 text-blue-50">
-          <Icons.pencil className="mr-2 h-5 w-5" /> 
+          <Icons.pencil className="mr-2 h-4 w-4" /> 
           <span className="mr-1">
-            Edit
+            {buttonName || "Details"}
           </span>
         </Button>
       </DialogTrigger>
