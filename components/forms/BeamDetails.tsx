@@ -28,7 +28,7 @@ const BeamDetailsForm: React.FC<BeamDetailsFormProps> = ({ itemData, onSave, onC
 
   const onSubmit = (data: BeamDetailsFormSchema) => {
     const snakeData = toSnakeCase(data);
-    console.log("BeamDetailsForm Submitted Data:", data); // Debugging
+    // console.log("BeamDetailsForm Submitted Data:", data); // Debugging
     onSave(snakeData as BeamDetailsFormSchema);
   };
 
