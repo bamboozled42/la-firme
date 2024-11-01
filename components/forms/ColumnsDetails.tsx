@@ -1,3 +1,4 @@
+// src/components/forms/ColumnDetailsForm.tsx
 "use client";
 
 import { columnDetailsFormSchema, type ColumnDetailsFormSchema } from "@/components/forms/schemas/formSchema";
@@ -93,8 +94,32 @@ const ColumnDetailsForm: React.FC<ColumnDetailsFormProps> = ({ onSave, onCancel,
             Select condition
           </option>
           <option value="Seleccionar">Seleccionar</option>
+          <option value="Bad">Bad</option>
+          <option value="Good">Good</option>
         </select>
         {errors.condition && <p className="mt-1 text-sm text-red-600">{errors.condition.message}</p>}
+      </div>
+
+      {/* Type Field */}
+      <div>
+        <label htmlFor="type" className="block text-sm font-medium text-gray-700">
+          Type
+        </label>
+        <select
+          id="type"
+          {...register("type")}
+          defaultValue=""
+          className={`mt-1 block w-full rounded-md border ${
+            errors.type ? "border-red-600" : "border-gray-300"
+          } shadow-sm focus:border-green-500 focus:ring-green-500`}
+        >
+          <option value="" disabled>
+            Select type
+          </option>
+          <option value="Column of 'arriostramiento'">Column of &apos;arriostramiento&apos;</option>
+          <option value="Independent column">Independent column</option>
+        </select>
+        {errors.type && <p className="mt-1 text-sm text-red-600">{errors.type.message}</p>}
       </div>
 
       {/* Vertical Cracks Field */}
@@ -124,14 +149,20 @@ const ColumnDetailsForm: React.FC<ColumnDetailsFormProps> = ({ onSave, onCancel,
         <label htmlFor="pipes" className="block text-sm font-medium text-gray-700">
           Pipes
         </label>
-        <input
-          type="number"
+        <select
           id="pipes"
-          {...register("pipes", { valueAsNumber: true })}
+          {...register("pipes")}
+          defaultValue=""
           className={`mt-1 block w-full rounded-md border ${
             errors.pipes ? "border-red-600" : "border-gray-300"
           } shadow-sm focus:border-green-500 focus:ring-green-500`}
-        />
+        >
+          <option value="" disabled>
+            Select option
+          </option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
         {errors.pipes && <p className="mt-1 text-sm text-red-600">{errors.pipes.message}</p>}
       </div>
 

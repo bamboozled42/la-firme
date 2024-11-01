@@ -126,14 +126,20 @@ const CeilingDetailsForm: React.FC<CeilingDetailsFormProps> = ({ onSave, onCance
         <label htmlFor="pipes" className="block text-sm font-medium text-gray-700">
           Pipes
         </label>
-        <input
-          type="number"
+        <select
           id="pipes"
-          {...register("pipes", { valueAsNumber: true })}
+          {...register("pipes")}
+          defaultValue=""
           className={`mt-1 block w-full rounded-md border ${
             errors.pipes ? "border-red-600" : "border-gray-300"
           } shadow-sm focus:border-green-500 focus:ring-green-500`}
-        />
+        >
+          <option value="" disabled>
+            Select option
+          </option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
         {errors.pipes && <p className="mt-1 text-sm text-red-600">{errors.pipes.message}</p>}
       </div>
 

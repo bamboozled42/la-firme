@@ -34,15 +34,22 @@ const FloorDetailsForm: React.FC<FloorDetailsFormProps> = ({ onSave, onCancel, o
         <label htmlFor="materials" className="block text-sm font-medium text-gray-700">
           Materials
         </label>
-        <input
-          type="text"
+        <select
           id="materials"
           {...register("materials")}
+          defaultValue=""
           className={`mt-1 block w-full rounded-md border ${
             errors.materials ? "border-red-600" : "border-gray-300"
           } shadow-sm focus:border-green-500 focus:ring-green-500`}
-          placeholder="Enter materials"
-        />
+        >
+          <option value="" disabled>
+            Select material
+          </option>
+          <option value="Dirt">Dirt</option>
+          <option value="Cement">Cement</option>
+          <option value="Wood">Wood</option>
+          <option value="Tiles">Tiles</option>
+        </select>
         {errors.materials && <p className="mt-1 text-sm text-red-600">{errors.materials.message}</p>}
       </div>
 

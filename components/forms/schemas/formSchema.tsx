@@ -20,11 +20,69 @@ export const wallFormSchema = generalFormSchema.extend({
 export const wallDetailsFormSchema = z.object({
   length: z.number({ required_error: "Length is required" }).positive("Length must be positive"),
   width: z.number({ required_error: "Width is required" }).positive("Width must be positive"),
-  material: z.string().min(1, "Material selection is required"),
-  stucco: z.enum(["inside", "outside"], {
-    errorMap: () => ({ message: "Stucco must be either 'inside' or 'outside'" }),
+  height: z.number({ required_error: "Height is required" }).positive("Height must be positive"),
+  sizeOfWindowX: z.number({ required_error: "Size of window is required" }).positive("Size of window must be positive"),
+  sizeOfWindowY: z.number({ required_error: "Size of window is required" }).positive("Size of window must be positive"),
+  material: z.enum(["KK", "P", "C", "Drywall", "Seleccionar"], {
+    errorMap: () => ({ message: "Material is required" }),
   }),
-  cracks: z.string().min(1, "Cracks selection is required"),
+  fullOrPartialHeight: z.enum(["High", "Low"], {
+    errorMap: () => ({ message: "High or low height is required" }),
+  }),
+  wallRepeatFloors: z.enum(["Yes", "No"], {
+    errorMap: () => ({ message: "Wall repeat floors is required" }),
+  }),
+  location: z.enum(["Perimeter", "Internal"], {
+    errorMap: () => ({ message: "Location is required" }),
+  }),
+  stucco: z.enum(["Only inside", "Only outside", "Inside and outside", "No stucco"], {
+    errorMap: () => ({ message: "Stucco must be selected" }),
+  }),
+  fh1CrackInBeam: z.enum(["Yes", "No"], {
+    errorMap: () => ({ message: "FH1 crack in beam is required" }),
+  }),
+  fh2CrackInWallCeiling: z.enum(["Yes", "No"], {
+    errorMap: () => ({ message: "FH2 crack in wall ceiling is required" }),
+  }),
+  fh3CrackInCeiling: z.enum(["Yes", "No"], {
+    errorMap: () => ({ message: "FH3 crack in ceiling is required" }),
+  }),
+  fh4CrackInCeiling: z.enum(["Yes", "No"], {
+    errorMap: () => ({ message: "FH4 crack in ceiling is required" }),
+  }),
+  fv1VerticalCrackColumnWall: z.enum(["Yes", "No"], {
+    errorMap: () => ({ message: "FV1 vertical crack column wall is required" }),
+  }),
+  fv2VerticalCrackColumn: z.enum(["Yes", "No"], {
+    errorMap: () => ({ message: "FV2 vertical crack column is required" }),
+  }),
+  l1IrregularBrick: z.enum(["Yes", "No"], {
+    errorMap: () => ({ message: "L1 irregular brick is required" }),
+  }),
+  l2BricksWithExcessiveHoles: z.enum(["Yes", "No"], {
+    errorMap: () => ({ message: "L2 bricks with excessive holes is required" }),
+  }),
+  l3WallsNotWellAligned: z.enum(["Yes", "No"], {
+    errorMap: () => ({ message: "L3 walls not well aligned is required" }),
+  }),
+  l4IncompleteMortarInBrick: z.enum(["Yes", "No"], {
+    errorMap: () => ({ message: "L4 incomplete mortar in brick is required" }),
+  }),
+  l5VariationInThicknessJoints: z.enum(["Yes", "No"], {
+    errorMap: () => ({ message: "L5 variation in thickness joints is required" }),
+  }),
+  l6MortarJointsTooThick: z.enum(["Yes", "No"], {
+    errorMap: () => ({ message: "L6 mortar joints too thick is required" }),
+  }),
+  l7PoorAdhesion: z.enum(["Yes", "No"], {
+    errorMap: () => ({ message: "L7 poor adhesion is required" }),
+  }),
+  perforatingColumn: z.enum(["Yes", "No"], {
+    errorMap: () => ({ message: "Perforating column is required" }),
+  }),
+  perforatingBeam: z.enum(["Yes", "No"], {
+    errorMap: () => ({ message: "Perforating beam is required" }),
+  }),
 });
 
 export const columnFormSchema = generalFormSchema;
@@ -33,13 +91,18 @@ export const columnDetailsFormSchema = z.object({
   length: z.number({ required_error: "Length is required" }).positive("Length must be positive"),
   width: z.number({ required_error: "Width is required" }).positive("Width must be positive"),
   height: z.number({ required_error: "Height is required" }).positive("Height must be positive"),
-  condition: z.enum(["Seleccionar"], {
+  condition: z.enum(["Seleccionar", "Bad", "Good"], {
     errorMap: () => ({ message: "Condition is required" }),
+  }),
+  type: z.enum(["Column of 'arriostramiento'", "Independent column"], {
+    errorMap: () => ({ message: "Type is required" }),
   }),
   verticalCracks: z.enum(["Yes", "No"], {
     errorMap: () => ({ message: "Vertical cracks is required" }),
   }),
-  pipes: z.number({ required_error: "Pipes is required" }).positive("Pipes must be positive"),
+  pipes: z.enum(["Yes", "No"], {
+    errorMap: () => ({ message: "Pipes is required" }),
+  }),
 });
 
 export const beamFormSchema = generalFormSchema;
@@ -48,13 +111,16 @@ export const beamDetailsFormSchema = z.object({
   length: z.number({ required_error: "Length is required" }).positive("Length must be positive"),
   width: z.number({ required_error: "Width is required" }).positive("Width must be positive"),
   height: z.number({ required_error: "Height is required" }).positive("Height must be positive"),
-  supportLeftSide: z.enum(["Yes", "No"], {
+  supportLeftSide: z.enum(["Column", "Wall", "Beam", "Overhanging"], {
     errorMap: () => ({ message: "Support left side is required" }),
   }),
-  supportRightSide: z.enum(["Yes", "No"], {
+  supportRightSide: z.enum(["Column", "Wall", "Beam", "Overhanging"], {
     errorMap: () => ({ message: "Support right side is required" }),
   }),
-  condition: z.enum(["Seleccionar"], {
+  type: z.enum(["Curved sole", "Flat sole", "Inverted Sole", "Curved", "Flat", "Inverted"], {
+    errorMap: () => ({ message: "Type is required" }),
+  }),
+  condition: z.enum(["Seleccionar", "Bad", "Good"], {
     errorMap: () => ({ message: "Condition is required" }),
   }),
 });
@@ -71,13 +137,17 @@ export const ceilingDetailsFormSchema = z.object({
   cracks: z.enum(["Yes", "No"], {
     errorMap: () => ({ message: "Cracks is required" }),
   }),
-  pipes: z.number({ required_error: "Pipes is required" }).positive("Pipes must be positive"),
+  pipes: z.enum(["Yes", "No"], {
+    errorMap: () => ({ message: "Pipes is required" }),
+  }),
 });
 
 export const floorFormSchema = generalFormSchema;
 
 export const floorDetailsFormSchema = z.object({
-  materials: z.string().min(1, "Materials is required"),
+  materials: z.enum(["Dirt", "Cement", "Wood", "Tiles"], {
+    errorMap: () => ({ message: "Material is required" }),
+  }),
 });
 
 // TypeScript Types
