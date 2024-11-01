@@ -1,65 +1,68 @@
+"use client";
 import ProjectCard from "./projectCard";
+import { useSupabase } from "../providers";
+import {  Project, Column, Beam, Wall, Ceiling} from "../../lib/utils";
+import { useState, useEffect } from "react";
+import { PostgrestError } from "@supabase/supabase-js";
 
-export default async function ProjectDashboard() {
-  return (
-    <div className="flex flex-wrap justify-center">
-      <ProjectCard
-        title="Sample"
-        startDate="2/3/24"
-        architect="Eric"
-        location="Cambridge, MA"
-        clients="t4sg"
-        status="Assigned"
-        description="description"
-      />
-      <ProjectCard
-        title="Sample"
-        startDate="2/3/24"
-        architect="Eric"
-        location="Cambridge, MA"
-        clients="t4sg"
-        status="Assigned"
-        description="description"
-      />
-      <ProjectCard
-        title="Sample"
-        startDate="2/3/24"
-        architect="Eric"
-        location="Cambridge, MA"
-        clients="t4sg"
-        status="Assigned"
-        description="description"
-      />
-    </div>
-  );
-}
 
-/*
-export default async function ProjectDashboard() {
-  const { data: projects, error } = await supabase
+export type ProjectDashboardType = Project & {
+  // I don't think I need to pass in anything other than name
+  architect: { first_name: string; last_name: string };
+  walls: Wall[] ;
+  columns: Column[];
+  beams: Beam[];
+  ceilings: Ceiling[];
+};
+
+export default function ProjectDashboard() {
+  const supabase = useSupabase();
+  const [projects, setProjects] = useState<ProjectDashboardType[] | null>(null);
+  const [error, setError] = useState<PostgrestError | null>(null);
+
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+    let { data: projects, error } = await supabase
     .from('projects')
-    .select('*');
+    .select(`
+    *,
+    architect:architect_id(first_name, last_name),
+    walls(name, height, length),
+    columns(name, height, condition),
+    beams(name, length),
+    ceilings(cracks, dimension_x, dimension_y)`);
+
+    if (error) {
+      setError(error);
+    }
+    else {
+      setProjects(projects as unknown as ProjectDashboardType[]);
+    }
+    }
+    fetchProjects();
+  }, [supabase]);
 
   if (error) {
-    console.error('Error fetching projects:', error);
     return <div>Error loading projects...</div>;
   }
 
   return (
     <div className="flex flex-wrap justify-center">
-      {projects?.map((project) => (
-        <ProjectCard
-          key={project.id} 
-          title={project.title}
-          startDate={project.start_date}
-          architect={project.architect}
-          location={project.location}
-          clients={project.clients}
-          status={project.status}
-          description={project.description}
-        />
-      ))}
+      {
+        projects === null ? (
+          <div>Loading...</div>
+        ) : projects.length === 0 ? (
+          <div>No projects found.</div>
+        ) : (
+          projects?.map((project: ProjectDashboardType) => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+            />
+          ))
+        )
+      }
     </div>
   );
 }
-*/
