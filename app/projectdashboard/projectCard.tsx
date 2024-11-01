@@ -23,7 +23,6 @@ export default function ProjectCard({
   const handleClick = (projectId : number) => {
     router.push(`/sitesurvey/${projectId}`);
   }
-
   return (
     <div className="m-4 w-72 min-w-72 flex-none rounded-lg border-2 p-3 shadow">
       <h3 className="mt-3 text-2xl font-semibold">{project.title}</h3>

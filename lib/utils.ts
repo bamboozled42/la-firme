@@ -15,6 +15,10 @@ export type Beam = Database['public']['Tables']['beams']['Row'];
 export type Ceiling = Database['public']['Tables']['ceilings']['Row'];
 export type Floor = Database['public']['Tables']['floors']['Row'];
 
+export type StateAction =
+  | { type: 'update'; item: any }
+  | { type: 'delete'; item: any };
+
 
 export type ProjectDashboardType = Project & {
   walls?: Wall[];

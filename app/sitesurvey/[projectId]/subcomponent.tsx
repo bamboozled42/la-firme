@@ -10,12 +10,15 @@ export default function Subcomponent({
   name,
   type,
   itemData,
-  onUpdate
+  onUpdate,
+  onDelete,
 }: {
   name: string,
+  // this removes error with strings and any casting
   type: "Wall" | "Column" | "Beam" | "Floor" | "Ceiling",
   itemData: any,
   onUpdate: (updatedData: any) => void
+  onDelete: (deletedItem: any) => void
 }) {
   const formMapping = {
     Wall: WallDetailsForm,
@@ -37,7 +40,11 @@ export default function Subcomponent({
           itemData={itemData}
           onUpdate={onUpdate}
           />
-        <DeleteDialog />
+        <DeleteDialog
+        itemData={itemData}
+        onDelete={onDelete}
+        elementType={type}
+         />
       </div>
     </div>
   );

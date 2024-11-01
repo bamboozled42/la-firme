@@ -225,7 +225,7 @@ export type Database = {
       };
       projects: {
         Row: {
-          architect_id: number;
+          architect_id: string | null;
           client: string;
           description: string;
           id: number;
@@ -235,7 +235,7 @@ export type Database = {
           title: string;
         };
         Insert: {
-          architect_id: number;
+          architect_id?: string | null;
           client: string;
           description: string;
           id?: number;
@@ -245,7 +245,7 @@ export type Database = {
           title: string;
         };
         Update: {
-          architect_id?: number;
+          architect_id?: string | null;
           client?: string;
           description?: string;
           id?: number;
@@ -292,25 +292,25 @@ export type Database = {
       };
       users: {
         Row: {
-          email: string;
+          email: string | null;
           first_name: string;
-          id: number;
+          id: string;
           last_name: string;
           password: string;
           role: string | null;
         };
         Insert: {
-          email: string;
+          email?: string | null;
           first_name: string;
-          id?: number;
+          id?: string;
           last_name: string;
           password: string;
           role?: string | null;
         };
         Update: {
-          email?: string;
+          email?: string | null;
           first_name?: string;
-          id?: number;
+          id?: string;
           last_name?: string;
           password?: string;
           role?: string | null;

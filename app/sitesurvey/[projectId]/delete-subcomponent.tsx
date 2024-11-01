@@ -9,10 +9,49 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useState } from "react";
+import { useSupabase } from "@/app/providers";
 
 
-export default function DeleteDialog() {
-//   const [open, setOpen] = useState<boolean>(false);
+export default function DeleteDialog({
+  elementType,
+  itemData,
+  onDelete} : {
+  elementType: string,
+  itemData: any,
+  onDelete: (deletedItem: any) => void
+}){
+
+    const [isOpen, setIsOpen] = useState(false);
+    const supabase = useSupabase();
+
+    const getTableName = (type: string) => {
+      return type.toLowerCase() + 's';
+    };
+
+  const handleDelete = async () => {
+    try {
+      const tableName = getTableName(elementType);
+      const { error } = await supabase
+      .from(tableName)
+      .delete()
+      .eq('id', itemData.id);
+
+      if (error) {
+        console.log("Error deleting data:", error);
+      }
+
+      onDelete({
+        ...itemData,
+        elementType: elementType
+      });
+      setIsOpen(false);
+    }
+    catch (error) {
+      console.error('Error deleting item:', error);
+    }
+  }
+
 
   return (
     <Dialog> {/* <Dialog open={open} onOpenChange={setOpen}> */}
@@ -23,11 +62,13 @@ export default function DeleteDialog() {
       </DialogTrigger>
       <DialogContent className="max-h-screen overflow-y-auto w-5/6 p-8 pt-10">
         <DialogHeader>
-          <DialogTitle className="mb-2 leading-relaxed text-left">Are you sure you want to delete {"[name of subcomponent]"} ?</DialogTitle>
+          <DialogTitle className="mb-2 leading-relaxed text-left">Are you sure you want to delete { elementType} ?</DialogTitle>
           <DialogDescription className="text-left">You cannot undo this action.</DialogDescription>
         </DialogHeader>
         <div className="mt-2 flex">
-          <Button type="submit" variant="destructive" className="mr-1 flex-auto">
+          <Button
+            onClick={handleDelete}
+           type="submit" variant="destructive" className="mr-1 flex-auto">
             Delete
           </Button>
           <DialogClose asChild>
@@ -39,4 +80,4 @@ export default function DeleteDialog() {
       </DialogContent>
     </Dialog>
   );
-}
+  }

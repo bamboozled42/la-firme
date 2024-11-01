@@ -17,7 +17,7 @@ import Link from "next/link";
 import AddDialog from "./add-subcomponent";
 import { useEffect, useState } from 'react';
 import { useSupabase } from "@/app/providers";
-import { Floor, ProjectDashboardType, type ElementTypeKeys} from "../../../lib/utils";
+import { Floor, ProjectDashboardType, type StateAction, ElementTypeKeys} from "../../../lib/utils";
 import Subcomponent from "./subcomponent";
 
 
@@ -55,10 +55,14 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     fetchProjectData();
   }, [supabase, params.projectId]);
 
+
+  // this function changes the currentfloordata to the floor chosen in the select
   const changeFloor = (value: string) => {
     console.log("Changing floor to:", value);
     setCurrentFloorId(value);
 
+    // because we have this separation of projectData and currentFloorData,
+    // we can just filter the data based on the floor_id after a floor change
     if (value === "all") {
       setCurrentFloorData(projectData);
     } else {
@@ -75,41 +79,57 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     }
   };
 
-  const handleUpdate = (updatedItem: any) => {
+  // this function handles any update/delete
+  const updateDataState = (action: StateAction) => {
     if (!projectData) {
       return;
     }
-    // just fuck the linter error this is voodoo shit here
-    const elementTypeKey = (updatedItem.elementType.toLowerCase() + 's') as ElementTypeKeys;
-    const itemsArray = projectData[elementTypeKey];
 
-    const updatedArray = Array.isArray(projectData[elementTypeKey])
-    ? (projectData[elementTypeKey])?.map((item: any) =>
-        item.id === updatedItem.id ? updatedItem : item
+    const { item } = action;
+    const elementTypeKey = (item.elementType.toLowerCase() + 's') as ElementTypeKeys;
+    // we either update an item in the data by mapping its changes by its ids or leaving it be
+    // or we delete it by filtering it out by its item id
+    const updatedArray = action.type === 'update'
+    ? projectData[elementTypeKey]?.map((existing: any) =>
+        existing.id === item.id ? item : existing
       )
-    : [];
+    : projectData[elementTypeKey]?.filter((existing: any) =>
+        existing.id !== item.id
+      );
 
     const updatedData = {
       ...projectData,
-      [updatedItem.elementType.toLowerCase() + 's']: updatedArray,
+      [item.elementType.toLowerCase() + 's']: updatedArray,
     };
+
     setProjectData(updatedData);
     /*
-    basically currentFloorData is not updated when projectData is updated
-    and so it is necessary to update currentFloorData on database change
-    this is just better than requerying the db and updating there because
-    it is hard coded to have currentFloorData to be all the data in supabase
-    rather than the one corresponding to currentFloorId
+      basically currentFloorData is not updated when projectData is updated
+      and so it is necessary to update currentFloorData on database change
+      this is just better than requerying the db and updating there because
+      it is hard coded to have currentFloorData to be all the data in supabase
+      rather than the one corresponding to currentFloorId
     */
+
     if (currentFloorId !== "all") {
       changeFloor(currentFloorId);
     } else {
       setCurrentFloorData(updatedData);
     }
   };
+
+
   if (error) {
     return <div>Error loading project data...</div>;
   }
+
+  const handleUpdate = (updatedData: any) => {
+    updateDataState({ type: 'update', item: updatedData });
+  };
+
+  const handleDelete = (deletedItem: any) => {
+    updateDataState({ type: 'delete', item: deletedItem });
+  };
 
   return (
     <>
@@ -197,6 +217,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                         type="Wall"
                         itemData={wall}
                         onUpdate={handleUpdate}
+                        onDelete={handleDelete}
                       />
                     ))}
                   </div>
@@ -224,6 +245,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                       type="Column"
                       itemData={column}
                       onUpdate={handleUpdate}
+                      onDelete={handleDelete}
                     />
                   ))}
                 </div>
@@ -251,6 +273,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                     type="Beam"
                     itemData={beam}
                     onUpdate={handleUpdate}
+                    onDelete={handleDelete}
                   />
                   ))}
                 </div>
@@ -278,6 +301,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                       type="Ceiling"
                       itemData={ceiling}
                       onUpdate={handleUpdate}
+                      onDelete={handleDelete}
                     />
                   ))}
                 </div>
