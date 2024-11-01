@@ -76,7 +76,6 @@ export default function Dashboard({ params }: { params: { projectId: string } })
   };
 
   const handleUpdate = (updatedItem: any) => {
-    let updatedArray;
     if (!projectData) {
       return;
     }
@@ -84,11 +83,11 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     const elementTypeKey = (updatedItem.elementType.toLowerCase() + 's') as ElementTypeKeys;
     const itemsArray = projectData[elementTypeKey];
 
-    if (Array.isArray(itemsArray)) {
-      const updatedArray = itemsArray.map((item: any) =>
+    const updatedArray = Array.isArray(projectData[elementTypeKey])
+    ? (projectData[elementTypeKey])?.map((item: any) =>
         item.id === updatedItem.id ? updatedItem : item
-      );
-    }
+      )
+    : [];
 
     const updatedData = {
       ...projectData,

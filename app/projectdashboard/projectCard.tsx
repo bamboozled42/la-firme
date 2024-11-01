@@ -35,7 +35,7 @@ export default function ProjectCard({
       {/* Flex container to center the DialogTrigger */}
       <div className="mt-4 flex justify-center">
         <Dialog>
-          <DialogTrigger className="row-span-1 w-full rounded-2xl border bg-blue-400 p-2">Expand</DialogTrigger>
+          <DialogTrigger  className="row-span-1 w-full rounded-2xl border bg-blue-400 p-2">Expand</DialogTrigger>
           <DialogContent>
             <DialogHeader>
               <DialogTitle className="text-center">{project.title}</DialogTitle>
@@ -47,7 +47,10 @@ export default function ProjectCard({
             <DialogTitle>Clients</DialogTitle>
             <DialogDescription>{`${project.client}`}</DialogDescription>
           </DialogContent>
-          <Button onClick={() =>handleClick(project.id)}/>
+          <Button className="row-span-1 w-full rounded-2xl border bg-green-500 text-blue-50 "
+            onClick={() =>handleClick(project.id)}>
+              Site Survey
+            </Button>
         </Dialog>
 
       </div>
