@@ -11,6 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { supabase } from "@/lib/supabase"; // Ensure you have the correct path
 import React, { useState } from "react";
 
 interface AddDialogProps {
@@ -34,9 +35,39 @@ export default function AddDialog({
   const [step, setStep] = useState<"form1" | "form2">("form1");
   const [formData, setFormData] = useState<any>({});
 
+  // Handle submission of the first form
   const handleNext = (data: any) => {
-    setFormData(data);
-    setStep("form2");
+    setFormData(data); // Store data from Form1
+    setStep("form2"); // Move to Form2
+  };
+
+  // Handle submission of the second form
+  const handleSave = async (data: any) => {
+    const completeData = { ...formData, ...data }; // Combine data from both forms
+    console.log("Complete Data:", completeData); // For debugging
+
+    try {
+      // Insert combined data into Supabase
+      const { data: supabaseData, error } = await supabase
+        .from("floors") // Replace with your table name
+        .insert([completeData]);
+
+      if (error) {
+        console.error("Error inserting data:", error);
+        // Optionally, show an error message to the user
+      } else {
+        console.log("Data inserted successfully:", supabaseData);
+        // Optionally, show a success message or perform additional actions
+      }
+    } catch (err) {
+      console.error("Error saving data:", err);
+      // Optionally, handle the error
+    }
+
+    // Reset state and close dialog
+    setFormData({});
+    setStep("form1");
+    setIsOpen(false);
   };
 
   const handleCancel = () => {
@@ -45,17 +76,8 @@ export default function AddDialog({
     setIsOpen(false);
   };
 
-  const handleSave = (data: any) => {
-    // const completeData = { ...formData, ...data };
-    // console.log("Complete Data:", completeData);
-    // Handle save logic here (e.g., send to API)
-    setFormData({});
-    setStep("form1");
-    setIsOpen(false);
-  };
-
   const handleDelete = () => {
-    // Handle delete logic here
+    // Handle delete logic here if necessary
     setFormData({});
     setStep("form1");
     setIsOpen(false);
