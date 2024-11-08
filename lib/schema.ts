@@ -1,6 +1,6 @@
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
-export type Database = {
+export interface Database {
   public: {
     Tables: {
       beams: {
@@ -168,19 +168,19 @@ export type Database = {
       floors: {
         Row: {
           floors_project_id: number;
-          id: number;
+          floor_id: number;
           materials: string | null;
           name: string;
         };
         Insert: {
           floors_project_id: number;
-          id?: number;
+          floor_id?: number;
           materials?: string | null;
           name: string;
         };
         Update: {
           floors_project_id?: number;
-          id?: number;
+          floor_id?: number;
           materials?: string | null;
           name?: string;
         };
@@ -418,7 +418,7 @@ export type Database = {
       [_ in never]: never;
     };
   };
-};
+}
 
 type PublicSchema = Database[Extract<keyof Database, "public">];
 

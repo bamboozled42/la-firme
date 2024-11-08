@@ -27,7 +27,7 @@ export default function EditDialog({ elementType, DetailsForm }: AddDetailsDialo
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSave = (data: any) => {
-    console.log("Wall Details Data:", data);
+    // console.log("Wall Details Data:", data);
     // Handle save logic here
     setIsOpen(false);
   };
@@ -37,7 +37,7 @@ export default function EditDialog({ elementType, DetailsForm }: AddDetailsDialo
   };
 
   const handleDelete = () => {
-    console.log("Delete action triggered");
+    // console.log("Delete action triggered");
     // Handle delete logic here
     setIsOpen(false);
   };

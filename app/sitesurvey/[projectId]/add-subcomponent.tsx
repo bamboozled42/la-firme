@@ -12,6 +12,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import React, { useState } from "react";
+import { supabase } from "@/lib/supabase";
 
 interface AddDialogProps {
   Form1: React.FC<any>;
@@ -22,6 +23,8 @@ interface AddDialogProps {
   form2Description?: string;
   buttonClass?: string;
   buttonName?: string;
+  dbname: string;
+  projectId: string;
 }
 
 export default function AddDialog({
@@ -33,6 +36,8 @@ export default function AddDialog({
   form2Description = "Please provide the information for Form 2.",
   buttonClass,
   buttonName,
+  dbname,
+  projectId,
 }: AddDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState<"form1" | "form2">("form1");
@@ -49,10 +54,29 @@ export default function AddDialog({
     setIsOpen(false);
   };
 
-  const handleSave = (data: any) => {
-    // const completeData = { ...formData, ...data };
+  const handleSave = async (data: any) => {
+    const completeData = { ...formData, ...data, projectId }; // Combine data from both forms
     // console.log("Complete Data:", completeData);
-    // Handle save logic here (e.g., send to API)
+
+    try {
+      // Insert combined data into Supabase
+      const { data: supabaseData, error } = await supabase
+        .from(dbname)
+        .insert([completeData]);
+
+      // if (error) {
+      //   console.error("Error inserting data:", error);
+      //   // Optionally, show an error message to the user
+      // } else {
+      //   console.log("Data inserted successfully:", supabaseData);
+      //   // Optionally, show a success message or perform additional actions
+      // }
+    } catch (err) {
+      // console.error("Error saving data:", err);
+      // Optionally, handle the error
+    }
+
+    // Reset state and close dialog
     setFormData({});
     setStep("form1");
     setIsOpen(false);
@@ -76,10 +100,10 @@ export default function AddDialog({
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button size="sm" className={buttonClass || "bg-green-700 text-green-50"}>
+        <Button size="sm" className={buttonClass ?? "bg-green-700 text-green-50"}>
           <Icons.add className="mr-2 h-4 w-4"/> 
           <span className="mr-1">
-            {buttonName || "Add"}
+            {buttonName ?? "Add"}
           </span>
         </Button>
       </DialogTrigger>

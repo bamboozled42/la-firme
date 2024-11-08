@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { supabase } from "@/lib/supabase"; // Ensure you have the correct path
+import { supabase } from "@/lib/supabase";
 import React, { useState } from "react";
 
 interface AddDialogProps {
@@ -47,6 +47,7 @@ export default function AddDialog({
     console.log("Complete Data:", completeData); // For debugging
 
     try {
+      console.log("Saving data to Supabase...");
       // Insert combined data into Supabase
       const { data: supabaseData, error } = await supabase
         .from("floors") // Replace with your table name

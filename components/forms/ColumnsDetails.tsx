@@ -22,7 +22,7 @@ const ColumnDetailsForm: React.FC<ColumnDetailsFormProps> = ({ onSave, onCancel,
   });
 
   const onSubmit = (data: ColumnDetailsFormSchema) => {
-    console.log("ColumnDetailsForm Submitted Data:", data); // Debugging
+    // console.log("ColumnDetailsForm Submitted Data:", data); // Debugging
     onSave(data);
   };
 
@@ -121,49 +121,37 @@ const ColumnDetailsForm: React.FC<ColumnDetailsFormProps> = ({ onSave, onCancel,
         {errors.type && <p className="mt-1 text-sm text-red-600">{errors.type.message}</p>}
       </div>
 
-      {/* Vertical Cracks Field */}
-      <div>
-        <label htmlFor="verticalCracks" className="block text-sm font-medium text-gray-700">
-          Vertical Cracks
+      {/* Vertical Cracks Field (Checkbox) */}
+      <div className="flex items-center">
+        <label htmlFor="verticalCracks" className="block text-sm font-medium text-gray-700 mr-2">
+          Vertical cracks
         </label>
-        <select
+        <input
+          type="checkbox"
           id="verticalCracks"
-          {...register("verticalCracks")}
-          defaultValue=""
-          className={`mt-1 block w-full rounded-md border ${
-            errors.verticalCracks ? "border-red-600" : "border-gray-300"
-          } shadow-sm focus:border-green-500 focus:ring-green-500`}
-        >
-          <option value="" disabled>
-            Select option
-          </option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-        {errors.verticalCracks && <p className="mt-1 text-sm text-red-600">{errors.verticalCracks.message}</p>}
+          {...register("vertical_cracks")}
+          className={`h-4 w-4 text-green-600 border-gray-300 rounded ${
+            errors.vertical_cracks ? "border-red-600" : ""
+          }`}
+        />
       </div>
+      {errors.vertical_cracks && <p className="mt-1 text-sm text-red-600">{errors.vertical_cracks.message}</p>}
 
-      {/* Pipes Field */}
-      <div>
-        <label htmlFor="pipes" className="block text-sm font-medium text-gray-700">
+      {/* Pipes Field (Checkbox) */}
+      <div className="flex items-center">
+        <label htmlFor="pipes" className="block text-sm font-medium text-gray-700 mr-2">
           Pipes
         </label>
-        <select
+        <input
+          type="checkbox"
           id="pipes"
           {...register("pipes")}
-          defaultValue=""
-          className={`mt-1 block w-full rounded-md border ${
-            errors.pipes ? "border-red-600" : "border-gray-300"
-          } shadow-sm focus:border-green-500 focus:ring-green-500`}
-        >
-          <option value="" disabled>
-            Select option
-          </option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-        {errors.pipes && <p className="mt-1 text-sm text-red-600">{errors.pipes.message}</p>}
+          className={`h-4 w-4 text-green-600 border-gray-300 rounded ${
+            errors.pipes ? "border-red-600" : ""
+          }`}
+        />
       </div>
+      {errors.pipes && <p className="mt-1 text-sm text-red-600">{errors.pipes.message}</p>}
 
       {/* Buttons */}
       <div className="mt-4 flex justify-end space-x-2">

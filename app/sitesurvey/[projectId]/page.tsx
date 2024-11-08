@@ -17,7 +17,7 @@ import Link from "next/link";
 import AddDialog from "./add-subcomponent";
 import { useEffect, useState } from 'react';
 import { useSupabase } from "@/app/providers";
-import { Floor, ProjectDashboardType, type StateAction, ElementTypeKeys} from "../../../lib/utils";
+import { type Floor, type ProjectDashboardType, type StateAction, type ElementTypeKeys} from "../../../lib/utils";
 import Subcomponent from "./subcomponent";
 import { EditDialog } from "./edit-subcomponent";
 
@@ -28,6 +28,10 @@ export default function Dashboard({ params }: { params: { projectId: string } })
   const [currentFloorData, setCurrentFloorData] = useState<ProjectDashboardType | null>(null);
   const [currentFloorId, setCurrentFloorId] = useState<string>("all");
   const [error, setError] = useState<Error | null>(null);
+
+  const currentFloor = currentFloorId !== "all"
+    ? projectData?.floors?.find(floor => floor.floor_id.toString() === currentFloorId)
+    : null;
 
   useEffect(() => {
     const fetchProjectData = async () => {
@@ -45,7 +49,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
         .single();
 
       if (error) {
-        console.error("Error fetching project data:", error);
+        // console.error("Error fetching project data:", error);
         return;
       }
 
@@ -58,7 +62,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
 
   // this function changes the currentfloordata to the floor chosen in the select
   const changeFloor = (value: string) => {
-    console.log("Changing floor to:", value);
+    // console.log("Changing floor to:", value);
     setCurrentFloorId(value);
 
     // because we have this separation of projectData and currentFloorData,
@@ -84,33 +88,28 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     if (!projectData) {
       return;
     }
-
+  
     const { item } = action;
     const elementTypeKey = (item.elementType.toLowerCase() + 's') as ElementTypeKeys;
-    // we either update an item in the data by mapping its changes by its ids or leaving it be
-    // or we delete it by filtering it out by its item id
+  
+    // Determine the correct identifier field
+    const idField = elementTypeKey === 'floors' ? 'floor_id' : 'id';
+  
     const updatedArray = action.type === 'update'
-    ? projectData[elementTypeKey]?.map((existing: any) =>
-        existing.id === item.id ? item : existing
-      )
-    : projectData[elementTypeKey]?.filter((existing: any) =>
-        existing.id !== item.id
-      );
-
+      ? projectData[elementTypeKey]?.map((existing: any) =>
+          existing[idField] === item[idField] ? item : existing
+        )
+      : projectData[elementTypeKey]?.filter((existing: any) =>
+          existing[idField] !== item[idField]
+        );
+  
     const updatedData = {
       ...projectData,
-      [item.elementType.toLowerCase() + 's']: updatedArray,
+      [elementTypeKey]: updatedArray,
     };
-
+  
     setProjectData(updatedData);
-    /*
-      basically currentFloorData is not updated when projectData is updated
-      and so it is necessary to update currentFloorData on database change
-      this is just better than requerying the db and updating there because
-      it is hard coded to have currentFloorData to be all the data in supabase
-      rather than the one corresponding to currentFloorId
-    */
-
+  
     if (currentFloorId !== "all") {
       changeFloor(currentFloorId);
     } else {
@@ -152,31 +151,41 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                 <SelectValue>
                   {currentFloorId === "all"
                     ? "All floors"
-                    : projectData?.floors?.find(floor => floor.id.toString() === currentFloorId)?.name}
+                    : projectData?.floors?.find(floor => floor.floor_id.toString() === currentFloorId)?.name}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
                   <SelectItem value="all">All floors</SelectItem>
                   {projectData?.floors?.map((floor: Floor) => (
-                    <SelectItem key={floor.id} value={floor.id.toString()}>{floor.name}</SelectItem>
+                    <SelectItem key={floor.floor_id} value={floor.floor_id.toString()}>{floor.name}</SelectItem>
                   ))}
                 </SelectGroup>
-                <div className="mt-2 w-[180px]">
-                  <AddDialog
-                    Form1={ColumnsForm}
-                    Form2={FloorDetailsForm}
-                    form1Title="Add Floor Element"
-                    form2Title="Floor Details"
-                    form1Description="Please provide the basic information for the floor element."
-                    form2Description="Please provide detailed information about the floor."
-                    buttonClass="bg-green-700 text-green-50 w-full"
-                    buttonName="Add new floor"
-                  />
-                </div>
               </SelectContent>
             </Select>
-            <EditDialog elementType={"Floor"} DetailsForm={FloorDetailsForm} buttonName="Floor details"/>
+
+            <AddDialog
+              Form1={ColumnsForm}
+              Form2={FloorDetailsForm}
+              form1Title="Add Floor Element"
+              form2Title="Floor Details"
+              form1Description="Please provide the basic information for the floor element."
+              form2Description="Please provide detailed information about the floor."
+              buttonClass="bg-green-700 text-green-50"
+              buttonName="Add new floor"
+              dbname="floors"
+              projectId={params.projectId}
+            />
+
+            {currentFloorId !== "all" && currentFloor && (
+              <EditDialog
+                elementType="floor"
+                DetailsForm={FloorDetailsForm}
+                itemData={currentFloor}
+                onUpdate={handleUpdate}
+                buttonName="Floor details"
+              />
+            )}
           </div>
 
           {true && ( // replace true with !image to check if it exists
@@ -206,6 +215,8 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                     form2Title={"Wall Details"}
                     form1Description="Please provide the basic information for the wall element."
                     form2Description="Please provide detailed information about the wall."
+                    dbname="walls"
+                    projectId={params.projectId}
                   />
                 </div>
                 <AccordionContent>
@@ -234,6 +245,8 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                   form2Title="Column Details"
                   form1Description="Please provide the basic information for the column element."
                   form2Description="Please provide detailed information about the column."
+                  dbname="columns"
+                  projectId={params.projectId}
                 />
               </div>
               <AccordionContent>
@@ -241,7 +254,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                 {currentFloorData?.columns?.map(column => (
                     <Subcomponent
                       key={column.id}
-                      name={column.name || "Unknown Columns"}
+                      name={column.name ?? "Unknown Columns"}
                       type="Column"
                       itemData={column}
                       onUpdate={handleUpdate}
@@ -262,6 +275,8 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                   form2Title="Beam Details"
                   form1Description="Please provide the basic information for the beam element."
                   form2Description="Please provide detailed information about the beam."
+                  dbname="beams"
+                  projectId={params.projectId}
                 />
               </div>
               <AccordionContent>
@@ -269,7 +284,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                 {currentFloorData?.beams?.map(beam => (
                     <Subcomponent
                     key={beam.id}
-                    name={beam.name || "Unknown Beams"}
+                    name={beam.name ?? "Unknown Beams"}
                     type="Beam"
                     itemData={beam}
                     onUpdate={handleUpdate}
@@ -290,6 +305,8 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                   form2Title="Ceiling Details"
                   form1Description="Please provide the basic information for the ceiling element."
                   form2Description="Please provide detailed information about the ceiling."
+                  dbname="ceilings"
+                  projectId={params.projectId}
                 />
               </div>
               <AccordionContent>

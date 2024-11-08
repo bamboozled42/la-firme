@@ -17,8 +17,6 @@ interface AddDetailsDialogProps {
   elementType: string; // Extend as needed
   DetailsForm: React.ComponentType<DetailsFormProps>;
   itemData: any; // data to be passed in and rendered in the details form
-  // Optional: You can add more props for customization if needed
-
   buttonName?: string;
 }
 
@@ -39,16 +37,28 @@ export function EditDialog({ elementType, DetailsForm, itemData, onUpdate, butto
   const handleSave = async (data: any) => {
     try {
       const tableName = getTableName(elementType);
-      const { data: updatedData, error } = await supabase
+      let updatedData;
+      let error;
+      if (tableName === 'floors') {
+        const { data: updatedData, error } = await supabase
+          .from(tableName)
+          .update({ ...data })
+          .eq('floor_id', itemData.floor_id)
+          .select()
+          .single();
+      }
+      else {
+        const { data: updatedData, error } = await supabase
         .from(tableName)
         .update({ ...data })
         .eq('id', itemData.id)
         .select()
         .single();
-      if (error) {
-        console.log("Error updating data:", error);
       }
-      console.log("Updated Data:", updatedData);
+      if (error) {
+        // console.log("Error updating data:", error);
+      }
+      // console.log("Updated Data:", updatedData);
       if (error) throw error;
 
       onUpdate({
@@ -60,7 +70,7 @@ export function EditDialog({ elementType, DetailsForm, itemData, onUpdate, butto
       setIsOpen(false);
       }
       catch (error) {
-      console.error('Error updating item:', error);
+        // console.error('Error updating item:', error);
     }
   };
 
@@ -69,7 +79,7 @@ export function EditDialog({ elementType, DetailsForm, itemData, onUpdate, butto
   };
 
   const handleDelete = () => {
-    console.log("Delete action triggered");
+    // console.log("Delete action triggered");
     // Handle delete logic here
     setIsOpen(false);
   };
@@ -80,7 +90,7 @@ export function EditDialog({ elementType, DetailsForm, itemData, onUpdate, butto
         <Button size="sm" className="ml-2 bg-blue-700 text-blue-50">
           <Icons.pencil className="mr-2 h-4 w-4" /> 
           <span className="mr-1">
-            {buttonName || "Details"}
+            {buttonName ?? "Details"}
           </span>
         </Button>
       </DialogTrigger>

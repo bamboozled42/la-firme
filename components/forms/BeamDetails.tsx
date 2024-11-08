@@ -72,14 +72,14 @@ const BeamDetailsForm: React.FC<BeamDetailsFormProps> = ({ onSave, onCancel, onD
 
       {/* Support Left Side Field */}
       <div>
-        <label htmlFor="supportLeftSide" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="support_left_side" className="block text-sm font-medium text-gray-700">
           Support Left Side
         </label>
         <select
-          id="supportLeftSide"
-          {...register("supportLeftSide")}
+          id="support_left_side"
+          {...register("support_left_side")}
           defaultValue=""
-          className={`mt-1 block w-full rounded-md border ${errors.supportLeftSide ? "border-red-600" : "border-gray-300"} shadow-sm focus:border-green-500 focus:ring-green-500`}
+          className={`mt-1 block w-full rounded-md border ${errors.support_left_side ? "border-red-600" : "border-gray-300"} shadow-sm focus:border-green-500 focus:ring-green-500`}
         >
           <option value="" disabled>
             Select support left side
@@ -89,19 +89,19 @@ const BeamDetailsForm: React.FC<BeamDetailsFormProps> = ({ onSave, onCancel, onD
           <option value="Beam">Beam</option>
           <option value="Overhanging">Overhanging</option>
         </select>
-        {errors.supportLeftSide && <p className="mt-1 text-sm text-red-600">{errors.supportLeftSide.message}</p>}
+        {errors.support_left_side && <p className="mt-1 text-sm text-red-600">{errors.support_left_side.message}</p>}
       </div>
 
       {/* Support Right Side Field */}
       <div>
-        <label htmlFor="supportRightSide" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="support_right_side" className="block text-sm font-medium text-gray-700">
           Support Right Side
         </label>
         <select
-          id="supportRightSide"
-          {...register("supportRightSide")}
+          id="support_right_side"
+          {...register("support_right_side")}
           defaultValue=""
-          className={`mt-1 block w-full rounded-md border ${errors.supportRightSide ? "border-red-600" : "border-gray-300"} shadow-sm focus:border-green-500 focus:ring-green-500`}
+          className={`mt-1 block w-full rounded-md border ${errors.support_right_side ? "border-red-600" : "border-gray-300"} shadow-sm focus:border-green-500 focus:ring-green-500`}
         >
           <option value="" disabled>
             Select support right side
@@ -111,7 +111,7 @@ const BeamDetailsForm: React.FC<BeamDetailsFormProps> = ({ onSave, onCancel, onD
           <option value="Beam">Beam</option>
           <option value="Overhanging">Overhanging</option>
         </select>
-        {errors.supportRightSide && <p className="mt-1 text-sm text-red-600">{errors.supportRightSide.message}</p>}
+        {errors.support_right_side && <p className="mt-1 text-sm text-red-600">{errors.support_right_side.message}</p>}
       </div>
 
       {/* Type Field */}
