@@ -1,4 +1,3 @@
-// src/components/forms/ColumnDetailsForm.tsx
 "use client";
 
 import { columnDetailsFormSchema, type ColumnDetailsFormSchema } from "@/components/forms/schemas/formSchema";

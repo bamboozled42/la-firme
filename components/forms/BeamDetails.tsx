@@ -1,4 +1,3 @@
-// src/components/forms/BeamDetailsForm.tsx
 "use client";
 
 import { beamDetailsFormSchema, type BeamDetailsFormSchema } from "@/components/forms/schemas/formSchema";

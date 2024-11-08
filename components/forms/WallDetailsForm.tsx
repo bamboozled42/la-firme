@@ -1,6 +1,5 @@
 // src/components/forms/WallDetailsForm.tsx
 "use client";
-
 import { wallDetailsFormSchema, type WallDetailsFormSchema } from "@/components/forms/schemas/formSchema";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
