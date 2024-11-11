@@ -59,8 +59,6 @@ const AddProjectCard: React.FC = () => {
     if (error) {
       console.error("Error adding project:", error);
     } else {
-      
-
       reset();
       router.push(`/sitesurvey/${project[0].id}`);
     }

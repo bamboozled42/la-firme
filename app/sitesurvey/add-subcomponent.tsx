@@ -11,8 +11,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import React, { useState } from "react";
 import { supabase } from "@/lib/supabase";
+import React, { useState } from "react";
 
 interface AddDialogProps {
   Form1: React.FC<any>;
@@ -21,10 +21,6 @@ interface AddDialogProps {
   form2Title?: string;
   form1Description?: string;
   form2Description?: string;
-  buttonClass?: string;
-  buttonName?: string;
-  dbname: string;
-  projectId: string;
 }
 
 export default function AddDialog({
@@ -34,45 +30,38 @@ export default function AddDialog({
   form2Title = "Form 2",
   form1Description = "Please provide the information for Form 1.",
   form2Description = "Please provide the information for Form 2.",
-  buttonClass,
-  buttonName,
-  dbname,
-  projectId,
 }: AddDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState<"form1" | "form2">("form1");
   const [formData, setFormData] = useState<any>({});
 
+  // Handle submission of the first form
   const handleNext = (data: any) => {
-    setFormData(data);
-    setStep("form2");
+    setFormData(data); // Store data from Form1
+    setStep("form2"); // Move to Form2
   };
 
-  const handleCancel = () => {
-    setStep("form1");
-    setFormData({});
-    setIsOpen(false);
-  };
-
+  // Handle submission of the second form
   const handleSave = async (data: any) => {
-    const completeData = { ...formData, ...data, projectId }; // Combine data from both forms
-    // console.log("Complete Data:", completeData);
+    const completeData = { ...formData, ...data }; // Combine data from both forms
+    console.log("Complete Data:", completeData); // For debugging
 
     try {
+      console.log("Saving data to Supabase...");
       // Insert combined data into Supabase
       const { data: supabaseData, error } = await supabase
-        .from(dbname)
+        .from("floors") // Replace with your table name
         .insert([completeData]);
 
-      // if (error) {
-      //   console.error("Error inserting data:", error);
-      //   // Optionally, show an error message to the user
-      // } else {
-      //   console.log("Data inserted successfully:", supabaseData);
-      //   // Optionally, show a success message or perform additional actions
-      // }
+      if (error) {
+        console.error("Error inserting data:", error);
+        // Optionally, show an error message to the user
+      } else {
+        console.log("Data inserted successfully:", supabaseData);
+        // Optionally, show a success message or perform additional actions
+      }
     } catch (err) {
-      // console.error("Error saving data:", err);
+      console.error("Error saving data:", err);
       // Optionally, handle the error
     }
 
@@ -82,8 +71,14 @@ export default function AddDialog({
     setIsOpen(false);
   };
 
+  const handleCancel = () => {
+    setStep("form1");
+    setFormData({});
+    setIsOpen(false);
+  };
+
   const handleDelete = () => {
-    // Handle delete logic here
+    // Handle delete logic here if necessary
     setFormData({});
     setStep("form1");
     setIsOpen(false);
@@ -100,11 +95,8 @@ export default function AddDialog({
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button size="sm" className={buttonClass ?? "bg-green-700 text-green-50"}>
-          <Icons.add className="mr-2 h-4 w-4"/> 
-          <span className="mr-1">
-            {buttonName ?? "Add"}
-          </span>
+        <Button size="sm" className="ml-2 bg-green-700 text-green-50">
+          <Icons.add className="mr-2 h-5 w-5" /> Add
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-screen w-5/6 overflow-y-auto p-8 pt-10">

@@ -37,9 +37,9 @@ export default function DeleteDialog({
       .delete()
       .eq('id', itemData.id);
 
-      if (error) {
-        console.log("Error deleting data:", error);
-      }
+      // if (error) {
+      //   console.log("Error deleting data:", error);
+      // }
 
       onDelete({
         ...itemData,
@@ -48,7 +48,7 @@ export default function DeleteDialog({
       setIsOpen(false);
     }
     catch (error) {
-      console.error('Error deleting item:', error);
+      // console.error('Error deleting item:', error);
     }
   }
 
