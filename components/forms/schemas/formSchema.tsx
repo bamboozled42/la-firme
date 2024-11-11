@@ -4,6 +4,7 @@ import { z } from "zod";
 // General Form Schema
 export const generalFormSchema = z.object({
   name: z.string().optional(),
+  title: z.string().optional(),
   number: z
     .number({ required_error: "Number is required" })
     .int("Number must be an integer")
@@ -82,6 +83,19 @@ export const floorDetailsFormSchema = z.object({
   materials: z.string().min(1, "Materials is required"),
 });
 
+export const projectFormSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  location: z.string().min(1, "Location is required"),
+  start_date: z
+    .string()
+    .min(1, "Start date is required")
+    .transform((date) => new Date(date)),
+  architect_id: z.string().min(1, "Architect is required"),
+  client: z.string().min(1, "Client is required"),
+  status: z.string().min(1, "Status is required"),
+  description: z.string().min(1, "Description is required"),
+});
+
 // TypeScript Types
 export type GeneralFormSchema = z.infer<typeof generalFormSchema>;
 export type WallFormSchema = z.infer<typeof wallFormSchema>;
@@ -94,3 +108,4 @@ export type CeilingFormSchema = z.infer<typeof ceilingFormSchema>;
 export type CeilingDetailsFormSchema = z.infer<typeof ceilingDetailsFormSchema>;
 export type FloorFormSchema = z.infer<typeof floorFormSchema>;
 export type FloorDetailsFormSchema = z.infer<typeof floorDetailsFormSchema>;
+export type ProjectFormSchema = z.infer<typeof projectFormSchema>;

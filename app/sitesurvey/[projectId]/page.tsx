@@ -1,5 +1,6 @@
 "use client";
 
+import { useSupabase } from "@/app/providers";
 import BeamDetailsForm from "@/components/forms/BeamDetails";
 import CeilingDetailsForm from "@/components/forms/CeilingDetails";
 import ColumnDetailsForm from "@/components/forms/ColumnsDetails";
@@ -14,13 +15,11 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { TypographyH2 } from "@/components/ui/typography";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { ElementTypeKeys, Floor, ProjectDashboardType, type StateAction } from "../../../lib/utils";
 import AddDialog from "./add-subcomponent";
-import { useEffect, useState } from 'react';
-import { useSupabase } from "@/app/providers";
-import { Floor, ProjectDashboardType, type StateAction, ElementTypeKeys} from "../../../lib/utils";
-import Subcomponent from "./subcomponent";
 import { EditDialog } from "./edit-subcomponent";
-
+import Subcomponent from "./subcomponent";
 
 export default function Dashboard({ params }: { params: { projectId: string } }) {
   const supabase = useSupabase();
@@ -31,16 +30,19 @@ export default function Dashboard({ params }: { params: { projectId: string } })
 
   useEffect(() => {
     const fetchProjectData = async () => {
+
       const { data, error } = await supabase
         .from("projects")
-        .select(`
+        .select(
+          `
           *,
           floors (*),
           walls (*),
           columns (*),
           beams (*),
           ceilings (*)
-        `)
+        `,
+        )
         .eq("id", params.projectId)
         .single();
 
@@ -54,7 +56,6 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     };
     fetchProjectData();
   }, [supabase, params.projectId]);
-
 
   // this function changes the currentfloordata to the floor chosen in the select
   const changeFloor = (value: string) => {
@@ -70,10 +71,10 @@ export default function Dashboard({ params }: { params: { projectId: string } })
       if (projectData) {
         setCurrentFloorData({
           ...projectData,
-          walls: projectData.walls?.filter(wall => wall.floor_id === floorId) || [],
-          columns: projectData.columns?.filter(column => column.floor_id === floorId) || [],
-          beams: projectData.beams?.filter(beam => beam.floor_id === floorId) || [],
-          ceilings: projectData.ceilings?.filter(ceiling => ceiling.floor_id === floorId) || [],
+          walls: projectData.walls?.filter((wall) => wall.floor_id === floorId) || [],
+          columns: projectData.columns?.filter((column) => column.floor_id === floorId) || [],
+          beams: projectData.beams?.filter((beam) => beam.floor_id === floorId) || [],
+          ceilings: projectData.ceilings?.filter((ceiling) => ceiling.floor_id === floorId) || [],
         });
       }
     }
@@ -86,20 +87,17 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     }
 
     const { item } = action;
-    const elementTypeKey = (item.elementType.toLowerCase() + 's') as ElementTypeKeys;
+    const elementTypeKey = (item.elementType.toLowerCase() + "s") as ElementTypeKeys;
     // we either update an item in the data by mapping its changes by its ids or leaving it be
     // or we delete it by filtering it out by its item id
-    const updatedArray = action.type === 'update'
-    ? projectData[elementTypeKey]?.map((existing: any) =>
-        existing.id === item.id ? item : existing
-      )
-    : projectData[elementTypeKey]?.filter((existing: any) =>
-        existing.id !== item.id
-      );
+    const updatedArray =
+      action.type === "update"
+        ? projectData[elementTypeKey]?.map((existing: any) => (existing.id === item.id ? item : existing))
+        : projectData[elementTypeKey]?.filter((existing: any) => existing.id !== item.id);
 
     const updatedData = {
       ...projectData,
-      [item.elementType.toLowerCase() + 's']: updatedArray,
+      [item.elementType.toLowerCase() + "s"]: updatedArray,
     };
 
     setProjectData(updatedData);
@@ -118,17 +116,16 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     }
   };
 
-
   if (error) {
     return <div>Error loading project data...</div>;
   }
 
   const handleUpdate = (updatedData: any) => {
-    updateDataState({ type: 'update', item: updatedData });
+    updateDataState({ type: "update", item: updatedData });
   };
 
   const handleDelete = (deletedItem: any) => {
-    updateDataState({ type: 'delete', item: deletedItem });
+    updateDataState({ type: "delete", item: deletedItem });
   };
 
   return (
@@ -141,25 +138,24 @@ export default function Dashboard({ params }: { params: { projectId: string } })
             </Button>
           </Link>
 
-          <TypographyH2 className="mt-2 font-bold">{ projectData?.title  }</TypographyH2>
+          <TypographyH2 className="mt-2 font-bold">{projectData?.title}</TypographyH2>
 
-          <div className="mt-4 mb-6 flex flex-row items-center space-x-3">
-            <Select
-              value={currentFloorId}
-              onValueChange={changeFloor}
-            >
+          <div className="mb-6 mt-4 flex flex-row items-center space-x-3">
+            <Select value={currentFloorId} onValueChange={changeFloor}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue>
                   {currentFloorId === "all"
                     ? "All floors"
-                    : projectData?.floors?.find(floor => floor.id.toString() === currentFloorId)?.name}
+                    : projectData?.floors?.find((floor) => floor.id.toString() === currentFloorId)?.name}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
                   <SelectItem value="all">All floors</SelectItem>
                   {projectData?.floors?.map((floor: Floor) => (
-                    <SelectItem key={floor.id} value={floor.id.toString()}>{floor.name}</SelectItem>
+                    <SelectItem key={floor.id} value={floor.id}>
+                      {floor.name}
+                    </SelectItem>
                   ))}
                 </SelectGroup>
                 <div className="mt-2 w-[180px]">
@@ -176,7 +172,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                 </div>
               </SelectContent>
             </Select>
-            <EditDialog elementType={"Floor"} DetailsForm={FloorDetailsForm} buttonName="Floor details"/>
+            <EditDialog elementType={"Floor"} DetailsForm={FloorDetailsForm} buttonName="Floor details" />
           </div>
 
           {true && ( // replace true with !image to check if it exists
@@ -188,45 +184,46 @@ export default function Dashboard({ params }: { params: { projectId: string } })
           <div className="flex justify-center">
             <Button type="button" className="mb-6 mt-5" variant="secondary" size="sm">
               <Icons.upload className="mr-2 h-5 w-5" />
-              <span className="mr-1">
-                Upload
-              </span>
+              <span className="mr-1">Upload</span>
             </Button>
           </div>
 
           <Accordion type="single" collapsible className="w-full">
-
             <AccordionItem value="walls" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
-                <div className="flex items-center justify-between">
-                  <AccordionTrigger className="flex-grow">Walls {"(" + (currentFloorData?.walls ? currentFloorData?.walls.length : 0) + ")"}</AccordionTrigger>
-                  <AddDialog
-                    Form1={WallForm}
-                    Form2={WallDetailsForm}
-                    form1Title="Add Wall Element"
-                    form2Title={"Wall Details"}
-                    form1Description="Please provide the basic information for the wall element."
-                    form2Description="Please provide detailed information about the wall."
-                  />
+              <div className="flex items-center justify-between">
+                <AccordionTrigger className="flex-grow">
+                  Walls {"(" + (currentFloorData?.walls ? currentFloorData?.walls.length : 0) + ")"}
+                </AccordionTrigger>
+                <AddDialog
+                  Form1={WallForm}
+                  Form2={WallDetailsForm}
+                  form1Title="Add Wall Element"
+                  form2Title={"Wall Details"}
+                  form1Description="Please provide the basic information for the wall element."
+                  form2Description="Please provide detailed information about the wall."
+                />
+              </div>
+              <AccordionContent>
+                <div className="flex flex-col gap-1">
+                  {currentFloorData?.walls?.map((wall) => (
+                    <Subcomponent
+                      key={wall.id}
+                      name={wall.name ?? "Unknown Wall"}
+                      type="Wall"
+                      itemData={wall}
+                      onUpdate={handleUpdate}
+                      onDelete={handleDelete}
+                    />
+                  ))}
                 </div>
-                <AccordionContent>
-                  <div className="flex flex-col gap-1">
-                    {currentFloorData?.walls?.map((wall) => (
-                      <Subcomponent
-                        key={wall.id}
-                        name={wall.name ?? 'Unknown Wall'}
-                        type="Wall"
-                        itemData={wall}
-                        onUpdate={handleUpdate}
-                        onDelete={handleDelete}
-                      />
-                    ))}
-                  </div>
-                </AccordionContent>
+              </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="columns" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
               <div className="flex items-center justify-between">
-                <AccordionTrigger className="flex-grow">Columns {"(" + (currentFloorData?.columns ? currentFloorData?.columns.length : 0) + ")"}</AccordionTrigger>
+                <AccordionTrigger className="flex-grow">
+                  Columns {"(" + (currentFloorData?.columns ? currentFloorData?.columns.length : 0) + ")"}
+                </AccordionTrigger>
                 <AddDialog
                   Form1={ColumnsForm}
                   Form2={ColumnDetailsForm}
@@ -238,7 +235,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
               </div>
               <AccordionContent>
                 <div className="flex flex-col gap-1">
-                {currentFloorData?.columns?.map(column => (
+                  {currentFloorData?.columns?.map((column) => (
                     <Subcomponent
                       key={column.id}
                       name={column.name || "Unknown Columns"}
@@ -254,7 +251,9 @@ export default function Dashboard({ params }: { params: { projectId: string } })
 
             <AccordionItem value="beams" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
               <div className="flex items-center justify-between">
-                <AccordionTrigger className="flex-grow">Beams {"(" + (currentFloorData?.beams ? currentFloorData?.beams.length : 0) + ")"}</AccordionTrigger>
+                <AccordionTrigger className="flex-grow">
+                  Beams {"(" + (currentFloorData?.beams ? currentFloorData?.beams.length : 0) + ")"}
+                </AccordionTrigger>
                 <AddDialog
                   Form1={ColumnsForm}
                   Form2={BeamDetailsForm}
@@ -266,15 +265,15 @@ export default function Dashboard({ params }: { params: { projectId: string } })
               </div>
               <AccordionContent>
                 <div className="flex flex-col gap-1">
-                {currentFloorData?.beams?.map(beam => (
+                  {currentFloorData?.beams?.map((beam) => (
                     <Subcomponent
-                    key={beam.id}
-                    name={beam.name || "Unknown Beams"}
-                    type="Beam"
-                    itemData={beam}
-                    onUpdate={handleUpdate}
-                    onDelete={handleDelete}
-                  />
+                      key={beam.id}
+                      name={beam.name || "Unknown Beams"}
+                      type="Beam"
+                      itemData={beam}
+                      onUpdate={handleUpdate}
+                      onDelete={handleDelete}
+                    />
                   ))}
                 </div>
               </AccordionContent>
@@ -282,7 +281,9 @@ export default function Dashboard({ params }: { params: { projectId: string } })
 
             <AccordionItem value="ceilings" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
               <div className="flex items-center justify-between">
-                <AccordionTrigger className="flex-grow">Ceilings {"(" + (currentFloorData?.ceilings ? currentFloorData?.ceilings.length : 0) + ")"}</AccordionTrigger>
+                <AccordionTrigger className="flex-grow">
+                  Ceilings {"(" + (currentFloorData?.ceilings ? currentFloorData?.ceilings.length : 0) + ")"}
+                </AccordionTrigger>
                 <AddDialog
                   Form1={ColumnsForm}
                   Form2={CeilingDetailsForm}
@@ -294,7 +295,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
               </div>
               <AccordionContent>
                 <div className="flex flex-col gap-1">
-                {currentFloorData?.ceilings?.map(ceiling => (
+                  {currentFloorData?.ceilings?.map((ceiling) => (
                     <Subcomponent
                       key={ceiling.id}
                       name={ceiling.name || "Unknown Ceilings"}
@@ -307,7 +308,6 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                 </div>
               </AccordionContent>
             </AccordionItem>
-
           </Accordion>
         </div>
       </div>
