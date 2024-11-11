@@ -6,14 +6,17 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { type Wall, toCamelCase } from "../../lib/utils";
 
 interface WallDetailsFormProps {
+  itemData : Wall;
   onSave: (data: WallDetailsFormSchema) => void;
   onCancel: () => void;
   onDelete: () => void;
 }
 
-const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onDelete }) => {
+const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onDelete, itemData }) => {
+  const defaultFrom = toCamelCase(itemData);
   const {
     register,
     handleSubmit,

@@ -6,14 +6,16 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { type Floor } from "../../lib/utils";
 
 interface FloorDetailsFormProps {
+  itemData: Floor;
   onSave: (data: FloorDetailsFormSchema) => void;
   onCancel: () => void;
   onDelete: () => void;
 }
 
-const FloorDetailsForm: React.FC<FloorDetailsFormProps> = ({ onSave, onCancel, onDelete }) => {
+const FloorDetailsForm: React.FC<FloorDetailsFormProps> = ({ onSave, onCancel, onDelete, itemData }) => {
   const {
     register,
     handleSubmit,

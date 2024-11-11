@@ -5,24 +5,30 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { type Beam, toCamelCase, toSnakeCase } from "../../lib/utils";
 
 interface BeamDetailsFormProps {
+  itemData: Beam;
   onSave: (data: BeamDetailsFormSchema) => void;
   onCancel: () => void;
   onDelete: () => void;
+  data: any;
 }
 
-const BeamDetailsForm: React.FC<BeamDetailsFormProps> = ({ onSave, onCancel, onDelete }) => {
+const BeamDetailsForm: React.FC<BeamDetailsFormProps> = ({ itemData, onSave, onCancel, onDelete }) => {
+  const defaultValues = toCamelCase(itemData);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<BeamDetailsFormSchema>({
     resolver: zodResolver(beamDetailsFormSchema),
+    defaultValues
   });
 
+
   const onSubmit = (data: BeamDetailsFormSchema) => {
-    console.log("BeamDetailsForm Submitted Data:", data);
+    // console.log("BeamDetailsForm Submitted Data:", data);
     onSave(data);
   };
 

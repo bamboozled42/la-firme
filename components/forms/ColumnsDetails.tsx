@@ -5,20 +5,24 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { type Column, toCamelCase, toSnakeCase } from "../../lib/utils";
 
 interface ColumnDetailsFormProps {
+  itemData: Column;
   onSave: (data: ColumnDetailsFormSchema) => void;
   onCancel: () => void;
   onDelete: () => void;
 }
 
-const ColumnDetailsForm: React.FC<ColumnDetailsFormProps> = ({ onSave, onCancel, onDelete }) => {
+const ColumnDetailsForm: React.FC<ColumnDetailsFormProps> = ({ onSave, onCancel, onDelete, itemData }) => {
+  const defaultValues = toCamelCase(itemData);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<ColumnDetailsFormSchema>({
     resolver: zodResolver(columnDetailsFormSchema),
+    defaultValues
   });
 
   const onSubmit = (data: ColumnDetailsFormSchema) => {

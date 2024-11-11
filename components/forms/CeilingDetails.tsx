@@ -6,24 +6,28 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { type Ceiling, toCamelCase, toSnakeCase } from "../../lib/utils";
 
 interface CeilingDetailsFormProps {
+  itemData: Ceiling;
   onSave: (data: CeilingDetailsFormSchema) => void;
   onCancel: () => void;
   onDelete: () => void;
 }
 
-const CeilingDetailsForm: React.FC<CeilingDetailsFormProps> = ({ onSave, onCancel, onDelete }) => {
+const CeilingDetailsForm: React.FC<CeilingDetailsFormProps> = ({ onSave, onCancel, onDelete, itemData }) => {
+  const defaultValues = toCamelCase(itemData);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<CeilingDetailsFormSchema>({
     resolver: zodResolver(ceilingDetailsFormSchema),
+    defaultValues,
   });
 
   const onSubmit = (data: CeilingDetailsFormSchema) => {
-    console.log("CeilingDetailsForm Submitted Data:", data); // Debugging
+    // console.log("CeilingDetailsForm Submitted Data:", data); // Debugging
     onSave(data);
   };
 
