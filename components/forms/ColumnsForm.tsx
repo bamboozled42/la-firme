@@ -39,16 +39,19 @@ const ColumnsForm: React.FC<ColumnFormProps> = ({ onNext, onCancel }) => {
 
   return (
     <form onSubmit={handleFormSubmit} className="space-y-4">
-      {/* Number Field */}
+      {/* Name Field */}
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-gray-700">
           Name
         </label>
         <input
-          type="name"
+          type="text"
           id="name"
           {...register("name")}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+          className={`mt-1 block w-full rounded-md border ${
+            errors.name ? "border-red-600" : "border-gray-300"
+          } shadow-sm focus:border-green-500 focus:ring-green-500`}
+          placeholder="Enter name"
         />
         {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
       </div>
@@ -58,17 +61,18 @@ const ColumnsForm: React.FC<ColumnFormProps> = ({ onNext, onCancel }) => {
         <label htmlFor="floor" className="block text-sm font-medium text-gray-700">
           Floor
         </label>
-        <select
+        <input
+          type="number"
           id="floor"
-          {...register("floor")}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
-        >
-          <option value="">Select floor</option>
-          <option value="1">Floor 1</option>
-          <option value="2">Floor 2</option>
-          <option value="3">Floor 3</option>
-        </select>
-        {errors.floor && <p className="mt-1 text-sm text-red-600">{errors.floor.message}</p>}
+          {...register("floor_id", { valueAsNumber: true })}
+          className={`mt-1 block w-full rounded-md border ${
+            errors.floor_id ? "border-red-600" : "border-gray-300"
+          } shadow-sm focus:border-green-500 focus:ring-green-500`}
+          min={1} // Ensures only positive numbers can be entered
+          step={1} // Ensures only integers can be entered
+          placeholder="Enter floor number"
+        />
+        {errors.floor_id && <p className="mt-1 text-sm text-red-600">{errors.floor_id.message}</p>}
       </div>
 
       {/* Buttons */}

@@ -3,14 +3,8 @@ import { z } from "zod";
 
 // General Form Schema
 export const generalFormSchema = z.object({
-  name: z.string().optional(),
-  number: z
-    .number({ required_error: "Number is required" })
-    .int("Number must be an integer")
-    .positive("Number must be positive")
-    .nullable()
-    .optional(),
-  floor: z.string().min(1, "Floor selection is required"),
+  name: z.string(),
+  floor_id: z.number({ required_error: "Floor is required" }).int("Floor must be an integer").positive("Floor must be positive"),
 });
 
 export const wallFormSchema = generalFormSchema.extend({
@@ -22,11 +16,37 @@ export const wallFormSchema = generalFormSchema.extend({
 export const wallDetailsFormSchema = z.object({
   length: z.number({ required_error: "Length is required" }).positive("Length must be positive"),
   width: z.number({ required_error: "Width is required" }).positive("Width must be positive"),
-  material: z.string().min(1, "Material selection is required"),
-  stucco: z.enum(["inside", "outside"], {
-    errorMap: () => ({ message: "Stucco must be either 'inside' or 'outside'" }),
+  height: z.number({ required_error: "Height is required" }).positive("Height must be positive"),
+  window_size_x: z.number({ required_error: "Size of window is required" }).positive("Size of window must be positive"),
+  window_size_y: z.number({ required_error: "Size of window is required" }).positive("Size of window must be positive"),
+  material: z.enum(["KK", "P", "C", "Drywall", "Seleccionar"], {
+    errorMap: () => ({ message: "Material is required" }),
   }),
-  cracks: z.string().min(1, "Cracks selection is required"),
+  height_type: z.enum(["High", "Low"], {
+    errorMap: () => ({ message: "High or low height is required" }),
+  }),
+  location: z.enum(["Perimeter", "Internal"], {
+    errorMap: () => ({ message: "Location is required" }),
+  }),
+  stucco: z.enum(["Only inside", "Only outside", "Inside and outside", "No stucco"], {
+    errorMap: () => ({ message: "Stucco must be selected" }),
+  }),
+  wallRepeatFloors: z.boolean(),
+  fh1CrackInBeam: z.boolean(),
+  fh2CrackInWallCeiling: z.boolean(),
+  fh3CrackInCeiling: z.boolean(),
+  fh4CrackInCeiling: z.boolean(),
+  fv1VerticalCrackColumnWall: z.boolean(),
+  fv2VerticalCrackColumn: z.boolean(),
+  l1IrregularBrick: z.boolean(),
+  l2BricksWithExcessiveHoles: z.boolean(),
+  l3WallsNotWellAligned: z.boolean(),
+  l4IncompleteMortarInBrick: z.boolean(),
+  l5VariationInThicknessJoints: z.boolean(),
+  l6MortarJointsTooThick: z.boolean(),
+  l7PoorAdhesion: z.boolean(),
+  perforatingColumn: z.boolean(),
+  perforatingBeam: z.boolean(),
 });
 
 export const columnFormSchema = generalFormSchema;
@@ -35,13 +55,14 @@ export const columnDetailsFormSchema = z.object({
   length: z.number({ required_error: "Length is required" }).positive("Length must be positive"),
   width: z.number({ required_error: "Width is required" }).positive("Width must be positive"),
   height: z.number({ required_error: "Height is required" }).positive("Height must be positive"),
-  condition: z.enum(["Good", "Fair", "Poor"], {
+  condition: z.enum(["Seleccionar", "Bad", "Good"], {
     errorMap: () => ({ message: "Condition is required" }),
   }),
-  verticalCracks: z.enum(["Yes", "No"], {
-    errorMap: () => ({ message: "Vertical cracks is required" }),
+  type: z.enum(["Column of 'arriostramiento'", "Independent column"], {
+    errorMap: () => ({ message: "Type is required" }),
   }),
-  pipes: z.number({ required_error: "Pipes is required" }).positive("Pipes must be positive"),
+  vertical_cracks: z.boolean(),
+  pipes: z.boolean(),
 });
 
 export const beamFormSchema = generalFormSchema;
@@ -50,13 +71,16 @@ export const beamDetailsFormSchema = z.object({
   length: z.number({ required_error: "Length is required" }).positive("Length must be positive"),
   width: z.number({ required_error: "Width is required" }).positive("Width must be positive"),
   height: z.number({ required_error: "Height is required" }).positive("Height must be positive"),
-  supportLeftSide: z.enum(["Yes", "No"], {
+  support_left_side: z.enum(["Column", "Wall", "Beam", "Overhanging"], {
     errorMap: () => ({ message: "Support left side is required" }),
   }),
-  supportRightSide: z.enum(["Yes", "No"], {
+  support_right_side: z.enum(["Column", "Wall", "Beam", "Overhanging"], {
     errorMap: () => ({ message: "Support right side is required" }),
   }),
-  condition: z.enum(["Good", "Fair", "Poor"], {
+  type: z.enum(["Curved sole", "Flat sole", "Inverted Sole", "Curved", "Flat", "Inverted"], {
+    errorMap: () => ({ message: "Type is required" }),
+  }),
+  condition: z.enum(["Seleccionar", "Bad", "Good"], {
     errorMap: () => ({ message: "Condition is required" }),
   }),
 });
@@ -65,21 +89,21 @@ export const ceilingFormSchema = generalFormSchema;
 
 export const ceilingDetailsFormSchema = z.object({
   height: z.number({ required_error: "Height is required" }).positive("Height must be positive"),
-  dimensionX: z.number({ required_error: "Dimension X is required" }).positive("Dimension X must be positive"),
-  dimensionY: z.number({ required_error: "Dimension Y is required" }).positive("Dimension Y must be positive"),
-  directionOfJoints: z.enum(["X", "Y"], {
+  dimension_x: z.number({ required_error: "Dimension X is required" }).positive("Dimension X must be positive"),
+  dimension_y: z.number({ required_error: "Dimension Y is required" }).positive("Dimension Y must be positive"),
+  direction_of_joints: z.enum(["X", "Y"], {
     errorMap: () => ({ message: "Direction of joints is required" }),
   }),
-  cracks: z.enum(["Yes", "No"], {
-    errorMap: () => ({ message: "Cracks is required" }),
-  }),
-  pipes: z.number({ required_error: "Pipes is required" }).positive("Pipes must be positive"),
+  cracks: z.boolean(),
+  pipes: z.boolean(),
 });
 
 export const floorFormSchema = generalFormSchema;
 
 export const floorDetailsFormSchema = z.object({
-  materials: z.string().min(1, "Materials is required"),
+  materials: z.enum(["Dirt", "Cement", "Wood", "Tiles"], {
+    errorMap: () => ({ message: "Material is required" }),
+  }),
 });
 
 // TypeScript Types
