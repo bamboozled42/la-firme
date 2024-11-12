@@ -16,12 +16,18 @@ interface FloorDetailsFormProps {
 }
 
 const FloorDetailsForm: React.FC<FloorDetailsFormProps> = ({ onSave, onCancel, onDelete, itemData }) => {
+  const defaultFrom = (itemData = {
+    ...itemData,
+    // to match the zod form resolver type
+    materials: (itemData.materials as "Dirt" | "Cement" | "Wood" | "Tiles") || undefined,
+  });
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FloorDetailsFormSchema>({
     resolver: zodResolver(floorDetailsFormSchema),
+    defaultValues: defaultFrom,
   });
 
   const onSubmit = (data: FloorDetailsFormSchema) => {

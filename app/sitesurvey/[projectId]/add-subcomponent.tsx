@@ -56,24 +56,14 @@ export default function AddDialog({
 
   const handleSave = async (data: any) => {
     const completeData = { ...formData, ...data, projectId }; // Combine data from both forms
-    // console.log("Complete Data:", completeData);
-
     try {
       // Insert combined data into Supabase
       const { data: supabaseData, error } = await supabase
         .from(dbname)
         .insert([completeData]);
 
-      // if (error) {
-      //   console.error("Error inserting data:", error);
-      //   // Optionally, show an error message to the user
-      // } else {
-      //   console.log("Data inserted successfully:", supabaseData);
-      //   // Optionally, show a success message or perform additional actions
-      // }
     } catch (err) {
-      // console.error("Error saving data:", err);
-      // Optionally, handle the error
+      console.error("Error saving data:", err);
     }
 
     // Reset state and close dialog
@@ -101,7 +91,7 @@ export default function AddDialog({
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button size="sm" className={buttonClass ?? "bg-green-700 text-green-50"}>
-          <Icons.add className="mr-2 h-4 w-4"/> 
+          <Icons.add className="mr-2 h-4 w-4"/>
           <span className="mr-1">
             {buttonName ?? "Add"}
           </span>
