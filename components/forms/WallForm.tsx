@@ -12,6 +12,7 @@ interface WallFormProps {
 }
 
 const WallForm: React.FC<WallFormProps> = ({ onNext, onCancel }) => {
+  
   const {
     register,
     handleSubmit,

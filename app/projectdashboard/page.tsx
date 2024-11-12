@@ -82,8 +82,6 @@ export default function ProjectDashboard() {
       ) : (
         <>
           {projects?.map((project: ProjectDashboardType) => <ProjectCard key={project.id} project={project} />)}
-          {projects?.map((project: ProjectDashboardType) => <ProjectCard key={project.id} project={project} />)}
-          {projects?.map((project: ProjectDashboardType) => <ProjectCard key={project.id} project={project} />)}
           <AddProjectCard />
         </>
       )}

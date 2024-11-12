@@ -55,12 +55,23 @@ const AddProjectCard: React.FC = () => {
 
   // projects need a floor, title, location, start date, architect, client, status
   const onSubmit = async (data: AddProjectSchema) => {
-    const { data: project, error } = await supabase.from("projects").insert(data).select("*");
+    const { data: project, error } = await supabase.from("projects").insert(data).select("*").single();
+
     if (error) {
       console.error("Error adding project:", error);
     } else {
+      // idk if reset is needed but its nice to have for now if this needs to be changed
       reset();
-      router.push(`/sitesurvey/${project[0].id}`);
+      const { data: floor, error: floor_error } = await supabase.from("floors").insert({
+        projectId: project.id,
+        name: "First Floor",
+      });
+      console.log("Floor:", floor);
+      if (floor_error) {
+        console.error("Error adding floor:", floor_error);
+      }
+
+      router.push(`/sitesurvey/${project.id}`);
     }
   };
 

@@ -10,7 +10,7 @@ export const generalFormSchema = z.object({
     .positive("Number must be positive")
     .nullable()
     .optional(),
-  floor: z.string().min(1, "Floor selection is required"),
+  floor_id: z.string().min(1, "Floor selection is required"),
 });
 
 export const wallFormSchema = generalFormSchema.extend({
@@ -37,22 +37,22 @@ export const wallDetailsFormSchema = z.object({
   stucco: z.enum(["Only inside", "Only outside", "Inside and outside", "No stucco"], {
     errorMap: () => ({ message: "Stucco must be selected" }),
   }),
-  wallRepeatFloors: z.boolean(),
-  fh1CrackInBeam: z.boolean(),
-  fh2CrackInWallCeiling: z.boolean(),
-  fh3CrackInCeiling: z.boolean(),
-  fh4CrackInCeiling: z.boolean(),
-  fv1VerticalCrackColumnWall: z.boolean(),
-  fv2VerticalCrackColumn: z.boolean(),
-  l1IrregularBrick: z.boolean(),
-  l2BricksWithExcessiveHoles: z.boolean(),
-  l3WallsNotWellAligned: z.boolean(),
-  l4IncompleteMortarInBrick: z.boolean(),
-  l5VariationInThicknessJoints: z.boolean(),
-  l6MortarJointsTooThick: z.boolean(),
-  l7PoorAdhesion: z.boolean(),
-  perforatingColumn: z.boolean(),
-  perforatingBeam: z.boolean(),
+  wallRepeatFloors: z.boolean().default(false),
+  fh1CrackInBeam: z.boolean().default(false),
+  fh2CrackInWallCeiling: z.boolean().default(false),
+  fh3CrackInCeiling: z.boolean().default(false),
+  fh4CrackInCeiling: z.boolean().default(false),
+  fv1VerticalCrackColumnWall: z.boolean().default(false),
+  fv2VerticalCrackColumn: z.boolean().default(false),
+  l1IrregularBrick: z.boolean().default(false),
+  l2BricksWithExcessiveHoles: z.boolean().default(false),
+  l3WallsNotWellAligned: z.boolean().default(false),
+  l4IncompleteMortarInBrick: z.boolean().default(false),
+  l5VariationInThicknessJoints: z.boolean().default(false),
+  l6MortarJointsTooThick: z.boolean().default(false),
+  l7PoorAdhesion: z.boolean().default(false),
+  perforatingColumn: z.boolean().default(false),
+  perforatingBeam: z.boolean().default(false),
 });
 
 export const columnFormSchema = generalFormSchema;
@@ -67,8 +67,8 @@ export const columnDetailsFormSchema = z.object({
   type: z.enum(["Column of 'arriostramiento'", "Independent column"], {
     errorMap: () => ({ message: "Type is required" }),
   }),
-  vertical_cracks: z.boolean(),
-  pipes: z.boolean(),
+  vertical_cracks: z.boolean().default(false),
+  pipes: z.boolean().default(false),
 });
 
 export const beamFormSchema = generalFormSchema;
@@ -100,8 +100,8 @@ export const ceilingDetailsFormSchema = z.object({
   direction_of_joints: z.enum(["X", "Y"], {
     errorMap: () => ({ message: "Direction of joints is required" }),
   }),
-  cracks: z.boolean(),
-  pipes: z.boolean(),
+  cracks: z.boolean().default(false),
+  pipes: z.boolean().default(false),
 });
 
 export const floorFormSchema = generalFormSchema;
