@@ -16,14 +16,14 @@ interface CeilingDetailsFormProps {
 }
 
 const CeilingDetailsForm: React.FC<CeilingDetailsFormProps> = ({ onSave, onCancel, onDelete, itemData }) => {
-  const defaultValues = toCamelCase(itemData);
+  // const defaultValues = toCamelCase(itemData);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<CeilingDetailsFormSchema>({
     resolver: zodResolver(ceilingDetailsFormSchema),
-    defaultValues,
+    // defaultValues,
   });
 
   const onSubmit = (data: CeilingDetailsFormSchema) => {

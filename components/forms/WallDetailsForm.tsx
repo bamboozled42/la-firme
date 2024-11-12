@@ -16,7 +16,7 @@ interface WallDetailsFormProps {
 }
 
 const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onDelete, itemData }) => {
-  const defaultFrom = toCamelCase(itemData);
+  // const defaultFrom = toCamelCase(itemData);
   const {
     register,
     handleSubmit,

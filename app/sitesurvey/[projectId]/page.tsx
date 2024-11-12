@@ -28,6 +28,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
   const [currentFloorData, setCurrentFloorData] = useState<ProjectDashboardType | null>(null);
   const [currentFloorId, setCurrentFloorId] = useState<string>("all");
   const [error, setError] = useState<Error | null>(null);
+  const [dataVersion, setDataVersion] = useState(0);
 
   const currentFloor = currentFloorId !== "all"
     ? projectData?.floors?.find(floor => floor.floor_id.toString() === currentFloorId)
@@ -57,7 +58,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
       setCurrentFloorData(data);
     };
     fetchProjectData();
-  }, [supabase, params.projectId]);
+  }, [supabase, params.projectId, dataVersion]);
 
 
   // this function changes the currentfloordata to the floor chosen in the select
@@ -175,6 +176,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
               buttonName="Add new floor"
               dbname="floors"
               projectId={params.projectId}
+              onDataAdded={() => setDataVersion((prevVersion) => prevVersion + 1)}
             />
 
             {currentFloorId !== "all" && currentFloor && (
@@ -217,6 +219,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                     form2Description="Please provide detailed information about the wall."
                     dbname="walls"
                     projectId={params.projectId}
+                    onDataAdded={() => setDataVersion((prevVersion) => prevVersion + 1)}
                   />
                 </div>
                 <AccordionContent>
@@ -247,6 +250,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                   form2Description="Please provide detailed information about the column."
                   dbname="columns"
                   projectId={params.projectId}
+                  onDataAdded={() => setDataVersion((prevVersion) => prevVersion + 1)}
                 />
               </div>
               <AccordionContent>
@@ -277,6 +281,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                   form2Description="Please provide detailed information about the beam."
                   dbname="beams"
                   projectId={params.projectId}
+                  onDataAdded={() => setDataVersion((prevVersion) => prevVersion + 1)}
                 />
               </div>
               <AccordionContent>
@@ -307,6 +312,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                   form2Description="Please provide detailed information about the ceiling."
                   dbname="ceilings"
                   projectId={params.projectId}
+                  onDataAdded={() => setDataVersion((prevVersion) => prevVersion + 1)}
                 />
               </div>
               <AccordionContent>
