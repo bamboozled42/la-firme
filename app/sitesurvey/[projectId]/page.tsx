@@ -186,6 +186,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                 itemData={currentFloor}
                 onUpdate={handleUpdate}
                 buttonName="Floor details"
+                onDataUpdated={() => setDataVersion((prevVersion) => prevVersion + 1)} 
               />
             )}
           </div>
@@ -232,6 +233,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                         itemData={wall}
                         onUpdate={handleUpdate}
                         onDelete={handleDelete}
+                        onDataUpdated={() => setDataVersion((prevVersion) => prevVersion + 1)} 
                       />
                     ))}
                   </div>
@@ -263,6 +265,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                       itemData={column}
                       onUpdate={handleUpdate}
                       onDelete={handleDelete}
+                      onDataUpdated={() => setDataVersion((prevVersion) => prevVersion + 1)} 
                     />
                   ))}
                 </div>
@@ -294,6 +297,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                     itemData={beam}
                     onUpdate={handleUpdate}
                     onDelete={handleDelete}
+                    onDataUpdated={() => setDataVersion((prevVersion) => prevVersion + 1)} 
                   />
                   ))}
                 </div>
@@ -325,6 +329,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                       itemData={ceiling}
                       onUpdate={handleUpdate}
                       onDelete={handleDelete}
+                      onDataUpdated={() => setDataVersion((prevVersion) => prevVersion + 1)} 
                     />
                   ))}
                 </div>

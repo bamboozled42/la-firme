@@ -12,6 +12,7 @@ export default function Subcomponent({
   itemData,
   onUpdate,
   onDelete,
+  onDataUpdated,
 }: {
   name: string,
   // this removes error with strings and any casting
@@ -19,6 +20,7 @@ export default function Subcomponent({
   itemData: any,
   onUpdate: (updatedData: any) => void
   onDelete: (deletedItem: any) => void
+  onDataUpdated?: () => void
 }) {
   const formMapping = {
     Wall: WallDetailsForm,
@@ -39,6 +41,7 @@ export default function Subcomponent({
           DetailsForm={dform}
           itemData={itemData}
           onUpdate={onUpdate}
+          onDataUpdated={onDataUpdated}
           />
         <DeleteDialog
           itemData={itemData}
