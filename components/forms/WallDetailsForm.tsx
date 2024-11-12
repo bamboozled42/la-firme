@@ -16,32 +16,14 @@ interface WallDetailsFormProps {
 }
 
 const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onDelete, itemData }) => {
-  // const defaultFrom = toCamelCase(itemData);
+  const defaultValues = itemData ? itemData : {};
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<WallDetailsFormSchema>({
     resolver: zodResolver(wallDetailsFormSchema),
-    defaultValues: {
-      // Initialize boolean fields to false
-      wallRepeatFloors: false,
-      fh1CrackInBeam: false,
-      fh2CrackInWallCeiling: false,
-      fh3CrackInCeiling: false,
-      fh4CrackInCeiling: false,
-      fv1VerticalCrackColumnWall: false,
-      fv2VerticalCrackColumn: false,
-      l1IrregularBrick: false,
-      l2BricksWithExcessiveHoles: false,
-      l3WallsNotWellAligned: false,
-      l4IncompleteMortarInBrick: false,
-      l5VariationInThicknessJoints: false,
-      l6MortarJointsTooThick: false,
-      l7PoorAdhesion: false,
-      perforatingColumn: false,
-      perforatingBeam: false,
-    },
+    defaultValues,
   });
 
   const onSubmit = (data: WallDetailsFormSchema) => {

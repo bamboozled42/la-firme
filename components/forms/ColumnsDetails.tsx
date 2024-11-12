@@ -15,14 +15,14 @@ interface ColumnDetailsFormProps {
 }
 
 const ColumnDetailsForm: React.FC<ColumnDetailsFormProps> = ({ onSave, onCancel, onDelete, itemData }) => {
-  // const defaultValues = toCamelCase(itemData);
+  const defaultValues = itemData ? itemData : {};
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<ColumnDetailsFormSchema>({
     resolver: zodResolver(columnDetailsFormSchema),
-    // defaultValues
+    defaultValues
   });
 
   const onSubmit = (data: ColumnDetailsFormSchema) => {
