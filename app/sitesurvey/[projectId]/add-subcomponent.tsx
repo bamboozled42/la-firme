@@ -25,6 +25,7 @@ interface AddDialogProps {
   buttonName?: string;
   dbname: string;
   projectId: string;
+  onDataAdded?: () => void;
 }
 
 export default function AddDialog({
@@ -38,6 +39,7 @@ export default function AddDialog({
   buttonName,
   dbname,
   projectId,
+  onDataAdded,
 }: AddDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState<"form1" | "form2">("form1");
@@ -63,6 +65,10 @@ export default function AddDialog({
       const { data: supabaseData, error } = await supabase
         .from(dbname)
         .insert([completeData]);
+
+      if (!error && onDataAdded) {
+        onDataAdded();
+      }
 
       // if (error) {
       //   console.error("Error inserting data:", error);

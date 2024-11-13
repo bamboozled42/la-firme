@@ -18,6 +18,7 @@ interface AddDetailsDialogProps {
   DetailsForm: React.ComponentType<DetailsFormProps>;
   itemData: any; // data to be passed in and rendered in the details form
   buttonName?: string;
+  onDataUpdated?: () => void;
 }
 
 export interface DetailsFormProps {
@@ -27,7 +28,7 @@ export interface DetailsFormProps {
   onDelete?: () => void; // Optional: Not all forms might need delete
 }
 
-export function EditDialog({ elementType, DetailsForm, itemData, onUpdate, buttonName }: AddDetailsDialogProps) {
+export function EditDialog({ elementType, DetailsForm, itemData, onUpdate, buttonName, onDataUpdated }: AddDetailsDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const supabase = useSupabase();
   const getTableName = (type: string) => {
@@ -55,11 +56,13 @@ export function EditDialog({ elementType, DetailsForm, itemData, onUpdate, butto
         .select()
         .single();
       }
-      if (error) {
-        // console.log("Error updating data:", error);
-      }
+
       // console.log("Updated Data:", updatedData);
       if (error) throw error;
+
+      if (onDataUpdated) {
+        onDataUpdated();
+      }
 
       onUpdate({
         ...itemData,
