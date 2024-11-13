@@ -1,62 +1,67 @@
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
       beams: {
         Row: {
-          beams_project_id: number | null;
           condition: string | null;
           floor_id: number | null;
           height: number | null;
           id: number;
           length: number | null;
           name: string | null;
+          projectId: number | null;
           support_left_side: string | null;
           support_right_side: string | null;
+          type: string | null;
+          width: number | null;
         };
         Insert: {
-          beams_project_id?: number | null;
           condition?: string | null;
           floor_id?: number | null;
           height?: number | null;
           id?: number;
           length?: number | null;
           name?: string | null;
+          projectId?: number | null;
           support_left_side?: string | null;
           support_right_side?: string | null;
+          type?: string | null;
+          width?: number | null;
         };
         Update: {
-          beams_project_id?: number | null;
           condition?: string | null;
           floor_id?: number | null;
           height?: number | null;
           id?: number;
           length?: number | null;
           name?: string | null;
+          projectId?: number | null;
           support_left_side?: string | null;
           support_right_side?: string | null;
+          type?: string | null;
+          width?: number | null;
         };
         Relationships: [
-          {
-            foreignKeyName: "beams_beams_project_id_fkey";
-            columns: ["beams_project_id"];
-            isOneToOne: false;
-            referencedRelation: "projects";
-            referencedColumns: ["id"];
-          },
           {
             foreignKeyName: "beams_floor_id_fkey";
             columns: ["floor_id"];
             isOneToOne: false;
             referencedRelation: "floors";
+            referencedColumns: ["floor_id"];
+          },
+          {
+            foreignKeyName: "beams_projectId_fkey";
+            columns: ["projectId"];
+            isOneToOne: false;
+            referencedRelation: "projects";
             referencedColumns: ["id"];
           },
         ];
       };
       ceilings: {
         Row: {
-          ceilings_project_id: number | null;
           cracks: string | null;
           dimension_x: number | null;
           dimension_y: number | null;
@@ -66,9 +71,9 @@ export interface Database {
           id: number;
           name: string;
           pipes: string | null;
+          projectId: number | null;
         };
         Insert: {
-          ceilings_project_id?: number | null;
           cracks?: string | null;
           dimension_x?: number | null;
           dimension_y?: number | null;
@@ -78,9 +83,9 @@ export interface Database {
           id?: number;
           name: string;
           pipes?: string | null;
+          projectId?: number | null;
         };
         Update: {
-          ceilings_project_id?: number | null;
           cracks?: string | null;
           dimension_x?: number | null;
           dimension_y?: number | null;
@@ -90,27 +95,27 @@ export interface Database {
           id?: number;
           name?: string;
           pipes?: string | null;
+          projectId?: number | null;
         };
         Relationships: [
-          {
-            foreignKeyName: "ceilings_ceilings_project_id_fkey";
-            columns: ["ceilings_project_id"];
-            isOneToOne: false;
-            referencedRelation: "projects";
-            referencedColumns: ["id"];
-          },
           {
             foreignKeyName: "ceilings_floor_id_fkey";
             columns: ["floor_id"];
             isOneToOne: false;
             referencedRelation: "floors";
+            referencedColumns: ["floor_id"];
+          },
+          {
+            foreignKeyName: "ceilings_projectId_fkey";
+            columns: ["projectId"];
+            isOneToOne: false;
+            referencedRelation: "projects";
             referencedColumns: ["id"];
           },
         ];
       };
       columns: {
         Row: {
-          columns_project_id: number | null;
           condition: string | null;
           floor_id: number | null;
           height: number | null;
@@ -118,12 +123,13 @@ export interface Database {
           length: number | null;
           name: string | null;
           notes: string | null;
-          pipes: string | null;
-          vertical_cracks: string | null;
+          pipes: boolean | null;
+          projectId: number | null;
+          type: string | null;
+          vertical_cracks: boolean | null;
           width: number | null;
         };
         Insert: {
-          columns_project_id?: number | null;
           condition?: string | null;
           floor_id?: number | null;
           height?: number | null;
@@ -131,12 +137,13 @@ export interface Database {
           length?: number | null;
           name?: string | null;
           notes?: string | null;
-          pipes?: string | null;
-          vertical_cracks?: string | null;
+          pipes?: boolean | null;
+          projectId?: number | null;
+          type?: string | null;
+          vertical_cracks?: boolean | null;
           width?: number | null;
         };
         Update: {
-          columns_project_id?: number | null;
           condition?: string | null;
           floor_id?: number | null;
           height?: number | null;
@@ -144,50 +151,52 @@ export interface Database {
           length?: number | null;
           name?: string | null;
           notes?: string | null;
-          pipes?: string | null;
-          vertical_cracks?: string | null;
+          pipes?: boolean | null;
+          projectId?: number | null;
+          type?: string | null;
+          vertical_cracks?: boolean | null;
           width?: number | null;
         };
         Relationships: [
-          {
-            foreignKeyName: "columns_columns_project_id_fkey";
-            columns: ["columns_project_id"];
-            isOneToOne: false;
-            referencedRelation: "projects";
-            referencedColumns: ["id"];
-          },
           {
             foreignKeyName: "columns_floor_id_fkey";
             columns: ["floor_id"];
             isOneToOne: false;
             referencedRelation: "floors";
+            referencedColumns: ["floor_id"];
+          },
+          {
+            foreignKeyName: "columns_projectId_fkey";
+            columns: ["projectId"];
+            isOneToOne: false;
+            referencedRelation: "projects";
             referencedColumns: ["id"];
           },
         ];
       };
       floors: {
         Row: {
-          floors_project_id: number;
           floor_id: number;
           materials: string | null;
           name: string;
+          projectId: number;
         };
         Insert: {
-          floors_project_id: number;
           floor_id?: number;
           materials?: string | null;
           name: string;
+          projectId: number;
         };
         Update: {
-          floors_project_id?: number;
           floor_id?: number;
           materials?: string | null;
           name?: string;
+          projectId?: number;
         };
         Relationships: [
           {
-            foreignKeyName: "floors_floors_project_id_fkey";
-            columns: ["floors_project_id"];
+            foreignKeyName: "floors_projectId_fkey";
+            columns: ["projectId"];
             isOneToOne: false;
             referencedRelation: "projects";
             referencedColumns: ["id"];
@@ -319,70 +328,97 @@ export interface Database {
       };
       walls: {
         Row: {
-          condition_of_bricks_cement: string | null;
-          cracks: string | null;
           direction: string;
+          fh1CrackInBeam: boolean | null;
+          fh2CrackInWallCeiling: boolean | null;
+          fh3CrackInCeiling: boolean | null;
+          fh4CrackInCeiling: boolean | null;
           floor_id: number | null;
+          fv1VerticalCrackColumnWall: boolean | null;
+          fv2VerticalCrackColumn: boolean | null;
           height: number | null;
           height_type: string | null;
-          horizontal_crack_ceilng: boolean | null;
-          horizontal_crack_in_beam: string | null;
-          horizontal_crack_wall_ceiling: string | null;
           id: number;
+          l1IrregularBrick: boolean | null;
+          l2BricksWithExcessiveHoles: boolean | null;
+          l3WallsNotWellAligned: boolean | null;
+          l4IncompleteMortarInBrick: boolean | null;
+          l5VariationInThicknessJoints: boolean | null;
+          l6MortarJointsTooThick: boolean | null;
+          l7PoorAdhesion: boolean | null;
           length: number | null;
           location: string | null;
           material: string | null;
           name: string;
+          perforatingBeam: boolean | null;
+          perforatingColumn: boolean | null;
+          projectId: number | null;
           stucco: string | null;
-          vertical_crack_column: string | null;
-          vertical_crack_column_wall: string | null;
-          walls_project_id: number | null;
+          wallRepeatFloors: boolean | null;
           width: number | null;
           window_size_x: number | null;
           window_size_y: number | null;
         };
         Insert: {
-          condition_of_bricks_cement?: string | null;
-          cracks?: string | null;
           direction: string;
+          fh1CrackInBeam?: boolean | null;
+          fh2CrackInWallCeiling?: boolean | null;
+          fh3CrackInCeiling?: boolean | null;
+          fh4CrackInCeiling?: boolean | null;
           floor_id?: number | null;
+          fv1VerticalCrackColumnWall?: boolean | null;
+          fv2VerticalCrackColumn?: boolean | null;
           height?: number | null;
           height_type?: string | null;
-          horizontal_crack_ceilng?: boolean | null;
-          horizontal_crack_in_beam?: string | null;
-          horizontal_crack_wall_ceiling?: string | null;
           id?: number;
+          l1IrregularBrick?: boolean | null;
+          l2BricksWithExcessiveHoles?: boolean | null;
+          l3WallsNotWellAligned?: boolean | null;
+          l4IncompleteMortarInBrick?: boolean | null;
+          l5VariationInThicknessJoints?: boolean | null;
+          l6MortarJointsTooThick?: boolean | null;
+          l7PoorAdhesion?: boolean | null;
           length?: number | null;
           location?: string | null;
           material?: string | null;
           name: string;
+          perforatingBeam?: boolean | null;
+          perforatingColumn?: boolean | null;
+          projectId?: number | null;
           stucco?: string | null;
-          vertical_crack_column?: string | null;
-          vertical_crack_column_wall?: string | null;
-          walls_project_id?: number | null;
+          wallRepeatFloors?: boolean | null;
           width?: number | null;
           window_size_x?: number | null;
           window_size_y?: number | null;
         };
         Update: {
-          condition_of_bricks_cement?: string | null;
-          cracks?: string | null;
           direction?: string;
+          fh1CrackInBeam?: boolean | null;
+          fh2CrackInWallCeiling?: boolean | null;
+          fh3CrackInCeiling?: boolean | null;
+          fh4CrackInCeiling?: boolean | null;
           floor_id?: number | null;
+          fv1VerticalCrackColumnWall?: boolean | null;
+          fv2VerticalCrackColumn?: boolean | null;
           height?: number | null;
           height_type?: string | null;
-          horizontal_crack_ceilng?: boolean | null;
-          horizontal_crack_in_beam?: string | null;
-          horizontal_crack_wall_ceiling?: string | null;
           id?: number;
+          l1IrregularBrick?: boolean | null;
+          l2BricksWithExcessiveHoles?: boolean | null;
+          l3WallsNotWellAligned?: boolean | null;
+          l4IncompleteMortarInBrick?: boolean | null;
+          l5VariationInThicknessJoints?: boolean | null;
+          l6MortarJointsTooThick?: boolean | null;
+          l7PoorAdhesion?: boolean | null;
           length?: number | null;
           location?: string | null;
           material?: string | null;
           name?: string;
+          perforatingBeam?: boolean | null;
+          perforatingColumn?: boolean | null;
+          projectId?: number | null;
           stucco?: string | null;
-          vertical_crack_column?: string | null;
-          vertical_crack_column_wall?: string | null;
-          walls_project_id?: number | null;
+          wallRepeatFloors?: boolean | null;
           width?: number | null;
           window_size_x?: number | null;
           window_size_y?: number | null;
@@ -393,11 +429,11 @@ export interface Database {
             columns: ["floor_id"];
             isOneToOne: false;
             referencedRelation: "floors";
-            referencedColumns: ["id"];
+            referencedColumns: ["floor_id"];
           },
           {
-            foreignKeyName: "walls_walls_project_id_fkey";
-            columns: ["walls_project_id"];
+            foreignKeyName: "walls_projectId_fkey";
+            columns: ["projectId"];
             isOneToOne: false;
             referencedRelation: "projects";
             referencedColumns: ["id"];
@@ -418,7 +454,7 @@ export interface Database {
       [_ in never]: never;
     };
   };
-}
+};
 
 type PublicSchema = Database[Extract<keyof Database, "public">];
 

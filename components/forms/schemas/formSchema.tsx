@@ -3,8 +3,17 @@ import { z } from "zod";
 
 // General Form Schema
 export const generalFormSchema = z.object({
-  name: z.string(),
-  floor_id: z.number({ required_error: "Floor is required" }).int("Floor must be an integer").positive("Floor must be positive"),
+  name: z.string().min(1, { message: "Name is required" }),
+  number: z
+    .number({ required_error: "Number is required" })
+    .int("Number must be an integer")
+    .positive("Number must be positive")
+    .nullable()
+    .optional(),
+  floor_id: z
+    .number({ required_error: "Number is required" })
+    .int("Number must be an integer")
+    .positive("Number must be positive"),
 });
 
 export const wallFormSchema = generalFormSchema.extend({
@@ -31,22 +40,22 @@ export const wallDetailsFormSchema = z.object({
   stucco: z.enum(["Only inside", "Only outside", "Inside and outside", "No stucco"], {
     errorMap: () => ({ message: "Stucco must be selected" }),
   }),
-  wallRepeatFloors: z.boolean(),
-  fh1CrackInBeam: z.boolean(),
-  fh2CrackInWallCeiling: z.boolean(),
-  fh3CrackInCeiling: z.boolean(),
-  fh4CrackInCeiling: z.boolean(),
-  fv1VerticalCrackColumnWall: z.boolean(),
-  fv2VerticalCrackColumn: z.boolean(),
-  l1IrregularBrick: z.boolean(),
-  l2BricksWithExcessiveHoles: z.boolean(),
-  l3WallsNotWellAligned: z.boolean(),
-  l4IncompleteMortarInBrick: z.boolean(),
-  l5VariationInThicknessJoints: z.boolean(),
-  l6MortarJointsTooThick: z.boolean(),
-  l7PoorAdhesion: z.boolean(),
-  perforatingColumn: z.boolean(),
-  perforatingBeam: z.boolean(),
+  wallRepeatFloors: z.boolean().default(false),
+  fh1CrackInBeam: z.boolean().default(false),
+  fh2CrackInWallCeiling: z.boolean().default(false),
+  fh3CrackInCeiling: z.boolean().default(false),
+  fh4CrackInCeiling: z.boolean().default(false),
+  fv1VerticalCrackColumnWall: z.boolean().default(false),
+  fv2VerticalCrackColumn: z.boolean().default(false),
+  l1IrregularBrick: z.boolean().default(false),
+  l2BricksWithExcessiveHoles: z.boolean().default(false),
+  l3WallsNotWellAligned: z.boolean().default(false),
+  l4IncompleteMortarInBrick: z.boolean().default(false),
+  l5VariationInThicknessJoints: z.boolean().default(false),
+  l6MortarJointsTooThick: z.boolean().default(false),
+  l7PoorAdhesion: z.boolean().default(false),
+  perforatingColumn: z.boolean().default(false),
+  perforatingBeam: z.boolean().default(false),
 });
 
 export const columnFormSchema = generalFormSchema;
@@ -61,8 +70,8 @@ export const columnDetailsFormSchema = z.object({
   type: z.enum(["Column of 'arriostramiento'", "Independent column"], {
     errorMap: () => ({ message: "Type is required" }),
   }),
-  vertical_cracks: z.boolean(),
-  pipes: z.boolean(),
+  vertical_cracks: z.boolean().default(false),
+  pipes: z.boolean().default(false),
 });
 
 export const beamFormSchema = generalFormSchema;
@@ -94,16 +103,31 @@ export const ceilingDetailsFormSchema = z.object({
   direction_of_joints: z.enum(["X", "Y"], {
     errorMap: () => ({ message: "Direction of joints is required" }),
   }),
-  cracks: z.boolean(),
-  pipes: z.boolean(),
+  cracks: z.boolean().default(false),
+  pipes: z.boolean().default(false),
 });
 
-export const floorFormSchema = generalFormSchema;
+export const floorFormSchema = z.object({
+  name: z.string().min(1, { message: "Name is required" }),
+});
 
 export const floorDetailsFormSchema = z.object({
   materials: z.enum(["Dirt", "Cement", "Wood", "Tiles"], {
     errorMap: () => ({ message: "Material is required" }),
   }),
+});
+
+export const projectFormSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  location: z.string().min(1, "Location is required"),
+  start_date: z
+    .string()
+    .min(1, "Start date is required")
+    .transform((date) => new Date(date)),
+  architect_id: z.string().min(1, "Architect is required"),
+  client: z.string().min(1, "Client is required"),
+  status: z.string().min(1, "Status is required"),
+  description: z.string().min(1, "Description is required"),
 });
 
 // TypeScript Types

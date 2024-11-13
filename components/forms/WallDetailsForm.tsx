@@ -6,10 +6,10 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { type Wall, toCamelCase } from "../../lib/utils";
+import { toCamelCase, type Wall } from "../../lib/utils";
 
 interface WallDetailsFormProps {
-  itemData : Wall;
+  itemData: Wall;
   onSave: (data: WallDetailsFormSchema) => void;
   onCancel: () => void;
   onDelete: () => void;
@@ -37,18 +37,43 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
     { id: "height_type", label: "Full or Partial Height", options: ["High", "Low"], type: "select" },
     { id: "wallRepeatFloors", label: "Wall Repeat Floors", options: ["Yes", "No"], type: "checkbox" },
     { id: "location", label: "Location", options: ["Perimeter", "Internal"], type: "select" },
-    { id: "stucco", label: "Stucco", options: ["Only inside", "Only outside", "Inside and outside", "No stucco"], type: "select" },
+    {
+      id: "stucco",
+      label: "Stucco",
+      options: ["Only inside", "Only outside", "Inside and outside", "No stucco"],
+      type: "select",
+    },
     { id: "fh1CrackInBeam", label: "FH1 Crack in Beam", options: ["Yes", "No"], type: "checkbox" },
     { id: "fh2CrackInWallCeiling", label: "FH2 Crack in Wall Ceiling", options: ["Yes", "No"], type: "checkbox" },
     { id: "fh3CrackInCeiling", label: "FH3 Crack in Ceiling", options: ["Yes", "No"], type: "checkbox" },
     { id: "fh4CrackInCeiling", label: "FH4 Crack in Ceiling", options: ["Yes", "No"], type: "checkbox" },
-    { id: "fv1VerticalCrackColumnWall", label: "FV1 Vertical Crack Column Wall", options: ["Yes", "No"], type: "checkbox" },
+    {
+      id: "fv1VerticalCrackColumnWall",
+      label: "FV1 Vertical Crack Column Wall",
+      options: ["Yes", "No"],
+      type: "checkbox",
+    },
     { id: "fv2VerticalCrackColumn", label: "FV2 Vertical Crack Column", options: ["Yes", "No"], type: "checkbox" },
     { id: "l1IrregularBrick", label: "L1 Irregular Brick", options: ["Yes", "No"], type: "checkbox" },
-    { id: "l2BricksWithExcessiveHoles", label: "L2 Bricks with Excessive Holes", options: ["Yes", "No"], type: "checkbox" },
+    {
+      id: "l2BricksWithExcessiveHoles",
+      label: "L2 Bricks with Excessive Holes",
+      options: ["Yes", "No"],
+      type: "checkbox",
+    },
     { id: "l3WallsNotWellAligned", label: "L3 Walls Not Well Aligned", options: ["Yes", "No"], type: "checkbox" },
-    { id: "l4IncompleteMortarInBrick", label: "L4 Incomplete Mortar in Brick", options: ["Yes", "No"], type: "checkbox" },
-    { id: "l5VariationInThicknessJoints", label: "L5 Variation in Thickness Joints", options: ["Yes", "No"], type: "checkbox" },
+    {
+      id: "l4IncompleteMortarInBrick",
+      label: "L4 Incomplete Mortar in Brick",
+      options: ["Yes", "No"],
+      type: "checkbox",
+    },
+    {
+      id: "l5VariationInThicknessJoints",
+      label: "L5 Variation in Thickness Joints",
+      options: ["Yes", "No"],
+      type: "checkbox",
+    },
     { id: "l6MortarJointsTooThick", label: "L6 Mortar Joints Too Thick", options: ["Yes", "No"], type: "checkbox" },
     { id: "l7PoorAdhesion", label: "L7 Poor Adhesion", options: ["Yes", "No"], type: "checkbox" },
     { id: "perforatingColumn", label: "Perforating Column", options: ["Yes", "No"], type: "checkbox" },
@@ -141,14 +166,14 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
       {fields.map((field) =>
         field.type === "checkbox" ? (
           <div key={field.id} className="flex items-center">
-            <label htmlFor={field.id} className="block text-sm font-medium text-gray-700 mr-2">
+            <label htmlFor={field.id} className="mr-2 block text-sm font-medium text-gray-700">
               {field.label}
             </label>
             <input
               type="checkbox"
               id={field.id}
               {...register(field.id as keyof WallDetailsFormSchema)}
-              className={`h-4 w-4 text-green-600 border-gray-300 rounded ${
+              className={`h-4 w-4 rounded border-gray-300 text-green-600 ${
                 errors[field.id as keyof WallDetailsFormSchema] ? "border-red-600" : ""
               }`}
             />
@@ -182,7 +207,7 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
               <p className="mt-1 text-sm text-red-600">{errors[field.id as keyof WallDetailsFormSchema]?.message}</p>
             )}
           </div>
-        )
+        ),
       )}
 
       {/* Buttons */}

@@ -11,8 +11,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import React, { useState } from "react";
 import { supabase } from "@/lib/supabase";
+import React, { useState } from "react";
+import { Floor } from "../../../lib/utils";
 
 interface AddDialogProps {
   Form1: React.FC<any>;
@@ -26,6 +27,7 @@ interface AddDialogProps {
   dbname: string;
   projectId: string;
   onDataAdded?: () => void;
+  floors?: Floor[];
 }
 
 export default function AddDialog({
@@ -39,6 +41,7 @@ export default function AddDialog({
   buttonName,
   dbname,
   projectId,
+  floors,
   onDataAdded,
 }: AddDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -59,24 +62,15 @@ export default function AddDialog({
   const handleSave = async (data: any) => {
     const completeData = { ...formData, ...data, projectId }; // Combine data from both forms
     // console.log("Complete Data:", completeData);
+    console.log(data);
 
     try {
       // Insert combined data into Supabase
-      const { data: supabaseData, error } = await supabase
-        .from(dbname)
-        .insert([completeData]);
+      const { data: supabaseData, error } = await supabase.from(dbname).insert([completeData]);
 
       if (!error && onDataAdded) {
         onDataAdded();
       }
-
-      // if (error) {
-      //   console.error("Error inserting data:", error);
-      //   // Optionally, show an error message to the user
-      // } else {
-      //   console.log("Data inserted successfully:", supabaseData);
-      //   // Optionally, show a success message or perform additional actions
-      // }
     } catch (err) {
       // console.error("Error saving data:", err);
       // Optionally, handle the error
@@ -107,10 +101,8 @@ export default function AddDialog({
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button size="sm" className={buttonClass ?? "bg-green-700 text-green-50"}>
-          <Icons.add className="mr-2 h-4 w-4"/> 
-          <span className="mr-1">
-            {buttonName ?? "Add"}
-          </span>
+          <Icons.add className="mr-2 h-4 w-4" />
+          <span className="mr-1">{buttonName ?? "Add"}</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-screen w-5/6 overflow-y-auto p-8 pt-10">
@@ -123,7 +115,7 @@ export default function AddDialog({
           </DialogDescription>
         </DialogHeader>
         {step === "form1" ? (
-          <Form1 onNext={handleNext} onCancel={handleCancel} />
+          <Form1 onNext={handleNext} onCancel={handleCancel} floors={floors || []} />
         ) : (
           <Form2 onSave={handleSave} onCancel={handleCancel} onDelete={handleDelete} />
         )}

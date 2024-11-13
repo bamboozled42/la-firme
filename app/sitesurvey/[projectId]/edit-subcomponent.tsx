@@ -1,4 +1,5 @@
 "use client";
+import { useSupabase } from "@/app/providers";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,7 +11,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import { useSupabase } from "@/app/providers";
 
 interface AddDetailsDialogProps {
   onUpdate: (updatedData: any) => void;
@@ -28,11 +28,18 @@ export interface DetailsFormProps {
   onDelete?: () => void; // Optional: Not all forms might need delete
 }
 
-export function EditDialog({ elementType, DetailsForm, itemData, onUpdate, buttonName, onDataUpdated }: AddDetailsDialogProps) {
+export function EditDialog({
+  elementType,
+  DetailsForm,
+  itemData,
+  onUpdate,
+  buttonName,
+  onDataUpdated,
+}: AddDetailsDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const supabase = useSupabase();
   const getTableName = (type: string) => {
-    return type.toLowerCase() + 's';
+    return type.toLowerCase() + "s";
   };
 
   const handleSave = async (data: any) => {
@@ -40,21 +47,20 @@ export function EditDialog({ elementType, DetailsForm, itemData, onUpdate, butto
       const tableName = getTableName(elementType);
       let updatedData;
       let error;
-      if (tableName === 'floors') {
+      if (tableName === "floors") {
         const { data: updatedData, error } = await supabase
           .from(tableName)
           .update({ ...data })
-          .eq('floor_id', itemData.floor_id)
+          .eq("floor_id", itemData.floor_id)
           .select()
           .single();
-      }
-      else {
+      } else {
         const { data: updatedData, error } = await supabase
-        .from(tableName)
-        .update({ ...data })
-        .eq('id', itemData.id)
-        .select()
-        .single();
+          .from(tableName)
+          .update({ ...data })
+          .eq("id", itemData.id)
+          .select()
+          .single();
       }
 
       // console.log("Updated Data:", updatedData);
@@ -71,9 +77,8 @@ export function EditDialog({ elementType, DetailsForm, itemData, onUpdate, butto
       });
 
       setIsOpen(false);
-      }
-      catch (error) {
-        // console.error('Error updating item:', error);
+    } catch (error) {
+      // console.error('Error updating item:', error);
     }
   };
 
@@ -91,10 +96,8 @@ export function EditDialog({ elementType, DetailsForm, itemData, onUpdate, butto
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button size="sm" className="ml-2 bg-blue-700 text-blue-50">
-          <Icons.pencil className="mr-2 h-4 w-4" /> 
-          <span className="mr-1">
-            {buttonName ?? "Details"}
-          </span>
+          <Icons.pencil className="mr-2 h-4 w-4" />
+          <span className="mr-1">{buttonName ?? "Details"}</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-screen w-5/6 overflow-y-auto p-8 pt-10">
@@ -102,14 +105,8 @@ export function EditDialog({ elementType, DetailsForm, itemData, onUpdate, butto
           <DialogTitle className="mb-2 text-left leading-relaxed">{elementType} Details</DialogTitle>
         </DialogHeader>
         <DialogDescription />
-          <DetailsForm
-            onSave={handleSave}
-            onCancel={handleCancel}
-            onDelete={handleDelete}
-            itemData={itemData }
-          />
+        <DetailsForm onSave={handleSave} onCancel={handleCancel} onDelete={handleDelete} itemData={itemData} />
       </DialogContent>
     </Dialog>
   );
 }
-
