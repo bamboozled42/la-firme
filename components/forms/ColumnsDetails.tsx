@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Column, toCamelCase, toSnakeCase } from "../../lib/utils";
+import { type Column, toCamelCase, toSnakeCase } from "../../lib/utils";
 
 interface ColumnDetailsFormProps {
   itemData: Column;
@@ -14,8 +14,8 @@ interface ColumnDetailsFormProps {
   onDelete: () => void;
 }
 
-const ColumnDetailsForm: React.FC<ColumnDetailsFormProps> = ({ onSave, onCancel, onDelete, itemData}) => {
-  const defaultValues = toCamelCase(itemData);
+const ColumnDetailsForm: React.FC<ColumnDetailsFormProps> = ({ onSave, onCancel, onDelete, itemData }) => {
+  const defaultValues = itemData ? itemData : {};
   const {
     register,
     handleSubmit,
@@ -26,10 +26,8 @@ const ColumnDetailsForm: React.FC<ColumnDetailsFormProps> = ({ onSave, onCancel,
   });
 
   const onSubmit = (data: ColumnDetailsFormSchema) => {
-    const snakeData = toSnakeCase(data);
-    console.log("snakeData", snakeData);
-    console.log("ColumnDetailsForm Submitted Data:", data); // Debugging
-    onSave(snakeData as ColumnDetailsFormSchema);
+    // console.log("ColumnDetailsForm Submitted Data:", data); // Debugging
+    onSave(data);
   };
 
   return (
@@ -98,50 +96,66 @@ const ColumnDetailsForm: React.FC<ColumnDetailsFormProps> = ({ onSave, onCancel,
           <option value="" disabled>
             Select condition
           </option>
-            <option value="Good">Good</option>
-            <option value="Fair">Fair</option>
-            <option value="Poor">Poor</option>
+          <option value="Seleccionar">Seleccionar</option>
+          <option value="Bad">Bad</option>
+          <option value="Good">Good</option>
         </select>
         {errors.condition && <p className="mt-1 text-sm text-red-600">{errors.condition.message}</p>}
       </div>
 
-      {/* Vertical Cracks Field */}
+      {/* Type Field */}
       <div>
-        <label htmlFor="verticalCracks" className="block text-sm font-medium text-gray-700">
-          Vertical Cracks
+        <label htmlFor="type" className="block text-sm font-medium text-gray-700">
+          Type
         </label>
         <select
-          id="vertical_cracks"
-          {...register("verticalCracks")}
+          id="type"
+          {...register("type")}
           defaultValue=""
           className={`mt-1 block w-full rounded-md border ${
-            errors.verticalCracks ? "border-red-600" : "border-gray-300"
+            errors.type ? "border-red-600" : "border-gray-300"
           } shadow-sm focus:border-green-500 focus:ring-green-500`}
         >
           <option value="" disabled>
-            Select option
+            Select type
           </option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
+          <option value="Column of 'arriostramiento'">Column of &apos;arriostramiento&apos;</option>
+          <option value="Independent column">Independent column</option>
         </select>
-        {errors.verticalCracks && <p className="mt-1 text-sm text-red-600">{errors.verticalCracks.message}</p>}
+        {errors.type && <p className="mt-1 text-sm text-red-600">{errors.type.message}</p>}
       </div>
 
-      {/* Pipes Field */}
-      <div>
-        <label htmlFor="pipes" className="block text-sm font-medium text-gray-700">
+      {/* Vertical Cracks Field (Checkbox) */}
+      <div className="flex items-center">
+        <label htmlFor="verticalCracks" className="block text-sm font-medium text-gray-700 mr-2">
+          Vertical cracks
+        </label>
+        <input
+          type="checkbox"
+          id="verticalCracks"
+          {...register("vertical_cracks")}
+          className={`h-4 w-4 text-green-600 border-gray-300 rounded ${
+            errors.vertical_cracks ? "border-red-600" : ""
+          }`}
+        />
+      </div>
+      {errors.vertical_cracks && <p className="mt-1 text-sm text-red-600">{errors.vertical_cracks.message}</p>}
+
+      {/* Pipes Field (Checkbox) */}
+      <div className="flex items-center">
+        <label htmlFor="pipes" className="block text-sm font-medium text-gray-700 mr-2">
           Pipes
         </label>
         <input
-          type="number"
+          type="checkbox"
           id="pipes"
-          {...register("pipes", { valueAsNumber: true })}
-          className={`mt-1 block w-full rounded-md border ${
-            errors.pipes ? "border-red-600" : "border-gray-300"
-          } shadow-sm focus:border-green-500 focus:ring-green-500`}
+          {...register("pipes")}
+          className={`h-4 w-4 text-green-600 border-gray-300 rounded ${
+            errors.pipes ? "border-red-600" : ""
+          }`}
         />
-        {errors.pipes && <p className="mt-1 text-sm text-red-600">{errors.pipes.message}</p>}
       </div>
+      {errors.pipes && <p className="mt-1 text-sm text-red-600">{errors.pipes.message}</p>}
 
       {/* Buttons */}
       <div className="mt-4 flex justify-end space-x-2">

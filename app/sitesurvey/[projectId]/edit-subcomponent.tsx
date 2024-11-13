@@ -1,4 +1,5 @@
 "use client";
+import { useSupabase } from "@/app/providers";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,7 +11,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import { useSupabase } from "@/app/providers";
 import { useTranslation } from '../../../i18n/client';
 
 interface AddDetailsDialogProps {
@@ -18,9 +18,8 @@ interface AddDetailsDialogProps {
   elementType: string; // Extend as needed
   DetailsForm: React.ComponentType<DetailsFormProps>;
   itemData: any; // data to be passed in and rendered in the details form
-  // Optional: You can add more props for customization if needed
-
   buttonName?: string;
+  onDataUpdated?: () => void;
 }
 
 export interface DetailsFormProps {
@@ -30,29 +29,48 @@ export interface DetailsFormProps {
   onDelete?: () => void; // Optional: Not all forms might need delete
 }
 
-export function EditDialog({ elementType, DetailsForm, itemData, onUpdate, buttonName }: AddDetailsDialogProps) {
+export function EditDialog({
+  elementType,
+  DetailsForm,
+  itemData,
+  onUpdate,
+  buttonName,
+  onDataUpdated,
+}: AddDetailsDialogProps) {
   const {i18n, t} = useTranslation('common');
-
   const [isOpen, setIsOpen] = useState(false);
   const supabase = useSupabase();
   const getTableName = (type: string) => {
-    return type.toLowerCase() + 's';
+    return type.toLowerCase() + "s";
   };
 
   const handleSave = async (data: any) => {
     try {
       const tableName = getTableName(elementType);
-      const { data: updatedData, error } = await supabase
-        .from(tableName)
-        .update({ ...data })
-        .eq('id', itemData.id)
-        .select()
-        .single();
-      if (error) {
-        console.log("Error updating data:", error);
+      let updatedData;
+      let error;
+      if (tableName === "floors") {
+        const { data: updatedData, error } = await supabase
+          .from(tableName)
+          .update({ ...data })
+          .eq("floor_id", itemData.floor_id)
+          .select()
+          .single();
+      } else {
+        const { data: updatedData, error } = await supabase
+          .from(tableName)
+          .update({ ...data })
+          .eq("id", itemData.id)
+          .select()
+          .single();
       }
-      console.log("Updated Data:", updatedData);
+
+      // console.log("Updated Data:", updatedData);
       if (error) throw error;
+
+      if (onDataUpdated) {
+        onDataUpdated();
+      }
 
       onUpdate({
         ...itemData,
@@ -61,9 +79,8 @@ export function EditDialog({ elementType, DetailsForm, itemData, onUpdate, butto
       });
 
       setIsOpen(false);
-      }
-      catch (error) {
-      console.error('Error updating item:', error);
+    } catch (error) {
+      // console.error('Error updating item:', error);
     }
   };
 
@@ -72,7 +89,7 @@ export function EditDialog({ elementType, DetailsForm, itemData, onUpdate, butto
   };
 
   const handleDelete = () => {
-    console.log("Delete action triggered");
+    // console.log("Delete action triggered");
     // Handle delete logic here
     setIsOpen(false);
   };
@@ -92,14 +109,8 @@ export function EditDialog({ elementType, DetailsForm, itemData, onUpdate, butto
           <DialogTitle className="mb-2 text-left leading-relaxed">{elementType} Details</DialogTitle>
         </DialogHeader>
         <DialogDescription />
-          <DetailsForm
-            onSave={handleSave}
-            onCancel={handleCancel}
-            onDelete={handleDelete}
-            itemData={itemData }
-          />
+        <DetailsForm onSave={handleSave} onCancel={handleCancel} onDelete={handleDelete} itemData={itemData} />
       </DialogContent>
     </Dialog>
   );
 }
-

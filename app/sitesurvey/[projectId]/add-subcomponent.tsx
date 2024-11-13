@@ -11,8 +11,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { supabase } from "@/lib/supabase";
 import React, { useState } from "react";
 import { useTranslation } from '../../../i18n/client';
+import { Floor } from "../../../lib/utils";
 
 interface AddDialogProps {
   Form1: React.FC<any>;
@@ -23,6 +25,10 @@ interface AddDialogProps {
   form2Description?: string;
   buttonClass?: string;
   buttonName?: string;
+  dbname: string;
+  projectId: string;
+  onDataAdded?: () => void;
+  floors?: Floor[];
 }
 
 export default function AddDialog({
@@ -34,6 +40,10 @@ export default function AddDialog({
   form2Description = "Please provide the information for Form 2.",
   buttonClass,
   buttonName,
+  dbname,
+  projectId,
+  floors,
+  onDataAdded,
 }: AddDialogProps) {
   const {i18n, t} = useTranslation('common');
 
@@ -52,10 +62,24 @@ export default function AddDialog({
     setIsOpen(false);
   };
 
-  const handleSave = (data: any) => {
-    // const completeData = { ...formData, ...data };
+  const handleSave = async (data: any) => {
+    const completeData = { ...formData, ...data, projectId }; // Combine data from both forms
     // console.log("Complete Data:", completeData);
-    // Handle save logic here (e.g., send to API)
+    console.log(data);
+
+    try {
+      // Insert combined data into Supabase
+      const { data: supabaseData, error } = await supabase.from(dbname).insert([completeData]);
+
+      if (!error && onDataAdded) {
+        onDataAdded();
+      }
+    } catch (err) {
+      // console.error("Error saving data:", err);
+      // Optionally, handle the error
+    }
+
+    // Reset state and close dialog
     setFormData({});
     setStep("form1");
     setIsOpen(false);
@@ -96,7 +120,7 @@ export default function AddDialog({
           </DialogDescription>
         </DialogHeader>
         {step === "form1" ? (
-          <Form1 onNext={handleNext} onCancel={handleCancel} />
+          <Form1 onNext={handleNext} onCancel={handleCancel} floors={floors || []} />
         ) : (
           <Form2 onSave={handleSave} onCancel={handleCancel} onDelete={handleDelete} />
         )}

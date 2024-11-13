@@ -12,13 +12,15 @@ export default function Subcomponent({
   itemData,
   onUpdate,
   onDelete,
+  onDataUpdated,
 }: {
-  name: string,
+  name: string;
   // this removes error with strings and any casting
-  type: "Wall" | "Column" | "Beam" | "Floor" | "Ceiling",
-  itemData: any,
-  onUpdate: (updatedData: any) => void
-  onDelete: (deletedItem: any) => void
+  type: "Wall" | "Column" | "Beam" | "Floor" | "Ceiling";
+  itemData: any;
+  onUpdate: (updatedData: any) => void;
+  onDelete: (deletedItem: any) => void;
+  onDataUpdated?: () => void;
 }) {
   const formMapping = {
     Wall: WallDetailsForm,
@@ -28,7 +30,7 @@ export default function Subcomponent({
     Ceiling: CeilingDetailsForm,
   };
 
-  const dform : any = formMapping[type] as any;
+  const dform: any = formMapping[type] as any;
 
   return (
     <div className="flex flex-wrap items-center justify-between rounded-lg bg-secondary p-3 pl-4">
@@ -39,12 +41,9 @@ export default function Subcomponent({
           DetailsForm={dform}
           itemData={itemData}
           onUpdate={onUpdate}
-          />
-        <DeleteDialog
-          itemData={itemData}
-          onDelete={onDelete}
-          elementType={type}
-         />
+          onDataUpdated={onDataUpdated}
+        />
+        <DeleteDialog itemData={itemData} onDelete={onDelete} elementType={type} />
       </div>
     </div>
   );

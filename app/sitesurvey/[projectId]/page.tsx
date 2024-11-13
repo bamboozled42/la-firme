@@ -1,10 +1,12 @@
 "use client";
 
+import { useSupabase } from "@/app/providers";
 import BeamDetailsForm from "@/components/forms/BeamDetails";
 import CeilingDetailsForm from "@/components/forms/CeilingDetails";
 import ColumnDetailsForm from "@/components/forms/ColumnsDetails";
 import ColumnsForm from "@/components/forms/ColumnsForm";
 import FloorDetailsForm from "@/components/forms/FloorDetails";
+import FloorsForm from "@/components/forms/FloorsForm";
 import WallDetailsForm from "@/components/forms/WallDetailsForm";
 import WallForm from "@/components/forms/WallForm";
 import { Icons } from "@/components/icons";
@@ -14,14 +16,13 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { TypographyH2 } from "@/components/ui/typography";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { ElementTypeKeys, Floor, ProjectDashboardType, type StateAction } from "../../../lib/utils";
 import AddDialog from "./add-subcomponent";
-import { useEffect, useState } from 'react';
-import { useSupabase } from "@/app/providers";
-import { Floor, ProjectDashboardType, type StateAction, ElementTypeKeys} from "../../../lib/utils";
-import Subcomponent from "./subcomponent";
 import { EditDialog } from "./edit-subcomponent";
 import { useTranslation } from '../../../i18n/client';
 
+import Subcomponent from "./subcomponent";
 
 export default function Dashboard({ params }: { params: { projectId: string } }) {
   const { i18n, t } = useTranslation('common');
@@ -31,24 +32,42 @@ export default function Dashboard({ params }: { params: { projectId: string } })
   const [currentFloorData, setCurrentFloorData] = useState<ProjectDashboardType | null>(null);
   const [currentFloorId, setCurrentFloorId] = useState<string>("all");
   const [error, setError] = useState<Error | null>(null);
+  const [dataVersion, setDataVersion] = useState(0);
+
+  const [imgUrl, setImgUrl] = useState("/placeholder_img.jpg");
+
+  const currentFloor =
+    currentFloorId !== "all"
+      ? projectData?.floors?.find((floor) => floor.floor_id.toString() === currentFloorId)
+      : null;
+
+  const handleUpdate = (updatedData: any) => {
+    updateDataState({ type: "update", item: updatedData });
+  };
+
+  const handleDelete = (deletedItem: any) => {
+    updateDataState({ type: "delete", item: deletedItem });
+  };
 
   useEffect(() => {
     const fetchProjectData = async () => {
       const { data, error } = await supabase
         .from("projects")
-        .select(`
+        .select(
+          `
           *,
           floors (*),
           walls (*),
           columns (*),
           beams (*),
           ceilings (*)
-        `)
+        `,
+        )
         .eq("id", params.projectId)
         .single();
 
       if (error) {
-        console.error("Error fetching project data:", error);
+        // console.error("Error fetching project data:", error);
         return;
       }
 
@@ -56,11 +75,10 @@ export default function Dashboard({ params }: { params: { projectId: string } })
       setCurrentFloorData(data);
     };
     fetchProjectData();
-  }, [supabase, params.projectId]);
-
+  }, [supabase, params.projectId, dataVersion]);
 
   const changeFloor = (value: string) => {
-    console.log("Changing floor to:", value);
+    // console.log("Changing floor to:", value);
     setCurrentFloorId(value);
 
     if (value === "all") {
@@ -70,11 +88,13 @@ export default function Dashboard({ params }: { params: { projectId: string } })
       if (projectData) {
         setCurrentFloorData({
           ...projectData,
-          walls: projectData.walls?.filter(wall => wall.floor_id === floorId) || [],
-          columns: projectData.columns?.filter(column => column.floor_id === floorId) || [],
-          beams: projectData.beams?.filter(beam => beam.floor_id === floorId) || [],
-          ceilings: projectData.ceilings?.filter(ceiling => ceiling.floor_id === floorId) || [],
+          walls: projectData.walls?.filter((wall) => wall.floor_id === floorId) || [],
+          columns: projectData.columns?.filter((column) => column.floor_id === floorId) || [],
+          beams: projectData.beams?.filter((beam) => beam.floor_id === floorId) || [],
+          ceilings: projectData.ceilings?.filter((ceiling) => ceiling.floor_id === floorId) || [],
         });
+
+        setImgUrl(projectData?.floors?.find((floor) => floor.floor_id.toString() === currentFloorId)?.floor_plan);
       }
     }
   };
@@ -85,18 +105,19 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     }
 
     const { item } = action;
-    const elementTypeKey = (item.elementType.toLowerCase() + 's') as ElementTypeKeys;
-    const updatedArray = action.type === 'update'
-    ? projectData[elementTypeKey]?.map((existing: any) =>
-        existing.id === item.id ? item : existing
-      )
-    : projectData[elementTypeKey]?.filter((existing: any) =>
-        existing.id !== item.id
-      );
+    const elementTypeKey = (item.elementType.toLowerCase() + "s") as ElementTypeKeys;
+
+    // Determine the correct identifier field
+    const idField = elementTypeKey === "floors" ? "floor_id" : "id";
+
+    const updatedArray =
+      action.type === "update"
+        ? projectData[elementTypeKey]?.map((existing: any) => (existing[idField] === item[idField] ? item : existing))
+        : projectData[elementTypeKey]?.filter((existing: any) => existing[idField] !== item[idField]);
 
     const updatedData = {
       ...projectData,
-      [item.elementType.toLowerCase() + 's']: updatedArray,
+      [elementTypeKey]: updatedArray,
     };
 
     setProjectData(updatedData);
@@ -111,14 +132,6 @@ export default function Dashboard({ params }: { params: { projectId: string } })
   if (error) {
     return <div>{t('errorLoadingProject')}</div>;
   }
-
-  const handleUpdate = (updatedData: any) => {
-    updateDataState({ type: 'update', item: updatedData });
-  };
-
-  const handleDelete = (deletedItem: any) => {
-    updateDataState({ type: 'delete', item: deletedItem });
-  };
 
   function getPublicUrl(path : any) {
     const { data } = supabase.storage.from('floor-plans').getPublicUrl(path);
@@ -156,12 +169,13 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     const { data: updateData, error: updateError } = await supabase
       .from('floors')  
       .update({ floor_plan: publicUrl }) 
-      .eq('id', currentFloorId); 
+      .eq('floor_id', currentFloorId); 
 
     if (updateError) {
       throw new Error(`Error updating database: ${updateError.message}`);
     }
 
+    setImgUrl(publicUrl || "/placeholder_img.jpg");
   };
 
 
@@ -175,65 +189,81 @@ export default function Dashboard({ params }: { params: { projectId: string } })
             </Button>
           </Link>
 
-          <TypographyH2 className="mt-2 font-bold">{ projectData?.title  }</TypographyH2>
+          <TypographyH2 className="mt-2 font-bold">{projectData?.title}</TypographyH2>
 
-          <div className="mt-4 mb-6 flex flex-row items-center space-x-3">
-            <Select
-              value={currentFloorId}
-              onValueChange={changeFloor}
-            >
+          <div className="mb-6 mt-4 flex flex-row items-center space-x-3">
+            <Select value={currentFloorId} onValueChange={changeFloor}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue>
                   {currentFloorId === "all"
                     ? t('selectAllFloors')
-                    : projectData?.floors?.find(floor => floor.id.toString() === currentFloorId)?.name}
+                    : projectData?.floors?.find((floor) => floor.floor_id.toString() === currentFloorId)?.name}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
                   <SelectItem value="all">{t('selectAllFloors')}</SelectItem>
                   {projectData?.floors?.map((floor: Floor) => (
-                    <SelectItem key={floor.id} value={floor.id}>{floor.name}</SelectItem>
+                    <SelectItem key={floor.floor_id} value={floor.floor_id.toString()}>
+                      {floor.name}
+                    </SelectItem>
                   ))}
                 </SelectGroup>
-                <div className="mt-2 w-[180px]">
-                  <AddDialog
-                    Form1={ColumnsForm}
-                    Form2={FloorDetailsForm}
-                    form1Title={t('addFloorElementTitle')}
-                    form2Title={t('floorDetailsTitle')}
-                    form1Description={t('floorElementDescription')}
-                    form2Description={t('floorDetailsDescription')}
-                    buttonClass="bg-green-700 text-green-50 w-full"
-                    buttonName={t('addFloorButton')}
-                  />
-                </div>
               </SelectContent>
             </Select>
-            <EditDialog elementType={"Floor"} DetailsForm={FloorDetailsForm} buttonName={t('floorDetailsTitle')}/>
+
+            <AddDialog
+              Form1={ColumnsForm}
+              Form2={FloorDetailsForm}
+              form1Title={t('addFloorElementTitle')}
+              form2Title={t('floorDetailsTitle')}
+              form1Description={t('floorElementDescription')}
+              form2Description={t('floorDetailsDescription')}
+              buttonClass="bg-green-700 text-green-50"
+              buttonName={t('addFloorButton')}
+              dbname="floors"
+              projectId={params.projectId}
+              onDataAdded={() => setDataVersion((prevVersion) => prevVersion + 1)}
+            />
+
+            {currentFloorId !== "all" && currentFloor && (
+              <EditDialog
+                elementType="floor"
+                DetailsForm={FloorDetailsForm}
+                itemData={currentFloor}
+                onUpdate={handleUpdate}
+                buttonName={t('floorDetailsTitle')}
+                onDataUpdated={() => setDataVersion((prevVersion) => prevVersion + 1)}
+              />
+            )}
           </div>
 
-          {true && (
-            <div className="relative h-64 w-full">
-              <Image src="/placeholder_img.jpg" alt="otter" fill style={{ objectFit: "contain" }} />
+          {currentFloorId != "all" && (
+            <div>
+              <div className="relative h-64 w-full">
+                <Image src={imgUrl || "/placeholder_img.jpg"} alt="otter" fill style={{ objectFit: "contain" }} />
+              </div>
+
+              <div className="flex justify-center">
+              <input type="file" id="file-upload" className="hidden" onChange={handleUpload}/>
+                <label
+                  htmlFor="file-upload"
+                  className="inline-flex items-center px-4 py-2 mb-6 mt-5 rounded-md cursor-pointer text-sm bg-secondary"
+                >
+                  <Icons.upload className="mr-2 h-5 w-5" />
+                  <span>{t('uploadButton')}</span>
+                </label>
+              </div>
             </div>
           )}
 
-          <div className="flex justify-center">
-            <input type="file" id="file-upload" className="hidden" onChange={handleUpload}/>
-              <label
-                htmlFor="file-upload"
-                className="inline-flex items-center px-4 py-2 mb-6 mt-5 rounded-md cursor-pointer text-sm bg-secondary"
-              >
-                <Icons.upload className="mr-2 h-5 w-5" />
-                <span>{t('uploadButton')}</span>
-              </label>
-          </div>
 
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="walls" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
               <div className="flex items-center justify-between">
-                <AccordionTrigger className="flex-grow">{t('wallsTitle')} {"(" + (currentFloorData?.walls ? currentFloorData?.walls.length : 0) + ")"}</AccordionTrigger>
+                <AccordionTrigger className="flex-grow">
+                {t('wallsTitle')} {"(" + (currentFloorData?.walls ? currentFloorData?.walls.length : 0) + ")"}
+                </AccordionTrigger>
                 <AddDialog
                   Form1={WallForm}
                   Form2={WallDetailsForm}
@@ -241,6 +271,10 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                   form2Title={t('wallDetailsTitle')}
                   form1Description={t('wallElementDescription')}
                   form2Description={t('wallDetailsDescription')}
+                  dbname="walls"
+                  projectId={params.projectId}
+                  onDataAdded={() => setDataVersion((prevVersion) => prevVersion + 1)}
+                  floors={projectData?.floors || []}
                 />
               </div>
               <AccordionContent>
@@ -248,11 +282,12 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                   {currentFloorData?.walls?.map((wall) => (
                     <Subcomponent
                       key={wall.id}
-                      name={wall.name ?? t('unknownWall')}
+                      name={wall.name ?? "Unknown Wall"}
                       type="Wall"
                       itemData={wall}
                       onUpdate={handleUpdate}
                       onDelete={handleDelete}
+                      onDataUpdated={() => setDataVersion((prevVersion) => prevVersion + 1)}
                     />
                   ))}
                 </div>
@@ -261,7 +296,9 @@ export default function Dashboard({ params }: { params: { projectId: string } })
 
             <AccordionItem value="columns" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
               <div className="flex items-center justify-between">
-                <AccordionTrigger className="flex-grow">{t('columnsTitle')} {"(" + (currentFloorData?.columns ? currentFloorData?.columns.length : 0) + ")"}</AccordionTrigger>
+                <AccordionTrigger className="flex-grow">
+                {t('columnsTitle')} {"(" + (currentFloorData?.columns ? currentFloorData?.columns.length : 0) + ")"}
+                </AccordionTrigger>
                 <AddDialog
                   Form1={ColumnsForm}
                   Form2={ColumnDetailsForm}
@@ -269,18 +306,23 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                   form2Title={t('columnDetailsTitle')}
                   form1Description={t('columnElementDescription')}
                   form2Description={t('columnDetailsDescription')}
+                  dbname="columns"
+                  projectId={params.projectId}
+                  onDataAdded={() => setDataVersion((prevVersion) => prevVersion + 1)}
+                  floors={projectData?.floors || []}
                 />
               </div>
               <AccordionContent>
                 <div className="flex flex-col gap-1">
-                  {currentFloorData?.columns?.map(column => (
+                  {currentFloorData?.columns?.map((column) => (
                     <Subcomponent
                       key={column.id}
-                      name={column.name || t('unknownColumn')}
+                      name={column.name ?? "Unknown Columns"}
                       type="Column"
                       itemData={column}
                       onUpdate={handleUpdate}
                       onDelete={handleDelete}
+                      onDataUpdated={() => setDataVersion((prevVersion) => prevVersion + 1)}
                     />
                   ))}
                 </div>
@@ -289,7 +331,9 @@ export default function Dashboard({ params }: { params: { projectId: string } })
 
             <AccordionItem value="beams" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
               <div className="flex items-center justify-between">
-                <AccordionTrigger className="flex-grow">{t('beamsTitle')} {"(" + (currentFloorData?.beams ? currentFloorData?.beams.length : 0) + ")"}</AccordionTrigger>
+                <AccordionTrigger className="flex-grow">
+                {t('beamsTitle')} {"(" + (currentFloorData?.beams ? currentFloorData?.beams.length : 0) + ")"}
+                </AccordionTrigger>
                 <AddDialog
                   Form1={ColumnsForm}
                   Form2={BeamDetailsForm}
@@ -297,18 +341,23 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                   form2Title={t('beamDetailsTitle')}
                   form1Description={t('beamElementDescription')}
                   form2Description={t('beamDetailsDescription')}
+                  dbname="beams"
+                  projectId={params.projectId}
+                  onDataAdded={() => setDataVersion((prevVersion) => prevVersion + 1)}
+                  floors={projectData?.floors || []}
                 />
               </div>
               <AccordionContent>
                 <div className="flex flex-col gap-1">
-                  {currentFloorData?.beams?.map(beam => (
+                  {currentFloorData?.beams?.map((beam) => (
                     <Subcomponent
                       key={beam.id}
-                      name={beam.name || t('unknownBeam')}
+                      name={beam.name ?? t('unknownBeam')}
                       type="Beam"
                       itemData={beam}
                       onUpdate={handleUpdate}
                       onDelete={handleDelete}
+                      onDataUpdated={() => setDataVersion((prevVersion) => prevVersion + 1)}
                     />
                   ))}
                 </div>
@@ -317,7 +366,9 @@ export default function Dashboard({ params }: { params: { projectId: string } })
 
             <AccordionItem value="ceilings" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
               <div className="flex items-center justify-between">
-                <AccordionTrigger className="flex-grow">{t('ceilingsTitle')} {"(" + (currentFloorData?.ceilings ? currentFloorData?.ceilings.length : 0) + ")"}</AccordionTrigger>
+                <AccordionTrigger className="flex-grow">
+                {t('ceilingsTitle')} {"(" + (currentFloorData?.ceilings ? currentFloorData?.ceilings.length : 0) + ")"}
+                </AccordionTrigger>
                 <AddDialog
                   Form1={ColumnsForm}
                   Form2={CeilingDetailsForm}
@@ -325,11 +376,15 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                   form2Title={t('ceilingDetailsTitle')}
                   form1Description={t('ceilingElementDescription')}
                   form2Description={t('ceilingDetailsDescription')}
+                  dbname="ceilings"
+                  projectId={params.projectId}
+                  onDataAdded={() => setDataVersion((prevVersion) => prevVersion + 1)}
+                  floors={projectData?.floors || []}
                 />
               </div>
               <AccordionContent>
                 <div className="flex flex-col gap-1">
-                  {currentFloorData?.ceilings?.map(ceiling => (
+                  {currentFloorData?.ceilings?.map((ceiling) => (
                     <Subcomponent
                       key={ceiling.id}
                       name={ceiling.name || t('unknownCeiling')}
@@ -337,6 +392,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                       itemData={ceiling}
                       onUpdate={handleUpdate}
                       onDelete={handleDelete}
+                      onDataUpdated={() => setDataVersion((prevVersion) => prevVersion + 1)}
                     />
                   ))}
                 </div>

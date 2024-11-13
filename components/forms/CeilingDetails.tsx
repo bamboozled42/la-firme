@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Ceiling, toCamelCase, toSnakeCase } from "../../lib/utils";
+import { type Ceiling, toCamelCase, toSnakeCase } from "../../lib/utils";
 
 interface CeilingDetailsFormProps {
   itemData: Ceiling;
@@ -16,20 +16,19 @@ interface CeilingDetailsFormProps {
 }
 
 const CeilingDetailsForm: React.FC<CeilingDetailsFormProps> = ({ onSave, onCancel, onDelete, itemData }) => {
-  const defaultValues = toCamelCase(itemData);
+  const defaultValues = itemData ? itemData : {};
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<CeilingDetailsFormSchema>({
     resolver: zodResolver(ceilingDetailsFormSchema),
-    defaultValues
+    defaultValues,
   });
 
   const onSubmit = (data: CeilingDetailsFormSchema) => {
-    const snakeData = toSnakeCase(data);
-    console.log("CeilingDetailsForm Submitted Data:", data); // Debugging
-    onSave(snakeData as CeilingDetailsFormSchema);
+    // console.log("CeilingDetailsForm Submitted Data:", data); // Debugging
+    onSave(data);
   };
 
   return (
@@ -52,47 +51,47 @@ const CeilingDetailsForm: React.FC<CeilingDetailsFormProps> = ({ onSave, onCance
 
       {/* Dimension X Field */}
       <div>
-        <label htmlFor="dimensionX" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="dimension_x" className="block text-sm font-medium text-gray-700">
           Dimension X
         </label>
         <input
           type="number"
-          id="dimensionX"
-          {...register("dimensionX", { valueAsNumber: true })}
+          id="dimension_x"
+          {...register("dimension_x", { valueAsNumber: true })}
           className={`mt-1 block w-full rounded-md border ${
-            errors.dimensionX ? "border-red-600" : "border-gray-300"
+            errors.dimension_x ? "border-red-600" : "border-gray-300"
           } shadow-sm focus:border-green-500 focus:ring-green-500`}
         />
-        {errors.dimensionX && <p className="mt-1 text-sm text-red-600">{errors.dimensionX.message}</p>}
+        {errors.dimension_x && <p className="mt-1 text-sm text-red-600">{errors.dimension_x.message}</p>}
       </div>
 
       {/* Dimension Y Field */}
       <div>
-        <label htmlFor="dimensionY" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="dimension_y" className="block text-sm font-medium text-gray-700">
           Dimension Y
         </label>
         <input
           type="number"
-          id="dimensionY"
-          {...register("dimensionY", { valueAsNumber: true })}
+          id="dimension_y"
+          {...register("dimension_y", { valueAsNumber: true })}
           className={`mt-1 block w-full rounded-md border ${
-            errors.dimensionY ? "border-red-600" : "border-gray-300"
+            errors.dimension_y ? "border-red-600" : "border-gray-300"
           } shadow-sm focus:border-green-500 focus:ring-green-500`}
         />
-        {errors.dimensionY && <p className="mt-1 text-sm text-red-600">{errors.dimensionY.message}</p>}
+        {errors.dimension_y && <p className="mt-1 text-sm text-red-600">{errors.dimension_y.message}</p>}
       </div>
 
       {/* Direction of Joints Field */}
       <div>
-        <label htmlFor="directionOfJoints" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="direction_of_joints" className="block text-sm font-medium text-gray-700">
           Direction of Joints
         </label>
         <select
-          id="directionOfJoints"
-          {...register("directionOfJoints")}
+          id="direction_of_joints"
+          {...register("direction_of_joints")}
           defaultValue=""
           className={`mt-1 block w-full rounded-md border ${
-            errors.directionOfJoints ? "border-red-600" : "border-gray-300"
+            errors.direction_of_joints ? "border-red-600" : "border-gray-300"
           } shadow-sm focus:border-green-500 focus:ring-green-500`}
         >
           <option value="" disabled>
@@ -101,46 +100,42 @@ const CeilingDetailsForm: React.FC<CeilingDetailsFormProps> = ({ onSave, onCance
           <option value="X">X</option>
           <option value="Y">Y</option>
         </select>
-        {errors.directionOfJoints && <p className="mt-1 text-sm text-red-600">{errors.directionOfJoints.message}</p>}
+        {errors.direction_of_joints && (
+          <p className="mt-1 text-sm text-red-600">{errors.direction_of_joints.message}</p>
+        )}
       </div>
 
-      {/* Cracks Field */}
-      <div>
-        <label htmlFor="cracks" className="block text-sm font-medium text-gray-700">
+      {/* Cracks Field (Checkbox) */}
+      <div className="flex items-center">
+        <label htmlFor="cracks" className="block text-sm font-medium text-gray-700 mr-2">
           Cracks
         </label>
-        <select
+        <input
+          type="checkbox"
           id="cracks"
           {...register("cracks")}
-          defaultValue=""
-          className={`mt-1 block w-full rounded-md border ${
-            errors.cracks ? "border-red-600" : "border-gray-300"
-          } shadow-sm focus:border-green-500 focus:ring-green-500`}
-        >
-          <option value="" disabled>
-            Select option
-          </option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-        {errors.cracks && <p className="mt-1 text-sm text-red-600">{errors.cracks.message}</p>}
+          className={`h-4 w-4 text-green-600 border-gray-300 rounded ${
+            errors.cracks ? "border-red-600" : ""
+          }`}
+        />
       </div>
+      {errors.cracks && <p className="mt-1 text-sm text-red-600">{errors.cracks.message}</p>}
 
-      {/* Pipes Field */}
-      <div>
-        <label htmlFor="pipes" className="block text-sm font-medium text-gray-700">
+      {/* Pipes Field (Checkbox) */}
+      <div className="flex items-center">
+        <label htmlFor="pipes" className="block text-sm font-medium text-gray-700 mr-2">
           Pipes
         </label>
         <input
-          type="number"
+          type="checkbox"
           id="pipes"
-          {...register("pipes", { valueAsNumber: true })}
-          className={`mt-1 block w-full rounded-md border ${
-            errors.pipes ? "border-red-600" : "border-gray-300"
-          } shadow-sm focus:border-green-500 focus:ring-green-500`}
+          {...register("pipes")}
+          className={`h-4 w-4 text-green-600 border-gray-300 rounded ${
+            errors.pipes ? "border-red-600" : ""
+          }`}
         />
-        {errors.pipes && <p className="mt-1 text-sm text-red-600">{errors.pipes.message}</p>}
       </div>
+      {errors.pipes && <p className="mt-1 text-sm text-red-600">{errors.pipes.message}</p>}
 
       {/* Buttons */}
       <div className="mt-4 flex justify-end space-x-2">
