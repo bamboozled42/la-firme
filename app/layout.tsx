@@ -4,6 +4,10 @@ import AuthStatus from "./(components-navbar)/auth-status";
 import Navbar from "./(components-navbar)/navbar";
 import "./globals.css";
 import { Providers } from "./providers";
+import { getLocale } from '../i18n/server';
+import { LocaleProvider } from '../hooks/locale-provider';
+import ChangeLocale from './(components-navbar)/changelocale';
+
 
 export const metadata = {
   title: "T4SG Starter Project",
@@ -11,26 +15,30 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = getLocale();
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       {/* Hydration warning suppressed because of next-themes https://github.com/pacocoursey/next-themes */}
       <body>
         <Providers>
-          <div className="flex-col md:flex">
-            <div className="border-b">
-              <div className="flex h-16 items-center px-4">
-                <Navbar className="mx-6" />
-                <div className="ml-auto flex items-center space-x-4">
-                  <ModeToggle />
-                  <AuthStatus />
+          <LocaleProvider value={locale}>
+            <div className="flex-col md:flex">
+              <div className="border-b">
+                <div className="flex h-16 items-center px-4">
+                  <Navbar className="mx-6" />
+                  <div className="ml-auto flex items-center space-x-4">
+                    <ChangeLocale/>
+                    <ModeToggle />
+                    <AuthStatus />
+                  </div>
                 </div>
               </div>
+              {/* Conditionally display website if logged in, else display login page */}
+              <div className="space-y-6 p-10 pb-16 md:block">
+                <main>{children}</main>
+              </div>
             </div>
-            {/* Conditionally display website if logged in, else display login page */}
-            <div className="space-y-6 p-10 pb-16 md:block">
-              <main>{children}</main>
-            </div>
-          </div>
+          </LocaleProvider>
         </Providers>
         <Toaster />
       </body>

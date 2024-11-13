@@ -12,6 +12,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import React, { useState } from "react";
+import { useTranslation } from '../../../i18n/client';
 
 interface AddDialogProps {
   Form1: React.FC<any>;
@@ -34,6 +35,8 @@ export default function AddDialog({
   buttonClass,
   buttonName,
 }: AddDialogProps) {
+  const {i18n, t} = useTranslation('common');
+
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState<"form1" | "form2">("form1");
   const [formData, setFormData] = useState<any>({});
@@ -79,7 +82,7 @@ export default function AddDialog({
         <Button size="sm" className={buttonClass || "bg-green-700 text-green-50"}>
           <Icons.add className="mr-2 h-4 w-4"/> 
           <span className="mr-1">
-            {buttonName || "Add"}
+            {buttonName || t('add')}
           </span>
         </Button>
       </DialogTrigger>

@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { useSupabase } from "@/app/providers";
+import { useTranslation } from '../../../i18n/client';
 
 interface AddDetailsDialogProps {
   onUpdate: (updatedData: any) => void;
@@ -30,6 +31,8 @@ export interface DetailsFormProps {
 }
 
 export function EditDialog({ elementType, DetailsForm, itemData, onUpdate, buttonName }: AddDetailsDialogProps) {
+  const {i18n, t} = useTranslation('common');
+
   const [isOpen, setIsOpen] = useState(false);
   const supabase = useSupabase();
   const getTableName = (type: string) => {
@@ -80,7 +83,7 @@ export function EditDialog({ elementType, DetailsForm, itemData, onUpdate, butto
         <Button size="sm" className="ml-2 bg-blue-700 text-blue-50">
           <Icons.pencil className="mr-2 h-4 w-4" /> 
           <span className="mr-1">
-            {buttonName || "Details"}
+            {buttonName || t('details')}
           </span>
         </Button>
       </DialogTrigger>
