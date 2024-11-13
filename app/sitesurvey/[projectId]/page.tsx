@@ -167,9 +167,9 @@ export default function Dashboard({ params }: { params: { projectId: string } })
 
     // Update floor table
     const { data: updateData, error: updateError } = await supabase
-      .from('floors')  
-      .update({ floor_plan: publicUrl }) 
-      .eq('floor_id', currentFloorId); 
+      .from('floors')
+      .update({ floor_plan: publicUrl })
+      .eq('floor_id', currentFloorId);
 
     if (updateError) {
       throw new Error(`Error updating database: ${updateError.message}`);
@@ -213,7 +213,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
             </Select>
 
             <AddDialog
-              Form1={ColumnsForm}
+              Form1={FloorsForm}
               Form2={FloorDetailsForm}
               form1Title={t('addFloorElementTitle')}
               form2Title={t('floorDetailsTitle')}
