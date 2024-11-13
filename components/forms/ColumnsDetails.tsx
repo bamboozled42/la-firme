@@ -15,7 +15,7 @@ interface ColumnDetailsFormProps {
 }
 
 const ColumnDetailsForm: React.FC<ColumnDetailsFormProps> = ({ onSave, onCancel, onDelete, itemData }) => {
-  const defaultValues = toCamelCase(itemData);
+  const defaultValues = itemData ? itemData : {};
   const {
     register,
     handleSubmit,

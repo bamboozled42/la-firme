@@ -5,13 +5,15 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm, type FieldErrors, type SubmitHandler } from "react-hook-form";
+import { Floor } from "../../lib/utils";
 
 interface ColumnFormProps {
   onNext: (data: ColumnFormSchema) => void;
   onCancel: () => void;
+  floors: Floor[] | null;
 }
 
-const ColumnsForm: React.FC<ColumnFormProps> = ({ onNext, onCancel }) => {
+const ColumnsForm: React.FC<ColumnFormProps> = ({ onNext, onCancel, floors }) => {
   const {
     register,
     handleSubmit,
@@ -61,17 +63,19 @@ const ColumnsForm: React.FC<ColumnFormProps> = ({ onNext, onCancel }) => {
         <label htmlFor="floor" className="block text-sm font-medium text-gray-700">
           Floor
         </label>
-        <input
-          type="number"
+        <select
           id="floor"
           {...register("floor_id", { valueAsNumber: true })}
           className={`mt-1 block w-full rounded-md border ${
             errors.floor_id ? "border-red-600" : "border-gray-300"
           } shadow-sm focus:border-green-500 focus:ring-green-500`}
-          min={1} // Ensures only positive numbers can be entered
-          step={1} // Ensures only integers can be entered
-          placeholder="Enter floor number"
-        />
+        >
+          {floors?.map((floor) => (
+            <option key={floor.floor_id} value={floor.floor_id}>
+              {floor.name}
+            </option>
+          ))}
+        </select>
         {errors.floor_id && <p className="mt-1 text-sm text-red-600">{errors.floor_id.message}</p>}
       </div>
 

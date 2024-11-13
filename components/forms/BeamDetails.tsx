@@ -16,7 +16,7 @@ interface BeamDetailsFormProps {
 }
 
 const BeamDetailsForm: React.FC<BeamDetailsFormProps> = ({ itemData, onSave, onCancel, onDelete }) => {
-  const defaultValues = toCamelCase(itemData);
+  const defaultValues = itemData ? itemData : {};
   const {
     register,
     handleSubmit,

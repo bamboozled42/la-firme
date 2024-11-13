@@ -6,6 +6,7 @@ import CeilingDetailsForm from "@/components/forms/CeilingDetails";
 import ColumnDetailsForm from "@/components/forms/ColumnsDetails";
 import ColumnsForm from "@/components/forms/ColumnsForm";
 import FloorDetailsForm from "@/components/forms/FloorDetails";
+import FloorsForm from "@/components/forms/FloorsForm";
 import WallDetailsForm from "@/components/forms/WallDetailsForm";
 import WallForm from "@/components/forms/WallForm";
 import { Icons } from "@/components/icons";
@@ -27,11 +28,20 @@ export default function Dashboard({ params }: { params: { projectId: string } })
   const [currentFloorData, setCurrentFloorData] = useState<ProjectDashboardType | null>(null);
   const [currentFloorId, setCurrentFloorId] = useState<string>("all");
   const [error, setError] = useState<Error | null>(null);
+  const [dataVersion, setDataVersion] = useState(0);
 
   const currentFloor =
     currentFloorId !== "all"
       ? projectData?.floors?.find((floor) => floor.floor_id.toString() === currentFloorId)
       : null;
+
+  const handleUpdate = (updatedData: any) => {
+    updateDataState({ type: "update", item: updatedData });
+  };
+
+  const handleDelete = (deletedItem: any) => {
+    updateDataState({ type: "delete", item: deletedItem });
+  };
 
   useEffect(() => {
     const fetchProjectData = async () => {
@@ -59,7 +69,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
       setCurrentFloorData(data);
     };
     fetchProjectData();
-  }, [supabase, params.projectId]);
+  }, [supabase, params.projectId, dataVersion]);
 
   // this function changes the currentfloordata to the floor chosen in the select
   const changeFloor = (value: string) => {
@@ -119,14 +129,6 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     return <div>Error loading project data...</div>;
   }
 
-  const handleUpdate = (updatedData: any) => {
-    updateDataState({ type: "update", item: updatedData });
-  };
-
-  const handleDelete = (deletedItem: any) => {
-    updateDataState({ type: "delete", item: deletedItem });
-  };
-
   return (
     <>
       <div className="flex items-center justify-center">
@@ -161,7 +163,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
             </Select>
 
             <AddDialog
-              Form1={ColumnsForm}
+              Form1={FloorsForm}
               Form2={FloorDetailsForm}
               form1Title="Add Floor Element"
               form2Title="Floor Details"
@@ -171,6 +173,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
               buttonName="Add new floor"
               dbname="floors"
               projectId={params.projectId}
+              onDataAdded={() => setDataVersion((prevVersion) => prevVersion + 1)}
             />
 
             {currentFloorId !== "all" && currentFloor && (
@@ -180,6 +183,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                 itemData={currentFloor}
                 onUpdate={handleUpdate}
                 buttonName="Floor details"
+                onDataUpdated={() => setDataVersion((prevVersion) => prevVersion + 1)}
               />
             )}
           </div>
@@ -212,6 +216,8 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                   form2Description="Please provide detailed information about the wall."
                   dbname="walls"
                   projectId={params.projectId}
+                  onDataAdded={() => setDataVersion((prevVersion) => prevVersion + 1)}
+                  floors={projectData?.floors || []}
                 />
               </div>
               <AccordionContent>
@@ -224,6 +230,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                       itemData={wall}
                       onUpdate={handleUpdate}
                       onDelete={handleDelete}
+                      onDataUpdated={() => setDataVersion((prevVersion) => prevVersion + 1)}
                     />
                   ))}
                 </div>
@@ -244,6 +251,8 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                   form2Description="Please provide detailed information about the column."
                   dbname="columns"
                   projectId={params.projectId}
+                  onDataAdded={() => setDataVersion((prevVersion) => prevVersion + 1)}
+                  floors={projectData?.floors || []}
                 />
               </div>
               <AccordionContent>
@@ -256,6 +265,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                       itemData={column}
                       onUpdate={handleUpdate}
                       onDelete={handleDelete}
+                      onDataUpdated={() => setDataVersion((prevVersion) => prevVersion + 1)}
                     />
                   ))}
                 </div>
@@ -276,6 +286,8 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                   form2Description="Please provide detailed information about the beam."
                   dbname="beams"
                   projectId={params.projectId}
+                  onDataAdded={() => setDataVersion((prevVersion) => prevVersion + 1)}
+                  floors={projectData?.floors || []}
                 />
               </div>
               <AccordionContent>
@@ -288,6 +300,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                       itemData={beam}
                       onUpdate={handleUpdate}
                       onDelete={handleDelete}
+                      onDataUpdated={() => setDataVersion((prevVersion) => prevVersion + 1)}
                     />
                   ))}
                 </div>
@@ -308,6 +321,8 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                   form2Description="Please provide detailed information about the ceiling."
                   dbname="ceilings"
                   projectId={params.projectId}
+                  onDataAdded={() => setDataVersion((prevVersion) => prevVersion + 1)}
+                  floors={projectData?.floors || []}
                 />
               </div>
               <AccordionContent>
@@ -320,6 +335,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                       itemData={ceiling}
                       onUpdate={handleUpdate}
                       onDelete={handleDelete}
+                      onDataUpdated={() => setDataVersion((prevVersion) => prevVersion + 1)}
                     />
                   ))}
                 </div>

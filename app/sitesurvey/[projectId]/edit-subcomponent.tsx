@@ -18,6 +18,7 @@ interface AddDetailsDialogProps {
   DetailsForm: React.ComponentType<DetailsFormProps>;
   itemData: any; // data to be passed in and rendered in the details form
   buttonName?: string;
+  onDataUpdated?: () => void;
 }
 
 export interface DetailsFormProps {
@@ -27,30 +28,46 @@ export interface DetailsFormProps {
   onDelete?: () => void; // Optional: Not all forms might need delete
 }
 
-export function EditDialog({ elementType, DetailsForm, itemData, onUpdate, buttonName }: AddDetailsDialogProps) {
+export function EditDialog({
+  elementType,
+  DetailsForm,
+  itemData,
+  onUpdate,
+  buttonName,
+  onDataUpdated,
+}: AddDetailsDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const supabase = useSupabase();
   const getTableName = (type: string) => {
     return type.toLowerCase() + "s";
   };
-  console.log("EditDialog itemData:", itemData);
 
   const handleSave = async (data: any) => {
     try {
       const tableName = getTableName(elementType);
-      const idField = tableName === "floors" ? "floor_id" : "id";
-      const idValue = tableName === "floors" ? itemData.floor_id : itemData.id;
+      let updatedData;
+      let error;
+      if (tableName === "floors") {
+        const { data: updatedData, error } = await supabase
+          .from(tableName)
+          .update({ ...data })
+          .eq("floor_id", itemData.floor_id)
+          .select()
+          .single();
+      } else {
+        const { data: updatedData, error } = await supabase
+          .from(tableName)
+          .update({ ...data })
+          .eq("id", itemData.id)
+          .select()
+          .single();
+      }
 
-      const { data: updatedData, error } = await supabase
-        .from(tableName)
-        .update({ ...data })
-        .eq(idField, idValue)
-        .select()
-        .single();
+      // console.log("Updated Data:", updatedData);
+      if (error) throw error;
 
-      if (error || !updatedData) {
-        console.error("Error updating item:", error);
-        return;
+      if (onDataUpdated) {
+        onDataUpdated();
       }
 
       onUpdate({
@@ -61,7 +78,7 @@ export function EditDialog({ elementType, DetailsForm, itemData, onUpdate, butto
 
       setIsOpen(false);
     } catch (error) {
-      console.error("Error updating item:", error);
+      // console.error('Error updating item:', error);
     }
   };
 

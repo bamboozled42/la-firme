@@ -3,14 +3,17 @@ import { z } from "zod";
 
 // General Form Schema
 export const generalFormSchema = z.object({
-  name: z.string().optional(),
+  name: z.string().min(1, { message: "Name is required" }),
   number: z
     .number({ required_error: "Number is required" })
     .int("Number must be an integer")
     .positive("Number must be positive")
     .nullable()
     .optional(),
-  floor_id: z.string().min(1, "Floor selection is required"),
+  floor_id: z
+    .number({ required_error: "Number is required" })
+    .int("Number must be an integer")
+    .positive("Number must be positive"),
 });
 
 export const wallFormSchema = generalFormSchema.extend({
@@ -104,7 +107,9 @@ export const ceilingDetailsFormSchema = z.object({
   pipes: z.boolean().default(false),
 });
 
-export const floorFormSchema = generalFormSchema;
+export const floorFormSchema = z.object({
+  name: z.string().min(1, { message: "Name is required" }),
+});
 
 export const floorDetailsFormSchema = z.object({
   materials: z.enum(["Dirt", "Cement", "Wood", "Tiles"], {
