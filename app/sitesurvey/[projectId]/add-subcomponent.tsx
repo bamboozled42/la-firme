@@ -14,7 +14,7 @@ import {
 import { supabase } from "@/lib/supabase";
 import React, { useState } from "react";
 import { useTranslation } from '../../../i18n/client';
-import { Floor } from "../../../lib/utils";
+import { type Floor } from "../../../lib/utils";
 
 interface AddDialogProps {
   Form1: React.FC<any>;
@@ -68,6 +68,21 @@ export default function AddDialog({
     console.log(data);
 
     try {
+       const { data: existingData, error: fetchError } = await supabase
+       .from(dbname)
+       .select("id") // Adjust this to the primary key or relevant field
+       .eq("name", completeData.name) // Assuming `name` is the unique field to check
+       .single();
+
+      if (fetchError && fetchError.code !== "PGRST116") {
+        console.error("Error checking existing data:", fetchError.message);
+        return;
+      }
+
+      if (existingData) {
+        alert(t("duplicate_name_error", "An entry with this name already exists."));
+        return;
+      }
       // Insert combined data into Supabase
       const { data: supabaseData, error } = await supabase.from(dbname).insert([completeData]);
 

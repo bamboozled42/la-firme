@@ -17,7 +17,7 @@ export const generalFormSchema = z.object({
 });
 
 export const wallFormSchema = generalFormSchema.extend({
-  direction: z.enum(["x", "y"], {
+  direction: z.enum(["X", "Y"], {
     errorMap: () => ({ message: "Direction must be either 'x' or 'y'" }),
   }),
 });

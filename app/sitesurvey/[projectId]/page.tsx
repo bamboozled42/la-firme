@@ -9,6 +9,7 @@ import FloorDetailsForm from "@/components/forms/FloorDetails";
 import FloorsForm from "@/components/forms/FloorsForm";
 import WallDetailsForm from "@/components/forms/WallDetailsForm";
 import WallForm from "@/components/forms/WallForm";
+import BeamForm from "@/components/forms/BeamsForm";
 import { Icons } from "@/components/icons";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
@@ -17,12 +18,13 @@ import { TypographyH2 } from "@/components/ui/typography";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { ElementTypeKeys, Floor, ProjectDashboardType, type StateAction } from "../../../lib/utils";
+import { type ElementTypeKeys, type Floor, type ProjectDashboardType, type StateAction } from "../../../lib/utils";
 import AddDialog from "./add-subcomponent";
 import { EditDialog } from "./edit-subcomponent";
 import { useTranslation } from '../../../i18n/client';
 
 import Subcomponent from "./subcomponent";
+import CeilingForm from "@/components/forms/CeilingForm";
 
 export default function Dashboard({ params }: { params: { projectId: string } }) {
   const { i18n, t } = useTranslation('common');
@@ -335,7 +337,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                 {t('beamsTitle')} {"(" + (currentFloorData?.beams ? currentFloorData?.beams.length : 0) + ")"}
                 </AccordionTrigger>
                 <AddDialog
-                  Form1={ColumnsForm}
+                  Form1={BeamForm}
                   Form2={BeamDetailsForm}
                   form1Title={t('addBeamElementTitle')}
                   form2Title={t('beamDetailsTitle')}
@@ -370,7 +372,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                 {t('ceilingsTitle')} {"(" + (currentFloorData?.ceilings ? currentFloorData?.ceilings.length : 0) + ")"}
                 </AccordionTrigger>
                 <AddDialog
-                  Form1={ColumnsForm}
+                  Form1={CeilingForm}
                   Form2={CeilingDetailsForm}
                   form1Title={t('addCeilingElementTitle')}
                   form2Title={t('ceilingDetailsTitle')}
