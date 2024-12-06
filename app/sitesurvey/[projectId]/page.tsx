@@ -94,7 +94,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
           ceilings: projectData.ceilings?.filter((ceiling) => ceiling.floor_id === floorId) || [],
         });
 
-        setImgUrl(projectData?.floors?.find((floor) => floor.floor_id.toString() === currentFloorId)?.floor_plan);
+        setImgUrl(projectData?.floors?.find((floor) => floor.floor_id === floorId)?.floor_plan || "");
       }
     }
   };
@@ -148,9 +148,10 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     }
 
     // Upload the image
+    const fileName = `floorId${currentFloorId}`;
     const { data, error } = await supabase.storage
       .from('floor-plans')
-      .upload(`${file.name}`, file);
+      .upload(fileName, file, { upsert: true });
 
     if (error) {
       console.error('Error uploading image:', error.message);
@@ -175,7 +176,15 @@ export default function Dashboard({ params }: { params: { projectId: string } })
       throw new Error(`Error updating database: ${updateError.message}`);
     }
 
-    setImgUrl(publicUrl || "/placeholder_img.jpg");
+    setImgUrl((publicUrl || "/placeholder_img.jpg") + "?t=" + new Date().getTime());
+    const updatedFloors = projectData?.floors?.map((floor) => 
+      floor.floor_id.toString() === currentFloorId ? { ...floor, floor_plan: publicUrl || "/placeholder_img.jpg" } : floor
+    );
+    
+    if (projectData) {
+      // Update the projectData with the updated floors array
+      projectData.floors = updatedFloors;
+    }
   };
 
 
