@@ -23,6 +23,8 @@ export default function ProjectDashboard() {
 
   const supabase = useSupabase();
   const [projects, setProjects] = useState<ProjectDashboardType[] | null>(null);
+  const [architects, setArchitects] = useState<Record<string, number>>({});
+  const [isAdmin, setIsAdmin] = useState(false);
   const [error, setError] = useState<PostgrestError | null>(null);
 
   useEffect(() => {
@@ -37,7 +39,8 @@ export default function ProjectDashboard() {
 
       const { data: userData, error: userError } = await supabase.from("users").select("*").eq("id", user.id).single();
 
-      if (userData.role == "admin") {
+      if (userData?.role == "admin") {
+        setIsAdmin(true);
         let { data: projects, error } = await supabase.from("projects").select(`
         *,
         architect:architect_id(first_name, last_name),
@@ -71,7 +74,22 @@ export default function ProjectDashboard() {
         }
       }
     };
+    const fetchArchitects = async () => {
+      const { data, error } = await supabase.from("users").select("id, first_name, last_name").eq("role", "architect");
+      if (error) {
+        console.error(error);
+      } else {
+        const architectsObj = data.reduce((acc: Record<string, number>, user: any) => {
+          const fullName = `${user.first_name} ${user.last_name}`;
+          acc[fullName] = user.id;
+          return acc;
+        }, {});
+        setArchitects(architectsObj);
+      }
+    };
+    
     fetchProjects();
+    fetchArchitects();
   }, [supabase]);
 
   if (error) {
@@ -92,6 +110,8 @@ export default function ProjectDashboard() {
               <ProjectCard
                 key={project.id}
                 project={project}
+                architects={architects}
+                isAdmin={isAdmin}
               />
             ))
           )

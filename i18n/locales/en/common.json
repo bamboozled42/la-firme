@@ -44,6 +44,9 @@
     "dashboard": "Dashboard",
     "add": "Add",
     "details": "Details",
-    "projectDashboard": "Project Dashboard"
+    "projectDashboard": "Project Dashboard",
+    "assigned": "Assigned",
+    "in_progress": "In Progress",
+    "completed": "Completed"
   }
   
