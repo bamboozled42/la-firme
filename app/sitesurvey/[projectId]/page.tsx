@@ -22,7 +22,6 @@ import { type ElementTypeKeys, type Floor, type ProjectDashboardType, type State
 import AddDialog from "./add-subcomponent";
 import { EditDialog } from "./edit-subcomponent";
 import { useTranslation } from '../../../i18n/client';
-
 import Subcomponent from "./subcomponent";
 import CeilingForm from "@/components/forms/CeilingForm";
 
@@ -69,7 +68,6 @@ export default function Dashboard({ params }: { params: { projectId: string } })
         .single();
 
       if (error) {
-        // console.error("Error fetching project data:", error);
         return;
       }
 
@@ -80,7 +78,6 @@ export default function Dashboard({ params }: { params: { projectId: string } })
   }, [supabase, params.projectId, dataVersion]);
 
   const changeFloor = (value: string) => {
-    // console.log("Changing floor to:", value);
     setCurrentFloorId(value);
 
     if (value === "all") {
@@ -140,16 +137,12 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     return data?.publicUrl || null;
   };
 
-  // !! For now, uploading an image DOES NOT delete the old image (will be implemented later)
-  // + deleting a floor (is that a feature?) needs to delete image as well
-  // + cannot upload image with duplicate names; probably will asign one name for each project/floor (but what about file type then? .png .jpg)
   const handleUpload = async (event : any) => {
     const file = event.target.files[0];
     if (!file) {
       return;
     }
 
-    // Upload the image
     const { data, error } = await supabase.storage
       .from('floor-plans')
       .upload(`${file.name}`, file);
@@ -159,15 +152,12 @@ export default function Dashboard({ params }: { params: { projectId: string } })
       return;
     }
 
-    // Get the public URL
     const publicUrl = getPublicUrl(data.path);
-    if (publicUrl) {
-      console.log("Image URL:", publicUrl);
-    } else {
-        console.error("Failed to retrieve image URL");
+    if (!publicUrl) {
+      console.error("Failed to retrieve image URL");
+      return;
     }
 
-    // Update floor table
     const { data: updateData, error: updateError } = await supabase
       .from('floors')
       .update({ floor_plan: publicUrl })
@@ -180,6 +170,72 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     setImgUrl(publicUrl || "/placeholder_img.jpg");
   };
 
+  // Combine all project arrays into one, tagging each with elementType
+  const getAllDataForProject = () => {
+    if (!projectData) return [];
+    const { floors = [], walls = [], columns = [], beams = [], ceilings = [] } = projectData;
+
+    const floorsWithType = floors.map(f => ({ ...f, elementType: 'floor' }));
+    const wallsWithType = walls.map(w => ({ ...w, elementType: 'wall' }));
+    const columnsWithType = columns.map(c => ({ ...c, elementType: 'column' }));
+    const beamsWithType = beams.map(b => ({ ...b, elementType: 'beam' }));
+    const ceilingsWithType = ceilings.map(c => ({ ...c, elementType: 'ceiling' }));
+
+    return [
+      ...floorsWithType,
+      ...wallsWithType,
+      ...columnsWithType,
+      ...beamsWithType,
+      ...ceilingsWithType
+    ];
+  };
+
+  // Convert a single array of objects into CSV
+  function exportToCSV(data: any[], filename: string) {
+    if (!data || data.length === 0) {
+      console.warn("No data available for CSV export");
+      return;
+    }
+
+    // Collect all unique keys from all data objects
+    const allKeys = new Set<string>();
+    data.forEach((obj) => {
+      Object.keys(obj).forEach((key) => allKeys.add(key));
+    });
+    const keys = Array.from(allKeys);
+
+    const csvRows = [];
+    // Header row
+    csvRows.push(keys.join(","));
+
+    // Data rows
+    for (const row of data) {
+      const values = keys.map(k => {
+        const val = row[k] === null || row[k] === undefined ? "" : row[k];
+        return `"${val}"`; // wrap in quotes to handle commas
+      });
+      csvRows.push(values.join(","));
+    }
+
+    const csvString = csvRows.join("\n");
+    const blob = new Blob([csvString], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.setAttribute("hidden", "");
+    a.setAttribute("href", url);
+    a.setAttribute("download", filename);
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  const handleExportCSV = () => {
+    const allData = getAllDataForProject();
+    if (allData.length > 0) {
+      exportToCSV(allData, "project_data.csv");
+    }
+  };
 
   return (
     <>
@@ -243,7 +299,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
           {currentFloorId != "all" && (
             <div>
               <div className="relative h-64 w-full">
-                <Image src={imgUrl || "/placeholder_img.jpg"} alt="otter" fill style={{ objectFit: "contain" }} />
+                <Image src={imgUrl || "/placeholder_img.jpg"} alt="Floor Plan" fill style={{ objectFit: "contain" }} />
               </div>
 
               <div className="flex justify-center">
@@ -259,12 +315,11 @@ export default function Dashboard({ params }: { params: { projectId: string } })
             </div>
           )}
 
-
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="walls" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
               <div className="flex items-center justify-between">
                 <AccordionTrigger className="flex-grow">
-                {t('wallsTitle')} {"(" + (currentFloorData?.walls ? currentFloorData?.walls.length : 0) + ")"}
+                  {t('wallsTitle')} {"(" + (currentFloorData?.walls ? currentFloorData?.walls.length : 0) + ")"}
                 </AccordionTrigger>
                 <AddDialog
                   Form1={WallForm}
@@ -299,7 +354,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
             <AccordionItem value="columns" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
               <div className="flex items-center justify-between">
                 <AccordionTrigger className="flex-grow">
-                {t('columnsTitle')} {"(" + (currentFloorData?.columns ? currentFloorData?.columns.length : 0) + ")"}
+                  {t('columnsTitle')} {"(" + (currentFloorData?.columns ? currentFloorData?.columns.length : 0) + ")"}
                 </AccordionTrigger>
                 <AddDialog
                   Form1={ColumnsForm}
@@ -319,7 +374,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                   {currentFloorData?.columns?.map((column) => (
                     <Subcomponent
                       key={column.id}
-                      name={column.name ?? "Unknown Columns"}
+                      name={column.name ?? "Unknown Column"}
                       type="Column"
                       itemData={column}
                       onUpdate={handleUpdate}
@@ -334,7 +389,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
             <AccordionItem value="beams" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
               <div className="flex items-center justify-between">
                 <AccordionTrigger className="flex-grow">
-                {t('beamsTitle')} {"(" + (currentFloorData?.beams ? currentFloorData?.beams.length : 0) + ")"}
+                  {t('beamsTitle')} {"(" + (currentFloorData?.beams ? currentFloorData?.beams.length : 0) + ")"}
                 </AccordionTrigger>
                 <AddDialog
                   Form1={BeamForm}
@@ -369,7 +424,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
             <AccordionItem value="ceilings" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
               <div className="flex items-center justify-between">
                 <AccordionTrigger className="flex-grow">
-                {t('ceilingsTitle')} {"(" + (currentFloorData?.ceilings ? currentFloorData?.ceilings.length : 0) + ")"}
+                  {t('ceilingsTitle')} {"(" + (currentFloorData?.ceilings ? currentFloorData?.ceilings.length : 0) + ")"}
                 </AccordionTrigger>
                 <AddDialog
                   Form1={CeilingForm}
@@ -401,6 +456,12 @@ export default function Dashboard({ params }: { params: { projectId: string } })
               </AccordionContent>
             </AccordionItem>
           </Accordion>
+
+          <div className="mt-6 flex justify-center">
+            <Button variant="default" onClick={handleExportCSV}>
+              {t('Export as CSV')}
+            </Button>
+          </div>
         </div>
       </div>
     </>
