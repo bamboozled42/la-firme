@@ -17,15 +17,15 @@ import { TypographyH2 } from "@/components/ui/typography";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useTranslation } from "../../../i18n/client";
 import { ElementTypeKeys, Floor, ProjectDashboardType, type StateAction } from "../../../lib/utils";
 import AddDialog from "./add-subcomponent";
 import { EditDialog } from "./edit-subcomponent";
-import { useTranslation } from '../../../i18n/client';
 
 import Subcomponent from "./subcomponent";
 
 export default function Dashboard({ params }: { params: { projectId: string } }) {
-  const { i18n, t } = useTranslation('common');
+  const { i18n, t } = useTranslation("common");
 
   const supabase = useSupabase();
   const [projectData, setProjectData] = useState<ProjectDashboardType | null>(null);
@@ -130,30 +130,28 @@ export default function Dashboard({ params }: { params: { projectId: string } })
   };
 
   if (error) {
-    return <div>{t('errorLoadingProject')}</div>;
+    return <div>{t("errorLoadingProject")}</div>;
   }
 
-  function getPublicUrl(path : any) {
-    const { data } = supabase.storage.from('floor-plans').getPublicUrl(path);
+  function getPublicUrl(path: any) {
+    const { data } = supabase.storage.from("floor-plans").getPublicUrl(path);
     return data?.publicUrl || null;
-  };
+  }
 
   // !! For now, uploading an image DOES NOT delete the old image (will be implemented later)
   // + deleting a floor (is that a feature?) needs to delete image as well
   // + cannot upload image with duplicate names; probably will asign one name for each project/floor (but what about file type then? .png .jpg)
-  const handleUpload = async (event : any) => {
+  const handleUpload = async (event: any) => {
     const file = event.target.files[0];
     if (!file) {
       return;
     }
 
     // Upload the image
-    const { data, error } = await supabase.storage
-      .from('floor-plans')
-      .upload(`${file.name}`, file);
+    const { data, error } = await supabase.storage.from("floor-plans").upload(`${file.name}`, file);
 
     if (error) {
-      console.error('Error uploading image:', error.message);
+      console.error("Error uploading image:", error.message);
       return;
     }
 
@@ -162,14 +160,14 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     if (publicUrl) {
       console.log("Image URL:", publicUrl);
     } else {
-        console.error("Failed to retrieve image URL");
+      console.error("Failed to retrieve image URL");
     }
 
     // Update floor table
     const { data: updateData, error: updateError } = await supabase
-      .from('floors')
+      .from("floors")
       .update({ floor_plan: publicUrl })
-      .eq('floor_id', currentFloorId);
+      .eq("floor_id", currentFloorId);
 
     if (updateError) {
       throw new Error(`Error updating database: ${updateError.message}`);
@@ -178,14 +176,13 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     setImgUrl(publicUrl || "/placeholder_img.jpg");
   };
 
-
   return (
     <>
       <div className="flex items-center justify-center">
         <div className="w-full max-w-lg">
           <Link href="/projectdashboard" className="text-sm font-medium transition-colors hover:text-primary">
             <Button type="button" className="mb-6 text-muted-foreground" variant="link" size={null}>
-              <Icons.chevronLeft className="h-5 w-5" /> {t('backButton')}
+              <Icons.chevronLeft className="h-5 w-5" /> {t("backButton")}
             </Button>
           </Link>
 
@@ -196,13 +193,13 @@ export default function Dashboard({ params }: { params: { projectId: string } })
               <SelectTrigger className="w-[180px]">
                 <SelectValue>
                   {currentFloorId === "all"
-                    ? t('selectAllFloors')
+                    ? t("selectAllFloors")
                     : projectData?.floors?.find((floor) => floor.floor_id.toString() === currentFloorId)?.name}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="all">{t('selectAllFloors')}</SelectItem>
+                  <SelectItem value="all">{t("selectAllFloors")}</SelectItem>
                   {projectData?.floors?.map((floor: Floor) => (
                     <SelectItem key={floor.floor_id} value={floor.floor_id.toString()}>
                       {floor.name}
@@ -215,12 +212,12 @@ export default function Dashboard({ params }: { params: { projectId: string } })
             <AddDialog
               Form1={FloorsForm}
               Form2={FloorDetailsForm}
-              form1Title={t('addFloorElementTitle')}
-              form2Title={t('floorDetailsTitle')}
-              form1Description={t('floorElementDescription')}
-              form2Description={t('floorDetailsDescription')}
+              form1Title={t("addFloorElementTitle")}
+              form2Title={t("floorDetailsTitle")}
+              form1Description={t("floorElementDescription")}
+              form2Description={t("floorDetailsDescription")}
               buttonClass="bg-green-700 text-green-50"
-              buttonName={t('addFloorButton')}
+              buttonName={t("addFloorButton")}
               dbname="floors"
               projectId={params.projectId}
               onDataAdded={() => setDataVersion((prevVersion) => prevVersion + 1)}
@@ -232,7 +229,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                 DetailsForm={FloorDetailsForm}
                 itemData={currentFloor}
                 onUpdate={handleUpdate}
-                buttonName={t('floorDetailsTitle')}
+                buttonName={t("floorDetailsTitle")}
                 onDataUpdated={() => setDataVersion((prevVersion) => prevVersion + 1)}
               />
             )}
@@ -245,32 +242,31 @@ export default function Dashboard({ params }: { params: { projectId: string } })
               </div>
 
               <div className="flex justify-center">
-              <input type="file" id="file-upload" className="hidden" onChange={handleUpload}/>
+                <input type="file" id="file-upload" className="hidden" onChange={handleUpload} />
                 <label
                   htmlFor="file-upload"
-                  className="inline-flex items-center px-4 py-2 mb-6 mt-5 rounded-md cursor-pointer text-sm bg-secondary"
+                  className="mb-6 mt-5 inline-flex cursor-pointer items-center rounded-md bg-secondary px-4 py-2 text-sm"
                 >
                   <Icons.upload className="mr-2 h-5 w-5" />
-                  <span>{t('uploadButton')}</span>
+                  <span>{t("uploadButton")}</span>
                 </label>
               </div>
             </div>
           )}
 
-
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="walls" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
               <div className="flex items-center justify-between">
                 <AccordionTrigger className="flex-grow">
-                {t('wallsTitle')} {"(" + (currentFloorData?.walls ? currentFloorData?.walls.length : 0) + ")"}
+                  {t("wallsTitle")} {"(" + (currentFloorData?.walls ? currentFloorData?.walls.length : 0) + ")"}
                 </AccordionTrigger>
                 <AddDialog
                   Form1={WallForm}
                   Form2={WallDetailsForm}
-                  form1Title={t('addWallElementTitle')}
-                  form2Title={t('wallDetailsTitle')}
-                  form1Description={t('wallElementDescription')}
-                  form2Description={t('wallDetailsDescription')}
+                  form1Title={t("addWallElementTitle")}
+                  form2Title={t("wallDetailsTitle")}
+                  form1Description={t("wallElementDescription")}
+                  form2Description={t("wallDetailsDescription")}
                   dbname="walls"
                   projectId={params.projectId}
                   onDataAdded={() => setDataVersion((prevVersion) => prevVersion + 1)}
@@ -297,15 +293,15 @@ export default function Dashboard({ params }: { params: { projectId: string } })
             <AccordionItem value="columns" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
               <div className="flex items-center justify-between">
                 <AccordionTrigger className="flex-grow">
-                {t('columnsTitle')} {"(" + (currentFloorData?.columns ? currentFloorData?.columns.length : 0) + ")"}
+                  {t("columnsTitle")} {"(" + (currentFloorData?.columns ? currentFloorData?.columns.length : 0) + ")"}
                 </AccordionTrigger>
                 <AddDialog
                   Form1={ColumnsForm}
                   Form2={ColumnDetailsForm}
-                  form1Title={t('addColumnElementTitle')}
-                  form2Title={t('columnDetailsTitle')}
-                  form1Description={t('columnElementDescription')}
-                  form2Description={t('columnDetailsDescription')}
+                  form1Title={t("addColumnElementTitle")}
+                  form2Title={t("columnDetailsTitle")}
+                  form1Description={t("columnElementDescription")}
+                  form2Description={t("columnDetailsDescription")}
                   dbname="columns"
                   projectId={params.projectId}
                   onDataAdded={() => setDataVersion((prevVersion) => prevVersion + 1)}
@@ -332,15 +328,15 @@ export default function Dashboard({ params }: { params: { projectId: string } })
             <AccordionItem value="beams" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
               <div className="flex items-center justify-between">
                 <AccordionTrigger className="flex-grow">
-                {t('beamsTitle')} {"(" + (currentFloorData?.beams ? currentFloorData?.beams.length : 0) + ")"}
+                  {t("beamsTitle")} {"(" + (currentFloorData?.beams ? currentFloorData?.beams.length : 0) + ")"}
                 </AccordionTrigger>
                 <AddDialog
                   Form1={ColumnsForm}
                   Form2={BeamDetailsForm}
-                  form1Title={t('addBeamElementTitle')}
-                  form2Title={t('beamDetailsTitle')}
-                  form1Description={t('beamElementDescription')}
-                  form2Description={t('beamDetailsDescription')}
+                  form1Title={t("addBeamElementTitle")}
+                  form2Title={t("beamDetailsTitle")}
+                  form1Description={t("beamElementDescription")}
+                  form2Description={t("beamDetailsDescription")}
                   dbname="beams"
                   projectId={params.projectId}
                   onDataAdded={() => setDataVersion((prevVersion) => prevVersion + 1)}
@@ -352,7 +348,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                   {currentFloorData?.beams?.map((beam) => (
                     <Subcomponent
                       key={beam.id}
-                      name={beam.name ?? t('unknownBeam')}
+                      name={beam.name ?? t("unknownBeam")}
                       type="Beam"
                       itemData={beam}
                       onUpdate={handleUpdate}
@@ -367,15 +363,16 @@ export default function Dashboard({ params }: { params: { projectId: string } })
             <AccordionItem value="ceilings" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
               <div className="flex items-center justify-between">
                 <AccordionTrigger className="flex-grow">
-                {t('ceilingsTitle')} {"(" + (currentFloorData?.ceilings ? currentFloorData?.ceilings.length : 0) + ")"}
+                  {t("ceilingsTitle")}{" "}
+                  {"(" + (currentFloorData?.ceilings ? currentFloorData?.ceilings.length : 0) + ")"}
                 </AccordionTrigger>
                 <AddDialog
                   Form1={ColumnsForm}
                   Form2={CeilingDetailsForm}
-                  form1Title={t('addCeilingElementTitle')}
-                  form2Title={t('ceilingDetailsTitle')}
-                  form1Description={t('ceilingElementDescription')}
-                  form2Description={t('ceilingDetailsDescription')}
+                  form1Title={t("addCeilingElementTitle")}
+                  form2Title={t("ceilingDetailsTitle")}
+                  form1Description={t("ceilingElementDescription")}
+                  form2Description={t("ceilingDetailsDescription")}
                   dbname="ceilings"
                   projectId={params.projectId}
                   onDataAdded={() => setDataVersion((prevVersion) => prevVersion + 1)}
@@ -387,7 +384,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                   {currentFloorData?.ceilings?.map((ceiling) => (
                     <Subcomponent
                       key={ceiling.id}
-                      name={ceiling.name || t('unknownCeiling')}
+                      name={ceiling.name || t("unknownCeiling")}
                       type="Ceiling"
                       itemData={ceiling}
                       onUpdate={handleUpdate}

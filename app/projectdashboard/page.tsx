@@ -1,8 +1,5 @@
 "use client";
 import { PostgrestError } from "@supabase/supabase-js";
-import { useTranslation } from '../../i18n/client';
-import { TypographyH2 } from "@/components/ui/typography";
-
 import { useEffect, useState } from "react";
 import { Beam, Ceiling, Column, Project, Wall } from "../../lib/utils";
 import { useSupabase } from "../providers";
@@ -19,8 +16,6 @@ export type ProjectDashboardType = Project & {
 };
 
 export default function ProjectDashboard() {
-  const {i18n, t} = useTranslation('common');
-
   const supabase = useSupabase();
   const [projects, setProjects] = useState<ProjectDashboardType[] | null>(null);
   const [error, setError] = useState<PostgrestError | null>(null);
@@ -79,24 +74,18 @@ export default function ProjectDashboard() {
   }
 
   return (
-    <div>
-      <TypographyH2 className="text-center font-bold">{t('projectDashboard')}</TypographyH2>
-      <div className="flex flex-wrap justify-center">
-        {
-          projects === null ? (
-            <div>Loading...</div>
-          ) : projects.length === 0 ? (
-            <div>No projects found.</div>
-          ) : (
-            projects?.map((project: ProjectDashboardType) => (
-              <ProjectCard
-                key={project.id}
-                project={project}
-              />
-            ))
-          )
-        }
-      </div>
+    <div className="flex flex-wrap justify-center align-top">
+      {projects === null ? (
+        <div>Loading...</div>
+      ) : projects.length === 0 ? (
+        <div>No projects found.</div>
+      ) : (
+        <>
+          {projects?.map((project: ProjectDashboardType) => <ProjectCard key={project.id} project={project} />)}
+          <AddProjectCard />
+        </>
+      )}
+      {/* Insert Add projects */}
     </div>
   );
 }
