@@ -147,8 +147,9 @@ export default function Dashboard({ params }: { params: { projectId: string } })
       return;
     }
 
+
     // Upload the image
-    const fileName = `floorId${currentFloorId}`;
+    const fileName = file.name//`floorId${currentFloorId}`;
     // check if this fileName exists in the objects storage table under name with bucket-id floor-plans and then delete it
     try {
       // Check if the file exists in the storage bucket
