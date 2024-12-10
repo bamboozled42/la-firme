@@ -1,8 +1,5 @@
 "use client";
 import { PostgrestError } from "@supabase/supabase-js";
-import { useTranslation } from '../../i18n/client';
-import { TypographyH2 } from "@/components/ui/typography";
-
 import { useEffect, useState } from "react";
 import { Beam, Ceiling, Column, Project, Wall } from "../../lib/utils";
 import { useSupabase } from "../providers";
@@ -19,8 +16,6 @@ export type ProjectDashboardType = Project & {
 };
 
 export default function ProjectDashboard() {
-  const {i18n, t} = useTranslation('common');
-
   const supabase = useSupabase();
   const [projects, setProjects] = useState<ProjectDashboardType[] | null>(null);
   const [architects, setArchitects] = useState<Record<string, number>>({});
@@ -87,7 +82,7 @@ export default function ProjectDashboard() {
         setArchitects(architectsObj);
       }
     };
-    
+
     fetchProjects();
     fetchArchitects();
   }, [supabase]);
