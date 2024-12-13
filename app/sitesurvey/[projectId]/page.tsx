@@ -95,6 +95,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
         });
 
         setImgUrl(projectData?.floors?.find((floor) => floor.floor_id === floorId)?.floor_plan || "");
+        console.log(projectData?.floors?.find((floor) => floor.floor_id === floorId)?.floor_plan);
       }
     }
   };
@@ -138,9 +139,6 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     return data?.publicUrl || null;
   };
 
-  // !! For now, uploading an image DOES NOT delete the old image (will be implemented later)
-  // + deleting a floor (is that a feature?) needs to delete image as well
-  // + cannot upload image with duplicate names; probably will asign one name for each project/floor (but what about file type then? .png .jpg)
   const handleUpload = async (event : any) => {
     const file = event.target.files[0];
     if (!file) {
@@ -176,9 +174,10 @@ export default function Dashboard({ params }: { params: { projectId: string } })
       throw new Error(`Error updating database: ${updateError.message}`);
     }
 
-    setImgUrl((publicUrl || "/placeholder_img.jpg") + "?t=" + new Date().getTime());
+    const newUrl = (publicUrl || "/placeholder_img.jpg") + "?t=" + new Date().getTime()
+    setImgUrl(newUrl);
     const updatedFloors = projectData?.floors?.map((floor) => 
-      floor.floor_id.toString() === currentFloorId ? { ...floor, floor_plan: publicUrl || "/placeholder_img.jpg" } : floor
+      floor.floor_id.toString() === currentFloorId ? { ...floor, floor_plan: newUrl } : floor
     );
     
     if (projectData) {
