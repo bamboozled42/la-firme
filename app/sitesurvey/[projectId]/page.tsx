@@ -94,6 +94,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
         });
 
         setImgUrl(projectData?.floors?.find((floor) => floor.floor_id === floorId)?.floor_plan || "");
+        console.log(projectData?.floors?.find((floor) => floor.floor_id === floorId)?.floor_plan);
       }
     }
   };
