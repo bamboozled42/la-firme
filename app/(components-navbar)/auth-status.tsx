@@ -15,19 +15,24 @@ export default async function AuthStatus() {
   }
 
   const checkWhitelist = async (currentUser: any) => {
-    const { data: whitelistUser, error } = await supabase
+    const { data: whitelistUser1, error } = await supabase
       .from("whitelist_users")
       .select("*")
-      .eq("email", currentUser.email)
-      .single();
+      .eq("email", currentUser.email);
 
-    if (!whitelistUser || error) {
+    if (!whitelistUser1 || error) {
       console.log("User not whitelisted");
       return;
     }
 
-    const { data: existingUser } = await supabase.from("users").select("*").eq("id", currentUser.id).single();
+    const whitelistUser = whitelistUser1?.[0];
 
+    if (!whitelistUser) {
+      return;
+    }
+
+    const { data: existingUser } = await supabase.from("users").select("*").eq("id", currentUser.id).single();
+    console.log("Existing user:", existingUser);
     if (!existingUser) {
       const { error } = await supabase.from("users").insert({
         first_name: whitelistUser.first_name,

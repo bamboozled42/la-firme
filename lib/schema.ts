@@ -139,6 +139,27 @@ export type Database = {
           },
         ];
       };
+      clients: {
+        Row: {
+          address: string | null;
+          first_name: string | null;
+          id: string;
+          last_name: string | null;
+        };
+        Insert: {
+          address?: string | null;
+          first_name?: string | null;
+          id?: string;
+          last_name?: string | null;
+        };
+        Update: {
+          address?: string | null;
+          first_name?: string | null;
+          id?: string;
+          last_name?: string | null;
+        };
+        Relationships: [];
+      };
       columns: {
         Row: {
           condition: string | null;
@@ -254,6 +275,7 @@ export type Database = {
       };
       projects: {
         Row: {
+          architect_history: string | null;
           architect_id: string | null;
           client: string;
           description: string;
@@ -264,6 +286,7 @@ export type Database = {
           title: string;
         };
         Insert: {
+          architect_history?: string | null;
           architect_id?: string | null;
           client: string;
           description: string;
@@ -274,6 +297,7 @@ export type Database = {
           title: string;
         };
         Update: {
+          architect_history?: string | null;
           architect_id?: string | null;
           client?: string;
           description?: string;
