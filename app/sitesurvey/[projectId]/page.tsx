@@ -170,22 +170,130 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     setImgUrl(publicUrl || "/placeholder_img.jpg");
   };
 
+  const sortByFloorIdAndName = (data) => {
+      return data.sort((a, b) => {
+          // First, compare by floor_id
+          if (a.floor_id !== b.floor_id) {
+              return a.floor_id - b.floor_id; // Numeric comparison
+          }
+          // If floor_id is the same, compare by name
+          return a.name.localeCompare(b.name); // String comparison
+      });
+  };
+
   // Combine all project arrays into one, tagging each with elementType
   const getAllDataForProject = () => {
     if (!projectData) return [];
+    
     const { floors = [], walls = [], columns = [], beams = [], ceilings = [] } = projectData;
 
-    const floorsWithType = floors.map(f => ({ ...f, elementType: 'floor' }));
-    const wallsWithType = walls.map(w => ({ ...w, elementType: 'wall' }));
-    const columnsWithType = columns.map(c => ({ ...c, elementType: 'column' }));
-    const beamsWithType = beams.map(b => ({ ...b, elementType: 'beam' }));
-    const ceilingsWithType = ceilings.map(c => ({ ...c, elementType: 'ceiling' }));
+    const floorsWithType = sortByFloorIdAndName(
+        floors.map(f => ({ elementType: 'floor', ...f }))
+    );
+    
+    const wallsWithType = sortByFloorIdAndName(
+        walls.map(w => ({ elementType: 'wall', ...w }))
+    );
+    
+    const columnsWithType = sortByFloorIdAndName(
+        columns.map(c => ({ elementType: 'column', ...c }))
+    );
+    
+    const beamsWithType = sortByFloorIdAndName(
+        beams.map(b => ({ elementType: 'beam', ...b }))
+    );
+    
+    const ceilingsWithType = sortByFloorIdAndName(
+        ceilings.map(c => ({ elementType: 'ceiling', ...c }))
+    );
+
+    const floorHeader = { elementType: 'floor', name: 'name', floor_id: 'floor_id', materials: 'materials', projectId: 'projectId', floor_plan: 'floor_plan'};
+    const wallHeader = {
+      elementType: 'wall',
+      id: 'id',
+      name: 'name',
+      width: 'width',
+      height: 'height',
+      length: 'length',
+      stucco: 'stucco',
+      floor_id: 'floor_id',
+      location: 'location',
+      material: 'material',
+      direction: 'direction',
+      project_id: 'projectId',
+      height_type: 'height_type',
+      window_size_x: 'window_size_x',
+      window_size_y: 'window_size_y',
+      fh1CrackInBeam: 'fh1CrackInBeam',
+      l7PoorAdhesion: 'l7PoorAdhesion',
+      perforatingBeam: 'perforatingBeam',
+      l1IrregularBrick: 'l1IrregularBrick',
+      wallRepeatFloors: 'wallRepeatFloors',
+      fh3CrackInCeiling: 'fh3CrackInCeiling',
+      fh4CrackInCeiling: 'fh4CrackInCeiling',
+      perforatingColumn: 'perforatingColumn',
+      fh2CrackInWallCeiling: 'fh2CrackInWallCeiling',
+      l3WallsNotWellAligned: 'l3WallsNotWellAligned',
+      fv2VerticalCrackColumn: 'fv2VerticalCrackColumn',
+      l6MortarJointsTooThick: 'l6MortarJointsTooThick',
+      l4IncompleteMortarInBrick: 'l4IncompleteMortarInBrick',
+      fv1VerticalCrackColumnWall: 'fv1VerticalCrackColumnWall',
+      l2BricksWithExcessiveHoles: 'l2BricksWithExcessiveHoles',
+      l5VariationInThicknessJoints: 'l5VariationInThicknessJoints',
+    };
+    const columnHeader = {
+        elementType: 'column',
+        id: 'id',
+        name: 'name',
+        type: 'type',
+        notes: 'notes',
+        pipes: 'pipes',
+        width: 'width',
+        height: 'height',
+        length: 'length',
+        floor_id: 'floor_id',
+        condition: 'condition',
+        project_id: 'projectId',
+        vertical_cracks: 'vertical_cracks',
+    };
+    const beamHeader = {
+        elementType: 'beam',
+        id: 'id',
+        name: 'name',
+        type: 'type',
+        width: 'width',
+        height: 'height',
+        length: 'length',
+        floor_id: 'floor_id',
+        condition: 'condition',
+        project_id: 'projectId',
+        support_left_side: 'support_left_side',
+        support_right_side: 'support_right_side',
+    };
+    const ceilingHeader = {
+        elementType: 'ceiling',
+        id: 'id',
+        name: 'name',
+        pipes: 'pipes',
+        cracks: 'cracks',
+        height: 'height',
+        floor_id: 'floor_id',
+        project_id: 'projectId',
+        dimension_x: 'dimension_x',
+        dimension_y: 'dimension_y',
+        direction_of_joints: 'direction_of_joints',
+    };
 
     return [
+      floorHeader,
       ...floorsWithType,
+      wallHeader,
       ...wallsWithType,
+      columnHeader,
       ...columnsWithType,
+      beamHeader,
       ...beamsWithType,
+      ceilingHeader,
       ...ceilingsWithType
     ];
   };
@@ -204,13 +312,25 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     });
     const keys = Array.from(allKeys);
 
-    const csvRows = [];
+    const csvRows: string[] = [];
     // Header row
-    csvRows.push(keys.join(","));
+    // csvRows.push(keys.join(","));
+
+    let previousElementType: string | null = null; // Initialize previousElementType
 
     // Data rows
     for (const row of data) {
-      const values = keys.map(k => {
+      // Check if elementType has changed and it's not the first row
+      if (row.elementType !== previousElementType && previousElementType !== null) {
+        csvRows.push(",,,,,"); // Insert a blank line
+      }
+      previousElementType = row.elementType; // Update previousElementType
+
+      const currentKeys = new Set<string>();
+      Object.keys(row).forEach((key) => currentKeys.add(key));
+      const keysCurr = Array.from(currentKeys);
+
+      const values = keysCurr.map(k => {
         const val = row[k] === null || row[k] === undefined ? "" : row[k];
         return `"${val}"`; // wrap in quotes to handle commas
       });
@@ -277,7 +397,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
               form2Title={t('floorDetailsTitle')}
               form1Description={t('floorElementDescription')}
               form2Description={t('floorDetailsDescription')}
-              buttonClass="bg-green-700 text-green-50"
+              buttonClass="bg-green-700 text-green-50 min-h-10 h-auto"
               buttonName={t('addFloorButton')}
               dbname="floors"
               projectId={params.projectId}
