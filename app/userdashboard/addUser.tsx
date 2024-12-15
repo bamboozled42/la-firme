@@ -53,8 +53,21 @@ const AddUser: React.FC<AddUserProps> = ({ AdminUser }) => {
 
     try {
       // Validate address for client role if needed
-      if (role === "client" && !address) {
-        // TODO later
+      if (role === "client") {
+        const { error: addressError } = await supabase.from("clients").insert({
+          first_name,
+          last_name,
+          email,
+          address,
+        });
+
+        if (addressError) {
+          throw new Error(`Supabase error: ${addressError.message}`);
+        }
+
+        reset();
+        setOpen(false);
+        return;
       }
 
       // Insert into whitelist_users
@@ -68,7 +81,6 @@ const AddUser: React.FC<AddUserProps> = ({ AdminUser }) => {
       if (supabaseError) {
         throw new Error(`Supabase error: ${supabaseError.message}`);
       }
-      console.log(email);
       if (
         process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID &&
         process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID &&
@@ -88,7 +100,6 @@ const AddUser: React.FC<AddUserProps> = ({ AdminUser }) => {
             `,
           },
         };
-        console.log(emailData);
 
         // send email through emailjs
         try {

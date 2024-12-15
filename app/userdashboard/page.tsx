@@ -24,6 +24,7 @@ export default async function Dashboard() {
   }
   // user is yourself, users is everyone
   const { data: user } = await supabase.from("users").select("*").eq("id", authUser.id).single();
+
   // If the user is not an admin, redirect them to the home page
   if (!user) {
     redirect("/");
@@ -35,14 +36,20 @@ export default async function Dashboard() {
 
   // Get all users from the database
   const { data: users, error } = await supabase.from("users").select("*");
+  // and clients
+  const { data: clients } = await supabase.from("clients").select("*");
 
   return (
     <div>
       <div className="mb-10 flex items-center justify-between">
-        <h1 style={{ marginBottom: 10 }}>User Dashboard</h1>
+        <h1 style={{ marginLeft: 10, marginBottom: 10 }}> Staff Table</h1>
         <AddUser AdminUser={user as any} />
       </div>
-      <UserTable users={users} currentUserId={currentUserId} />
+      <UserTable tableType="staff" users={users} currentUserId={currentUserId} />
+      <div className="mb-5 mt-10 flex items-center justify-between">
+        <h1 style={{ marginLeft: 10, marginBottom: 10 }}>Client Table</h1>
+      </div>
+      <UserTable tableType="clients" users={clients} currentUserId={currentUserId} />
     </div>
   );
 }

@@ -31,7 +31,7 @@ export default function ProjectDashboard() {
       }
 
       const { data: userData, error: userError } = await supabase.from("users").select("*").eq("id", user.id).single();
-
+      console.log(userData);
       if (userData.role == "admin") {
         let { data: projects, error } = await supabase.from("projects").select(`
         *,
@@ -72,7 +72,7 @@ export default function ProjectDashboard() {
   if (error) {
     return <div>Error loading projects...</div>;
   }
-
+  console.log(projects);
   return (
     <div className="flex flex-wrap justify-center align-top">
       {projects === null ? (

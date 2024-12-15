@@ -7,22 +7,27 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { type User, type Users } from "../../lib/utils";
 import { useSupabase } from "../providers";
 
 interface UserTableProps {
-  users: Users;
+  tableType?: string;
+  users?: any;
   currentUserId: string;
 }
 
-const UserTable = ({ users, currentUserId }: UserTableProps) => {
+const UserTable = ({ tableType, users, currentUserId }: UserTableProps) => {
   const supabase = useSupabase();
 
   const deleteUser = async (userInfo: any) => {
     if (userInfo.role === "admin") return;
-    console.log(userInfo);
 
     try {
+      if (tableType === "clients") {
+        const { error } = await supabase.from("clients").delete().eq("id", userInfo.id);
+        if (error) throw error;
+        return;
+      }
+
       if (userInfo.role === "architect") {
         const { data: projects, error: projectsError } = await supabase
           .from("projects")
@@ -59,22 +64,24 @@ const UserTable = ({ users, currentUserId }: UserTableProps) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">User</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Role</TableHead>
-            <TableHead className="w-[50px]">Edit</TableHead>
+            <TableHead className="w-[200px]">User</TableHead>
+            <TableHead className="w-[400px]">Email</TableHead>
+            <TableHead className="w-[200px] text-left">{tableType === "staff" ? "Role" : "Address"}</TableHead>
+            <TableHead className="w-[100px] text-right">Edit</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {users?.map((currentUser: User) => (
+          {users?.map((currentUser: any) => (
             <TableRow key={currentUser.id}>
-              <TableCell>
+              <TableCell className="w-[200px]">
                 {currentUser.first_name} {currentUser.last_name}
               </TableCell>
-              <TableCell>{currentUser.email}</TableCell>
-              <TableCell>{currentUser.role}</TableCell>
+              <TableCell className="w-[400px]">{currentUser.email}</TableCell>
+              <TableCell className="w-[200px] text-left">
+                {tableType === "staff" ? currentUser.role : currentUser.address}
+              </TableCell>
               {currentUser.role !== "admin" && (
-                <TableCell>
+                <TableCell className="w-[100px] text-right">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" className="h-8 w-8 p-0">
