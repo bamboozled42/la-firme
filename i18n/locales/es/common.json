@@ -47,6 +47,8 @@
     "projectDashboard": "Panel de Proyecto",
     "assigned": "Asignado",
     "in_progress": "En Progreso",
-    "completed": "Completado"
+    "completed": "Completado",
+    "welcome": "¡Bienvenido(a) a La Firme!",
+    "gotodashboard": "Ir al panel de control del proyecto"
   }
   

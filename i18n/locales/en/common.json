@@ -47,6 +47,8 @@
     "projectDashboard": "Project Dashboard",
     "assigned": "Assigned",
     "in_progress": "In Progress",
-    "completed": "Completed"
+    "completed": "Completed",
+    "welcome": "Welcome to La Firme!",
+    "gotodashboard": "Go to project dashboard"
   }
   

@@ -76,7 +76,7 @@ export default function ProjectDashboard() {
       }
     };
     const fetchArchitects = async () => {
-      const { data, error } = await supabase.from("users").select("id, first_name, last_name").eq("role", "architect");
+      const { data, error } = await supabase.from("users").select("id, first_name, last_name");
       if (error) {
         console.error(error);
       } else {
