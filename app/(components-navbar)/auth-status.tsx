@@ -11,7 +11,7 @@ export default async function AuthStatus() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return <LoginButton />;
+    return;
   }
 
   const { profile, error } = await getUserProfile(supabase, user);

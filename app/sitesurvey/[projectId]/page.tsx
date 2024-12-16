@@ -145,8 +145,36 @@ export default function Dashboard({ params }: { params: { projectId: string } })
       return;
     }
 
+
     // Upload the image
-    const fileName = `floorId${currentFloorId}`;
+    const fileName = file.name//`floorId${currentFloorId}`;
+    // check if this fileName exists in the objects storage table under name with bucket-id floor-plans and then delete it
+    try {
+      // Check if the file exists in the storage bucket
+      const { data: existingFiles, error: checkError } = await supabase.storage
+        .from('floor-plans')
+        .list('', { search: fileName });
+
+      if (checkError) {
+        console.error('Error checking file existence:', checkError.message);
+        return;
+      }
+
+      // If the file exists, delete it
+      if (existingFiles && existingFiles.some((file) => file.name === fileName)) {
+        const { error: deleteError } = await supabase.storage
+          .from('floor-plans')
+          .remove([fileName]);
+
+        if (deleteError) {
+          console.error('Error deleting existing file:', deleteError.message);
+          return;
+        }
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err.message);
+    }
+    // then upload
     const { data, error } = await supabase.storage
       .from('floor-plans')
       .upload(fileName, file, { upsert: true });
@@ -174,12 +202,11 @@ export default function Dashboard({ params }: { params: { projectId: string } })
       throw new Error(`Error updating database: ${updateError.message}`);
     }
 
-    const newUrl = (publicUrl || "/placeholder_img.jpg") + "?t=" + new Date().getTime()
-    setImgUrl(newUrl);
-    const updatedFloors = projectData?.floors?.map((floor) => 
-      floor.floor_id.toString() === currentFloorId ? { ...floor, floor_plan: newUrl } : floor
+    setImgUrl((publicUrl || "/placeholder_img.jpg") + "?t=" + new Date().getTime());
+    const updatedFloors = projectData?.floors?.map((floor) =>
+      floor.floor_id.toString() === currentFloorId ? { ...floor, floor_plan: publicUrl || "/placeholder_img.jpg" } : floor
     );
-    
+
     if (projectData) {
       // Update the projectData with the updated floors array
       projectData.floors = updatedFloors;
