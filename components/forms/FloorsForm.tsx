@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm, type FieldErrors, type SubmitHandler } from "react-hook-form";
-import { Floor } from "../../lib/utils";
+import { type Floor } from "../../lib/utils";
 
 interface FloorsFormProps {
   onNext: (data: FloorFormSchema) => void;
@@ -23,7 +23,9 @@ const FloorsForm: React.FC<FloorsFormProps> = ({ onNext, onCancel, floors }) => 
   });
 
   const onSubmit: SubmitHandler<FloorFormSchema> = (data) => {
-    onNext(data);
+    const formattedName = `Floor ${data.name}`;
+    const formattedData = { ...data, name: formattedName };
+    onNext(formattedData);
   };
 
   const onError = (errors: FieldErrors<FloorFormSchema>) => {
@@ -50,10 +52,10 @@ const FloorsForm: React.FC<FloorsFormProps> = ({ onNext, onCancel, floors }) => 
           type="text"
           id="name"
           {...register("name")}
-          className={`mt-1 block w-full rounded-md border ${
+          className={`mt-1 block w-full rounded-md border px-2 ${
             errors.name ? "border-red-600" : "border-gray-300"
           } shadow-sm focus:border-green-500 focus:ring-green-500`}
-          placeholder="Enter name"
+          placeholder="Enter floor number"
         />
         {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
       </div>

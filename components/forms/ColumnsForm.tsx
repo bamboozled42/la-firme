@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm, type FieldErrors, type SubmitHandler } from "react-hook-form";
-import { Floor } from "../../lib/utils";
+import { type Floor } from "../../lib/utils";
 
 interface ColumnFormProps {
   onNext: (data: ColumnFormSchema) => void;
@@ -23,7 +23,9 @@ const ColumnsForm: React.FC<ColumnFormProps> = ({ onNext, onCancel, floors }) =>
   });
 
   const onSubmit: SubmitHandler<ColumnFormSchema> = (data) => {
-    onNext(data);
+    const formattedName = `Column ${data.name}`;
+    const formattedData = { ...data, name: formattedName };
+    onNext(formattedData);
   };
 
   const onError = (errors: FieldErrors<ColumnFormSchema>) => {
@@ -50,7 +52,7 @@ const ColumnsForm: React.FC<ColumnFormProps> = ({ onNext, onCancel, floors }) =>
           type="text"
           id="name"
           {...register("name")}
-          className={`mt-1 block w-full rounded-md border ${
+          className={`mt-1 block w-full rounded-md border px-2 ${
             errors.name ? "border-red-600" : "border-gray-300"
           } shadow-sm focus:border-green-500 focus:ring-green-500`}
           placeholder="Enter name"
