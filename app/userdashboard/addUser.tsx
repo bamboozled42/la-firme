@@ -3,6 +3,7 @@ import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { type User } from "../../lib/utils";
@@ -21,6 +22,7 @@ type AddUserProps = {
 };
 
 const AddUser: React.FC<AddUserProps> = ({ AdminUser }) => {
+  const router = useRouter();
   const supabase = useSupabase();
   const [open, setOpen] = React.useState(false);
 
@@ -67,6 +69,7 @@ const AddUser: React.FC<AddUserProps> = ({ AdminUser }) => {
 
         reset();
         setOpen(false);
+        router.refresh();
         return;
       }
 
@@ -94,9 +97,9 @@ const AddUser: React.FC<AddUserProps> = ({ AdminUser }) => {
             from_name: AdminUser.first_name + " " + AdminUser.last_name,
             to_name: first_name + " " + last_name,
             to_email: email,
-            message: `New user registration Name: ${first_name} ${last_name}
-            please login using this email to login process.
-            Login at localhost:3000/
+            message: `Registro de nuevo usuario Nombre: ${first_name} ${last_name}
+            Por favor inicie sesión usando este correo electrónico.
+            Registro aquí: localhost:3000/
             `,
           },
         };
@@ -113,6 +116,7 @@ const AddUser: React.FC<AddUserProps> = ({ AdminUser }) => {
       // reset form and close the dialogue
       reset();
       setOpen(false);
+      router.refresh();
 
       console.log("Successfully submitted form");
     } catch (error) {

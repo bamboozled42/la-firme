@@ -7,6 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useRouter } from "next/navigation";
 import { useSupabase } from "../providers";
 
 interface UserTableProps {
@@ -16,6 +17,7 @@ interface UserTableProps {
 }
 
 const UserTable = ({ tableType, users, currentUserId }: UserTableProps) => {
+  const router = useRouter();
   const supabase = useSupabase();
 
   const deleteUser = async (userInfo: any) => {
@@ -52,7 +54,7 @@ const UserTable = ({ tableType, users, currentUserId }: UserTableProps) => {
 
       const { error: userError } = await supabase.from("users").delete().eq("id", userInfo.id);
       if (userError) throw userError;
-
+      router.refresh();
       console.log("User deleted successfully:", userInfo.id);
     } catch (error) {
       console.error("Error deleting user:", error);
