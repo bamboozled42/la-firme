@@ -68,15 +68,22 @@ export default function AddDialog({
     console.log(data);
 
     try {
-       const { data: existingData, error: fetchError } = await supabase
-       .from(dbname)
-       .select("id") // Adjust this to the primary key or relevant field
-       .eq("name", completeData.name) // Assuming `name` is the unique field to check
-       .single();
-
-      if (fetchError && fetchError.code !== "PGRST116") {
-        console.error("Error checking existing data:", fetchError.message);
-        return;
+      let existingData = null;
+      let fetchError = null; 
+      
+      if (dbname !== "floors") {
+        ({ data: existingData, error: fetchError } = await supabase
+        .from(dbname)
+        .select("id") // Adjust this to the primary key or relevant field
+        .eq("name", completeData.name) // Assuming `name` is the unique field to check
+        .single());
+      }
+      else {
+        ({ data: existingData, error: fetchError } = await supabase
+        .from(dbname)
+        .select("floor_id")
+        .eq("name", completeData.name)
+        .single());
       }
 
       if (existingData) {
