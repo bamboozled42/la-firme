@@ -8,6 +8,8 @@ import { useTranslation } from "../../i18n/client";
 import { Beam, Ceiling, Column, Project, Wall } from "../../lib/utils";
 import { useSupabase } from "../providers";
 import ProjectCard from "./projectCard";
+import AddProjectCard from "./addProjectCard";
+
 
 export type ProjectDashboardType = Project & {
   // I don't think I need to pass in anything other than name
@@ -122,18 +124,20 @@ export default function ProjectDashboard() {
   }
   return (
     <div>
-      <TypographyH2 className="text-center font-bold">{t("projectDashboard")}</TypographyH2>
-      <div className="flex flex-wrap justify-center">
-        {projects === null ? (
-          <div>Loading...</div>
-        ) : projects.length === 0 ? (
-          <div>No projects found.</div>
-        ) : (
-          projects?.map((project: ProjectDashboardType) => (
-            <ProjectCard key={project.id} project={project} architects={architects} isAdmin={isAdmin} />
-          ))
-        )}
-      </div>
+      <TypographyH2 className="text-center font-bold">{t('projectDashboard')}</TypographyH2>
+      <div className="flex flex-wrap justify-center align-top">
+      {projects === null ? (
+        <div>Loading...</div>
+      ) : projects.length === 0 ? (
+        <div>No projects found.</div>
+      ) : (
+        <>
+          {projects?.map((project: ProjectDashboardType) => <ProjectCard key={project.id} project={project} />)}
+          <AddProjectCard />
+        </>
+      )}
+      {/* Insert Add projects */}
+    </div>
     </div>
   );
 }
