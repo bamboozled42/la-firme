@@ -1,14 +1,13 @@
 "use client";
-import { PostgrestError } from "@supabase/supabase-js";
-import { useTranslation } from '../../i18n/client';
 import { TypographyH2 } from "@/components/ui/typography";
-
+import { toast } from "@/components/ui/use-toast";
+import { PostgrestError } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useTranslation } from "../../i18n/client";
 import { Beam, Ceiling, Column, Project, Wall } from "../../lib/utils";
 import { useSupabase } from "../providers";
-import AddProjectCard from "./addProjectCard";
 import ProjectCard from "./projectCard";
-
 
 export type ProjectDashboardType = Project & {
   // I don't think I need to pass in anything other than name
@@ -20,8 +19,8 @@ export type ProjectDashboardType = Project & {
 };
 
 export default function ProjectDashboard() {
-  const {i18n, t} = useTranslation('common')
-
+  const { i18n, t } = useTranslation("common");
+  const router = useRouter();
   const supabase = useSupabase();
   const [projects, setProjects] = useState<ProjectDashboardType[] | null>(null);
   const [architects, setArchitects] = useState<Record<string, number>>({});
@@ -35,11 +34,36 @@ export default function ProjectDashboard() {
       } = await supabase.auth.getUser();
 
       if (!user) {
+        toast({
+          title: "Access Denied",
+          description: "You are not authenticated for this application.",
+          variant: "destructive",
+        });
+        router.push("/");
+        return;
+      }
+
+      const { data: whitelistCheck, error: whitelistError } = await supabase
+        .from("whitelist_users")
+        .select("email")
+        .eq("email", user.email)
+        .single();
+
+      if (!whitelistCheck) {
+        toast({
+          title: "Access Denied",
+          description: "You are not on the whitelist for this application.",
+          variant: "destructive",
+        });
+        router.push("/");
+        return;
+      }
+
+      if (!user) {
         return;
       }
 
       const { data: userData, error: userError } = await supabase.from("users").select("*").eq("id", user.id).single();
-      console.log(userData);
       if (userData?.role == "admin") {
         setIsAdmin(true);
         let { data: projects, error } = await supabase.from("projects").select(`
@@ -96,27 +120,19 @@ export default function ProjectDashboard() {
   if (error) {
     return <div>Error loading projects...</div>;
   }
-  console.log(projects);
   return (
     <div>
-      <TypographyH2 className="text-center font-bold">{t('projectDashboard')}</TypographyH2>
+      <TypographyH2 className="text-center font-bold">{t("projectDashboard")}</TypographyH2>
       <div className="flex flex-wrap justify-center">
-        {
-          projects === null ? (
-            <div>Loading...</div>
-          ) : projects.length === 0 ? (
-            <div>No projects found.</div>
-          ) : (
-            projects?.map((project: ProjectDashboardType) => (
-              <ProjectCard
-                key={project.id}
-                project={project}
-                architects={architects}
-                isAdmin={isAdmin}
-              />
-            ))
-          )
-        }
+        {projects === null ? (
+          <div>Loading...</div>
+        ) : projects.length === 0 ? (
+          <div>No projects found.</div>
+        ) : (
+          projects?.map((project: ProjectDashboardType) => (
+            <ProjectCard key={project.id} project={project} architects={architects} isAdmin={isAdmin} />
+          ))
+        )}
       </div>
     </div>
   );

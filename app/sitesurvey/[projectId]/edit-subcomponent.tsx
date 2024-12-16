@@ -11,7 +11,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import { useTranslation } from '../../../i18n/client';
+import { useTranslation } from "../../../i18n/client";
 
 interface AddDetailsDialogProps {
   onUpdate: (updatedData: any) => void;
@@ -37,7 +37,7 @@ export function EditDialog({
   buttonName,
   onDataUpdated,
 }: AddDetailsDialogProps) {
-  const {i18n, t} = useTranslation('common');
+  const { i18n, t } = useTranslation("common");
   const [isOpen, setIsOpen] = useState(false);
   const supabase = useSupabase();
   const getTableName = (type: string) => {
@@ -65,7 +65,7 @@ export function EditDialog({
           .single();
       }
 
-      // console.log("Updated Data:", updatedData);
+      console.log("Updated Data:", updatedData);
       if (error) throw error;
 
       if (onDataUpdated) {
@@ -74,7 +74,7 @@ export function EditDialog({
 
       onUpdate({
         ...itemData,
-        ...updatedData,
+        ...(updatedData || {}),
         elementType,
       });
 
@@ -98,10 +98,8 @@ export function EditDialog({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button size="sm" className="ml-2 bg-blue-700 text-blue-50">
-          <Icons.pencil className="mr-2 h-4 w-4" /> 
-          <span className="mr-1">
-            {buttonName || t('details')}
-          </span>
+          <Icons.pencil className="mr-2 h-4 w-4" />
+          <span className="mr-1">{buttonName || t("details")}</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-screen w-5/6 overflow-y-auto p-8 pt-10">

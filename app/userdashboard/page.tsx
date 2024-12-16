@@ -1,3 +1,4 @@
+"use server";
 import { createServerSupabaseClient } from "@/lib/server-utils";
 import { redirect } from "next/navigation";
 import AddUser from "./addUser";

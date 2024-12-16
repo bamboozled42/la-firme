@@ -142,18 +142,21 @@ export type Database = {
       clients: {
         Row: {
           address: string | null;
+          email: string | null;
           first_name: string | null;
           id: string;
           last_name: string | null;
         };
         Insert: {
           address?: string | null;
+          email?: string | null;
           first_name?: string | null;
           id?: string;
           last_name?: string | null;
         };
         Update: {
           address?: string | null;
+          email?: string | null;
           first_name?: string | null;
           id?: string;
           last_name?: string | null;
