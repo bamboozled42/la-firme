@@ -93,7 +93,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
           ceilings: projectData.ceilings?.filter((ceiling) => ceiling.floor_id === floorId) || [],
         });
 
-        setImgUrl(projectData?.floors?.find((floor) => floor.floor_id.toString() === currentFloorId)?.floor_plan);
+        setImgUrl(projectData?.floors?.find((floor) => floor.floor_id === floorId)?.floor_plan || "");
       }
     }
   };
@@ -143,9 +143,39 @@ export default function Dashboard({ params }: { params: { projectId: string } })
       return;
     }
 
+
+    // Upload the image
+    const fileName = file.name//`floorId${currentFloorId}`;
+    // check if this fileName exists in the objects storage table under name with bucket-id floor-plans and then delete it
+    try {
+      // Check if the file exists in the storage bucket
+      const { data: existingFiles, error: checkError } = await supabase.storage
+        .from('floor-plans')
+        .list('', { search: fileName });
+
+      if (checkError) {
+        console.error('Error checking file existence:', checkError.message);
+        return;
+      }
+
+      // If the file exists, delete it
+      if (existingFiles && existingFiles.some((file) => file.name === fileName)) {
+        const { error: deleteError } = await supabase.storage
+          .from('floor-plans')
+          .remove([fileName]);
+
+        if (deleteError) {
+          console.error('Error deleting existing file:', deleteError.message);
+          return;
+        }
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err.message);
+    }
+    // then upload
     const { data, error } = await supabase.storage
       .from('floor-plans')
-      .upload(`${file.name}`, file);
+      .upload(fileName, file, { upsert: true });
 
     if (error) {
       console.error('Error uploading image:', error.message);
@@ -167,7 +197,15 @@ export default function Dashboard({ params }: { params: { projectId: string } })
       throw new Error(`Error updating database: ${updateError.message}`);
     }
 
-    setImgUrl(publicUrl || "/placeholder_img.jpg");
+    setImgUrl((publicUrl || "/placeholder_img.jpg") + "?t=" + new Date().getTime());
+    const updatedFloors = projectData?.floors?.map((floor) =>
+      floor.floor_id.toString() === currentFloorId ? { ...floor, floor_plan: publicUrl || "/placeholder_img.jpg" } : floor
+    );
+
+    if (projectData) {
+      // Update the projectData with the updated floors array
+      projectData.floors = updatedFloors;
+    }
   };
 
   const sortByFloorIdAndName = (data) => {
@@ -184,25 +222,25 @@ export default function Dashboard({ params }: { params: { projectId: string } })
   // Combine all project arrays into one, tagging each with elementType
   const getAllDataForProject = () => {
     if (!projectData) return [];
-    
+
     const { floors = [], walls = [], columns = [], beams = [], ceilings = [] } = projectData;
 
     const floorsWithType = sortByFloorIdAndName(
         floors.map(f => ({ elementType: 'floor', ...f }))
     );
-    
+
     const wallsWithType = sortByFloorIdAndName(
         walls.map(w => ({ elementType: 'wall', ...w }))
     );
-    
+
     const columnsWithType = sortByFloorIdAndName(
         columns.map(c => ({ elementType: 'column', ...c }))
     );
-    
+
     const beamsWithType = sortByFloorIdAndName(
         beams.map(b => ({ elementType: 'beam', ...b }))
     );
-    
+
     const ceilingsWithType = sortByFloorIdAndName(
         ceilings.map(c => ({ elementType: 'ceiling', ...c }))
     );
