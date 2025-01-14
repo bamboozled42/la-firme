@@ -394,6 +394,7 @@ export type Database = {
           location: string | null;
           material: string | null;
           name: string;
+          notes: string | null;
           perforatingBeam: boolean | null;
           perforatingColumn: boolean | null;
           projectId: number | null;
@@ -426,6 +427,7 @@ export type Database = {
           location?: string | null;
           material?: string | null;
           name: string;
+          notes?: string | null;
           perforatingBeam?: boolean | null;
           perforatingColumn?: boolean | null;
           projectId?: number | null;
@@ -458,6 +460,7 @@ export type Database = {
           location?: string | null;
           material?: string | null;
           name?: string;
+          notes?: string | null;
           perforatingBeam?: boolean | null;
           perforatingColumn?: boolean | null;
           projectId?: number | null;
@@ -513,7 +516,10 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      debug_auth_uid: {
+        Args: Record<PropertyKey, never>;
+        Returns: string;
+      };
     };
     Enums: {
       [_ in never]: never;

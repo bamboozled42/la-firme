@@ -2,14 +2,15 @@
 
 import { useSupabase } from "@/app/providers";
 import BeamDetailsForm from "@/components/forms/BeamDetails";
+import BeamForm from "@/components/forms/BeamsForm";
 import CeilingDetailsForm from "@/components/forms/CeilingDetails";
+import CeilingForm from "@/components/forms/CeilingForm";
 import ColumnDetailsForm from "@/components/forms/ColumnsDetails";
 import ColumnsForm from "@/components/forms/ColumnsForm";
 import FloorDetailsForm from "@/components/forms/FloorDetails";
 import FloorsForm from "@/components/forms/FloorsForm";
 import WallDetailsForm from "@/components/forms/WallDetailsForm";
 import WallForm from "@/components/forms/WallForm";
-import BeamForm from "@/components/forms/BeamsForm";
 import { Icons } from "@/components/icons";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
@@ -18,12 +19,11 @@ import { TypographyH2 } from "@/components/ui/typography";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useTranslation } from "../../../i18n/client";
 import { type ElementTypeKeys, type Floor, type ProjectDashboardType, type StateAction } from "../../../lib/utils";
 import AddDialog from "./add-subcomponent";
 import { EditDialog } from "./edit-subcomponent";
-import { useTranslation } from '../../../i18n/client';
 import Subcomponent from "./subcomponent";
-import CeilingForm from "@/components/forms/CeilingForm";
 
 export default function Dashboard({ params }: { params: { projectId: string } }) {
   const { i18n, t } = useTranslation("common");
@@ -147,29 +147,26 @@ export default function Dashboard({ params }: { params: { projectId: string } })
       return;
     }
 
-
     // Upload the image
-    const fileName = file.name//`floorId${currentFloorId}`;
+    const fileName = file.name; //`floorId${currentFloorId}`;
     // check if this fileName exists in the objects storage table under name with bucket-id floor-plans and then delete it
     try {
       // Check if the file exists in the storage bucket
       const { data: existingFiles, error: checkError } = await supabase.storage
-        .from('floor-plans')
-        .list('', { search: fileName });
+        .from("floor-plans")
+        .list("", { search: fileName });
 
       if (checkError) {
-        console.error('Error checking file existence:', checkError.message);
+        console.error("Error checking file existence:", checkError.message);
         return;
       }
 
       // If the file exists, delete it
       if (existingFiles && existingFiles.some((file) => file.name === fileName)) {
-        const { error: deleteError } = await supabase.storage
-          .from('floor-plans')
-          .remove([fileName]);
+        const { error: deleteError } = await supabase.storage.from("floor-plans").remove([fileName]);
 
         if (deleteError) {
-          console.error('Error deleting existing file:', deleteError.message);
+          console.error("Error deleting existing file:", deleteError.message);
           return;
         }
       }
@@ -177,9 +174,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
       console.error("Unexpected error:", err.message);
     }
     // then upload
-    const { data, error } = await supabase.storage
-      .from('floor-plans')
-      .upload(fileName, file, { upsert: true });
+    const { data, error } = await supabase.storage.from("floor-plans").upload(fileName, file, { upsert: true });
 
     if (error) {
       console.error("Error uploading image:", error.message);
@@ -204,7 +199,9 @@ export default function Dashboard({ params }: { params: { projectId: string } })
 
     setImgUrl((publicUrl || "/placeholder_img.jpg") + "?t=" + new Date().getTime());
     const updatedFloors = projectData?.floors?.map((floor) =>
-      floor.floor_id.toString() === currentFloorId ? { ...floor, floor_plan: publicUrl || "/placeholder_img.jpg" } : floor
+      floor.floor_id.toString() === currentFloorId
+        ? { ...floor, floor_plan: publicUrl || "/placeholder_img.jpg" }
+        : floor,
     );
 
     if (projectData) {
@@ -213,15 +210,12 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     }
   };
 
-  const sortByFloorIdAndName = (data) => {
-      return data.sort((a, b) => {
-          // First, compare by floor_id
-          if (a.floor_id !== b.floor_id) {
-              return a.floor_id - b.floor_id; // Numeric comparison
-          }
-          // If floor_id is the same, compare by name
-          return a.name.localeCompare(b.name); // String comparison
-      });
+  const sortByName = (data: any[]) => {
+    return data.sort((a, b) => a.name.localeCompare(b.name));
+  };
+
+  const fixLength = (data: [], length: number, defaultVal = null) => {
+    return Array.from({ length }, (_, i) => data[i] ?? defaultVal);
   };
 
   // Combine all project arrays into one, tagging each with elementType
@@ -230,154 +224,254 @@ export default function Dashboard({ params }: { params: { projectId: string } })
 
     const { floors = [], walls = [], columns = [], beams = [], ceilings = [] } = projectData;
 
-    const floorsWithType = sortByFloorIdAndName(
-        floors.map(f => ({ elementType: 'floor', ...f }))
-    );
-
-    const wallsWithType = sortByFloorIdAndName(
-        walls.map(w => ({ elementType: 'wall', ...w }))
-    );
-
-    const columnsWithType = sortByFloorIdAndName(
-        columns.map(c => ({ elementType: 'column', ...c }))
-    );
-
-    const beamsWithType = sortByFloorIdAndName(
-        beams.map(b => ({ elementType: 'beam', ...b }))
-    );
-
-    const ceilingsWithType = sortByFloorIdAndName(
-        ceilings.map(c => ({ elementType: 'ceiling', ...c }))
-    );
-
-    const floorHeader = { elementType: 'floor', name: 'name', floor_id: 'floor_id', materials: 'materials', projectId: 'projectId', floor_plan: 'floor_plan'};
-    const wallHeader = {
-      elementType: 'wall',
-      id: 'id',
-      name: 'name',
-      width: 'width',
-      height: 'height',
-      length: 'length',
-      stucco: 'stucco',
-      floor_id: 'floor_id',
-      location: 'location',
-      material: 'material',
-      direction: 'direction',
-      project_id: 'projectId',
-      height_type: 'height_type',
-      window_size_x: 'window_size_x',
-      window_size_y: 'window_size_y',
-      fh1CrackInBeam: 'fh1CrackInBeam',
-      l7PoorAdhesion: 'l7PoorAdhesion',
-      perforatingBeam: 'perforatingBeam',
-      l1IrregularBrick: 'l1IrregularBrick',
-      wallRepeatFloors: 'wallRepeatFloors',
-      fh3CrackInCeiling: 'fh3CrackInCeiling',
-      fh4CrackInCeiling: 'fh4CrackInCeiling',
-      perforatingColumn: 'perforatingColumn',
-      fh2CrackInWallCeiling: 'fh2CrackInWallCeiling',
-      l3WallsNotWellAligned: 'l3WallsNotWellAligned',
-      fv2VerticalCrackColumn: 'fv2VerticalCrackColumn',
-      l6MortarJointsTooThick: 'l6MortarJointsTooThick',
-      l4IncompleteMortarInBrick: 'l4IncompleteMortarInBrick',
-      fv1VerticalCrackColumnWall: 'fv1VerticalCrackColumnWall',
-      l2BricksWithExcessiveHoles: 'l2BricksWithExcessiveHoles',
-      l5VariationInThicknessJoints: 'l5VariationInThicknessJoints',
-    };
-    const columnHeader = {
-        elementType: 'column',
-        id: 'id',
-        name: 'name',
-        type: 'type',
-        notes: 'notes',
-        pipes: 'pipes',
-        width: 'width',
-        height: 'height',
-        length: 'length',
-        floor_id: 'floor_id',
-        condition: 'condition',
-        project_id: 'projectId',
-        vertical_cracks: 'vertical_cracks',
-    };
-    const beamHeader = {
-        elementType: 'beam',
-        id: 'id',
-        name: 'name',
-        type: 'type',
-        width: 'width',
-        height: 'height',
-        length: 'length',
-        floor_id: 'floor_id',
-        condition: 'condition',
-        project_id: 'projectId',
-        support_left_side: 'support_left_side',
-        support_right_side: 'support_right_side',
-    };
-    const ceilingHeader = {
-        elementType: 'ceiling',
-        id: 'id',
-        name: 'name',
-        pipes: 'pipes',
-        cracks: 'cracks',
-        height: 'height',
-        floor_id: 'floor_id',
-        project_id: 'projectId',
-        dimension_x: 'dimension_x',
-        dimension_y: 'dimension_y',
-        direction_of_joints: 'direction_of_joints',
-    };
-
-    return [
-      floorHeader,
-      ...floorsWithType,
-      wallHeader,
-      ...wallsWithType,
-      columnHeader,
-      ...columnsWithType,
-      beamHeader,
-      ...beamsWithType,
-      ceilingHeader,
-      ...ceilingsWithType
+    const floorHeader = ["floor", "projectId", "floor_id", "name", "materials", "floor_plan"];
+    const wallHeader = [
+      "wall",
+      "projectId",
+      "floor_id",
+      "id",
+      "direction",
+      "name",
+      "length",
+      "width",
+      "height",
+      "window_size_x",
+      "window_size_y",
+      "material",
+      "height_type",
+      "wallRepeatFloors",
+      "location",
+      "stucco",
+      "fh1CrackInBeam",
+      "fh2CrackInWallCeiling",
+      "fh3CrackInCeiling",
+      "fh4CrackInCeiling",
+      "fv1VerticalCrackColumnWall",
+      "fv2VerticalCrackColumn",
+      "l1IrregularBrick",
+      "l2BricksWithExcessiveHoles",
+      "l3WallsNotWellAligned",
+      "l4IncompleteMortarInBrick",
+      "l5VariationInThicknessJoints",
+      "l6MortarJointsTooThick",
+      "l7PoorAdhesion",
+      "perforatingColumn",
+      "perforatingBeam",
+      "notes",
     ];
+    const columnHeader = [
+      "column",
+      "projectId",
+      "floor_id",
+      "id",
+      "name",
+      "width",
+      "length",
+      "height",
+      "condition",
+      "type",
+      "vertical_cracks",
+      "pipes",
+      "notes",
+    ];
+    const beamHeader = [
+      "beam",
+      "projectId",
+      "floor_id",
+      "id",
+      "name",
+      "width",
+      "height",
+      "length",
+      "support_left_side",
+      "support_right_side",
+      "type",
+      "condition",
+    ];
+    const ceilingHeader = [
+      "ceiling",
+      "projectId",
+      "floor_id",
+      "id",
+      "name",
+      "dimension_x",
+      "dimension_y",
+      "height",
+      "direction_of_joints",
+      "cracks",
+      "pipes",
+    ];
+
+    return {
+      floor: {
+        keys: floorHeader,
+        data: sortByName(floors),
+      },
+      wall: {
+        keys: wallHeader,
+        data: sortByName(walls),
+      },
+      column: {
+        keys: columnHeader,
+        data: sortByName(columns),
+      },
+      beam: {
+        keys: beamHeader,
+        data: sortByName(beams),
+      },
+      ceiling: {
+        keys: ceilingHeader,
+        data: sortByName(ceilings),
+      },
+    };
   };
 
   // Convert a single array of objects into CSV
-  function exportToCSV(data: any[], filename: string) {
+  function exportToCSV(data: any, filename: string) {
     if (!data || data.length === 0) {
       console.warn("No data available for CSV export");
       return;
     }
 
-    // Collect all unique keys from all data objects
-    const allKeys = new Set<string>();
-    data.forEach((obj) => {
-      Object.keys(obj).forEach((key) => allKeys.add(key));
-    });
-    const keys = Array.from(allKeys);
+    const NUM_FLOORS = 3;
+    const NUM_WALLS = 16;
+    const NUM_COLUMNS = 15;
+    const NUM_BEAMS = 15;
+    const NUM_CEILINGS = 10;
 
+    // Filter for first three floors
+    const fids = fixLength(
+      data.floor.data.map((floor) => [floor.floor_id, floor.name]),
+      NUM_FLOORS,
+      [null, "NULL Floor"],
+    );
+
+    // Initialize CSV
     const csvRows: string[] = [];
-    // Header row
-    // csvRows.push(keys.join(","));
 
-    let previousElementType: string | null = null; // Initialize previousElementType
+    // WALLS
+    csvRows.push("WALLS");
+    csvRows.push(",,,,,");
+    for (const [fid, fname] of fids) {
+      const curWalls = data.wall.data.filter((wall) => wall.floor_id == fid);
+      for (const dir of ["X", "Y"]) {
+        const keys = data.wall.keys;
+        csvRows.push(fname + " Direction " + dir);
+        csvRows.push(keys.join(","));
+        const curDirWalls = fixLength(
+          curWalls.filter((wall) => wall.direction == dir),
+          NUM_WALLS,
+        );
+        for (const row of curDirWalls) {
+          if (row == null) {
+            csvRows.push(",,,,,");
+          } else {
+            const values = keys.map((k) => {
+              const val = row[k] === null || row[k] === undefined ? "" : row[k];
+              return `"${val}"`; // wrap in quotes to handle commas
+            });
+            csvRows.push(values.join(","));
+          }
+        }
 
-    // Data rows
-    for (const row of data) {
-      // Check if elementType has changed and it's not the first row
-      if (row.elementType !== previousElementType && previousElementType !== null) {
         csvRows.push(",,,,,"); // Insert a blank line
       }
-      previousElementType = row.elementType; // Update previousElementType
+    }
 
-      const currentKeys = new Set<string>();
-      Object.keys(row).forEach((key) => currentKeys.add(key));
-      const keysCurr = Array.from(currentKeys);
+    // COLUMNS
+    csvRows.push("COLUMNS");
+    csvRows.push(",,,,,");
+    for (const [fid, fname] of fids) {
+      const curCols = fixLength(
+        data.column.data.filter((col) => col.floor_id == fid),
+        NUM_COLUMNS,
+      );
+      const keys = data.column.keys;
+      csvRows.push(fname);
+      csvRows.push(keys.join(","));
+      for (const row of curCols) {
+        if (row == null) {
+          csvRows.push(",,,,,");
+        } else {
+          const values = keys.map((k) => {
+            const val = row[k] === null || row[k] === undefined ? "" : row[k];
+            return `"${val}"`; // wrap in quotes to handle commas
+          });
+          csvRows.push(values.join(","));
+        }
+      }
 
-      const values = keysCurr.map(k => {
-        const val = row[k] === null || row[k] === undefined ? "" : row[k];
-        return `"${val}"`; // wrap in quotes to handle commas
-      });
-      csvRows.push(values.join(","));
+      csvRows.push(",,,,,"); // Insert a blank line
+    }
+
+    // BEAMS
+    csvRows.push("BEAMS");
+    csvRows.push(",,,,,");
+    for (const [fid, fname] of fids) {
+      const curBeams = fixLength(
+        data.beam.data.filter((beam) => beam.floor_id == fid),
+        NUM_BEAMS,
+      );
+      const keys = data.beam.keys;
+      csvRows.push(fname);
+      csvRows.push(keys.join(","));
+      for (const row of curBeams) {
+        if (row == null) {
+          csvRows.push(",,,,,");
+        } else {
+          const values = keys.map((k) => {
+            const val = row[k] === null || row[k] === undefined ? "" : row[k];
+            return `"${val}"`; // wrap in quotes to handle commas
+          });
+          csvRows.push(values.join(","));
+        }
+      }
+
+      csvRows.push(",,,,,"); // Insert a blank line
+    }
+
+    // CEILINGS
+    csvRows.push("CEILINGS");
+    csvRows.push(",,,,,");
+    for (const [fid, fname] of fids) {
+      const curCeils = fixLength(
+        data.ceiling.data.filter((ceil) => ceil.floor_id == fid),
+        NUM_CEILINGS,
+      );
+      const keys = data.ceiling.keys;
+      csvRows.push(fname);
+      csvRows.push(keys.join(","));
+      for (const row of curCeils) {
+        if (row == null) {
+          csvRows.push(",,,,,");
+        } else {
+          const values = keys.map((k) => {
+            const val = row[k] === null || row[k] === undefined ? "" : row[k];
+            return `"${val}"`; // wrap in quotes to handle commas
+          });
+          csvRows.push(values.join(","));
+        }
+      }
+
+      csvRows.push(",,,,,"); // Insert a blank line
+    }
+
+    // FLOORS
+    csvRows.push("FLOORS");
+    csvRows.push(",,,,,");
+    const curFloors = Array.from({ length: NUM_FLOORS }, (_, i) => data.floor.data[i] ?? null);
+    const keys = data.floor.keys;
+    csvRows.push(keys.join(","));
+    for (const row of curFloors) {
+      if (row == null) {
+        csvRows.push(",,,,,");
+      } else {
+        const values = keys.map((k) => {
+          const val = row[k] === null || row[k] === undefined ? "" : row[k];
+          return `"${val}"`; // wrap in quotes to handle commas
+        });
+        csvRows.push(values.join(","));
+      }
     }
 
     const csvString = csvRows.join("\n");
@@ -395,9 +489,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
 
   const handleExportCSV = () => {
     const allData = getAllDataForProject();
-    if (allData.length > 0) {
-      exportToCSV(allData, "project_data.csv");
-    }
+    exportToCSV(allData, projectData?.title + ".csv");
   };
 
   return (
@@ -436,12 +528,12 @@ export default function Dashboard({ params }: { params: { projectId: string } })
             <AddDialog
               Form1={FloorsForm}
               Form2={FloorDetailsForm}
-              form1Title={t('addFloorElementTitle')}
-              form2Title={t('floorDetailsTitle')}
-              form1Description={t('floorElementDescription')}
-              form2Description={t('floorDetailsDescription')}
+              form1Title={t("addFloorElementTitle")}
+              form2Title={t("floorDetailsTitle")}
+              form1Description={t("floorElementDescription")}
+              form2Description={t("floorDetailsDescription")}
               buttonClass="bg-green-700 text-green-50 min-h-10 h-auto"
-              buttonName={t('addFloorButton')}
+              buttonName={t("addFloorButton")}
               dbname="floors"
               projectId={params.projectId}
               onDataAdded={() => setDataVersion((prevVersion) => prevVersion + 1)}
@@ -482,7 +574,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
             <AccordionItem value="walls" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
               <div className="flex items-center justify-between">
                 <AccordionTrigger className="flex-grow">
-                  {t('wallsTitle')} {"(" + (currentFloorData?.walls ? currentFloorData?.walls.length : 0) + ")"}
+                  {t("wallsTitle")} {"(" + (currentFloorData?.walls ? currentFloorData?.walls.length : 0) + ")"}
                 </AccordionTrigger>
                 <AddDialog
                   Form1={WallForm}
@@ -517,7 +609,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
             <AccordionItem value="columns" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
               <div className="flex items-center justify-between">
                 <AccordionTrigger className="flex-grow">
-                  {t('columnsTitle')} {"(" + (currentFloorData?.columns ? currentFloorData?.columns.length : 0) + ")"}
+                  {t("columnsTitle")} {"(" + (currentFloorData?.columns ? currentFloorData?.columns.length : 0) + ")"}
                 </AccordionTrigger>
                 <AddDialog
                   Form1={ColumnsForm}
@@ -552,7 +644,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
             <AccordionItem value="beams" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
               <div className="flex items-center justify-between">
                 <AccordionTrigger className="flex-grow">
-                  {t('beamsTitle')} {"(" + (currentFloorData?.beams ? currentFloorData?.beams.length : 0) + ")"}
+                  {t("beamsTitle")} {"(" + (currentFloorData?.beams ? currentFloorData?.beams.length : 0) + ")"}
                 </AccordionTrigger>
                 <AddDialog
                   Form1={BeamForm}
@@ -587,7 +679,8 @@ export default function Dashboard({ params }: { params: { projectId: string } })
             <AccordionItem value="ceilings" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
               <div className="flex items-center justify-between">
                 <AccordionTrigger className="flex-grow">
-                  {t('ceilingsTitle')} {"(" + (currentFloorData?.ceilings ? currentFloorData?.ceilings.length : 0) + ")"}
+                  {t("ceilingsTitle")}{" "}
+                  {"(" + (currentFloorData?.ceilings ? currentFloorData?.ceilings.length : 0) + ")"}
                 </AccordionTrigger>
                 <AddDialog
                   Form1={CeilingForm}
@@ -622,7 +715,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
 
           <div className="mt-6 flex justify-center">
             <Button variant="default" onClick={handleExportCSV}>
-              {t('Export as CSV')}
+              {t("Export as CSV")}
             </Button>
           </div>
         </div>
