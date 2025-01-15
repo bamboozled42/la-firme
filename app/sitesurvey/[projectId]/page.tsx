@@ -162,7 +162,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
       }
 
       // If the file exists, delete it
-      if (existingFiles && existingFiles.some((file) => file.name === fileName)) {
+      if (existingFiles?.some((file) => file.name === fileName)) {
         const { error: deleteError } = await supabase.storage.from("floor-plans").remove([fileName]);
 
         if (deleteError) {
@@ -242,10 +242,10 @@ export default function Dashboard({ params }: { params: { projectId: string } })
       "wallRepeatFloors",
       "location",
       "stucco",
+      "columnsAtEnds",
       "fh1CrackInBeam",
       "fh2CrackInWallCeiling",
       "fh3CrackInCeiling",
-      "fh4CrackInCeiling",
       "fv1VerticalCrackColumnWall",
       "fv2VerticalCrackColumn",
       "l1IrregularBrick",
@@ -334,7 +334,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     }
 
     const NUM_FLOORS = 3;
-    const NUM_WALLS = 16;
+    const NUM_WALLS = 15;
     const NUM_COLUMNS = 15;
     const NUM_BEAMS = 15;
     const NUM_CEILINGS = 10;
