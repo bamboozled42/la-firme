@@ -5,9 +5,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { createTranslation } from "../i18n/server";
 import LoginButton from "./(components-navbar)/login-button";
+import ToastHandler from "./providers";
 
-export default async function Home() {
+interface HomePageProps {
+  searchParams: Record<string, string | undefined>;
+}
+
+export default async function Home({ searchParams }: HomePageProps) {
   const { t } = await createTranslation("common");
+  const notWhitelisted = searchParams?.notWhitelisted === "true";
+  const loginError = searchParams?.loginError === "true";
 
   const supabase = createServerSupabaseClient();
   const {
@@ -30,6 +37,7 @@ export default async function Home() {
           <LoginButton />
         )}
       </div>
+      <ToastHandler notWhitelisted={notWhitelisted} loginError={loginError} />
     </div>
   );
 }
