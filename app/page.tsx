@@ -1,14 +1,20 @@
-import { TypographyH2, TypographyP } from "@/components/ui/typography";
-import { createTranslation } from '../i18n/server';
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import LoginButton from "./(components-navbar)/login-button";
+import { TypographyH2 } from "@/components/ui/typography";
 import { createServerSupabaseClient } from "@/lib/server-utils";
+import Image from "next/image";
 import Link from "next/link";
+import { createTranslation } from "../i18n/server";
+import LoginButton from "./(components-navbar)/login-button";
+import ToastHandler from "./providers";
 
-export default async function Home() {
-  const {t} = await createTranslation('common');
+interface HomePageProps {
+  searchParams: Record<string, string | undefined>;
+}
 
+export default async function Home({ searchParams }: HomePageProps) {
+  const { t } = await createTranslation("common");
+  const notWhitelisted = searchParams?.notWhitelisted === "true";
+  const loginError = searchParams?.loginError === "true";
 
   const supabase = createServerSupabaseClient();
   const {
@@ -16,17 +22,11 @@ export default async function Home() {
   } = await supabase.auth.getUser();
 
   return (
-    <div className="flex flex-col items-center justify-center mt-24">
-      <TypographyH2 className="text-center mb-6">{t("welcome")}</TypographyH2>
+    <div className="mt-24 flex flex-col items-center justify-center">
+      <TypographyH2 className="mb-6 text-center">{t("welcome")}</TypographyH2>
 
-      <div className="mb-8 bg-gray-950 p-3 rounded-md">
-        <Image
-          src="/lafirmelogo.png"
-          alt="La Firme Logo"
-          width={600}
-          height={600}
-          className="rounded-lg shadow-lg"
-        />
+      <div className="mb-8 rounded-md bg-gray-950 p-3">
+        <Image src="/lafirmelogo.png" alt="La Firme Logo" width={600} height={600} className="rounded-lg shadow-lg" />
       </div>
       <div className="mt-8">
         {user ? (
@@ -37,6 +37,7 @@ export default async function Home() {
           <LoginButton />
         )}
       </div>
+      <ToastHandler notWhitelisted={notWhitelisted} loginError={loginError} />
     </div>
   );
 }

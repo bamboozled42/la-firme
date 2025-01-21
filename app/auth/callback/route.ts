@@ -27,12 +27,22 @@ export async function GET(request: Request) {
         },
       },
     );
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    const { error, data } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
+      const { data: whitelistCheck } = await supabase
+        .from("whitelist_users")
+        .select("email")
+        .eq("email", data.user.email)
+        .single();
+
+      if (!whitelistCheck) {
+        await supabase.auth.signOut();
+        return NextResponse.redirect(`${origin}/?notWhitelisted=true`);
+      }
       return NextResponse.redirect(`${origin}${next}`);
     }
   }
 
   // return the user to an error page with instructions
-  return NextResponse.redirect(`${origin}/auth/auth-code-error`);
+  return NextResponse.redirect(`${origin}/?loginError=true`);
 }
