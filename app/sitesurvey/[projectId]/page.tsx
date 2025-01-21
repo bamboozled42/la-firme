@@ -20,7 +20,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useTranslation } from "../../../i18n/client";
-import { type ElementTypeKeys, type Floor, type ProjectDashboardType, type StateAction } from "../../../lib/utils";
+import {
+  Beam,
+  Ceiling,
+  Column,
+  Wall,
+  type ElementTypeKeys,
+  type Floor,
+  type ProjectDashboardType,
+  type StateAction,
+} from "../../../lib/utils";
 import AddDialog from "./add-subcomponent";
 import { EditDialog } from "./edit-subcomponent";
 import Subcomponent from "./subcomponent";
@@ -225,6 +234,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     }
   };
 
+<<<<<<< HEAD
   const sortByFloorIdAndName = (data) => {
     return data.sort((a, b) => {
       // First, compare by floor_id
@@ -234,6 +244,14 @@ export default function Dashboard({ params }: { params: { projectId: string } })
       // If floor_id is the same, compare by name
       return a.name.localeCompare(b.name); // String comparison
     });
+=======
+  const sortByName = (data: any[]) => {
+    return data.sort((a, b) => a.name.localeCompare(b.name));
+  };
+
+  const fixLength = (data: [], length: number, defaultVal: any = null) => {
+    return Array.from({ length }, (_, i) => data[i] ?? defaultVal);
+>>>>>>> 2707964 (Fixed type errors??)
   };
 
   // Combine all project arrays into one, tagging each with elementType
@@ -359,7 +377,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
 
     // Filter for first three floors
     const fids = fixLength(
-      data.floor.data.map((floor) => [floor.floor_id, floor.name]),
+      data.floor.data.map((floor: Floor) => [floor.floor_id, floor.name]),
       NUM_FLOORS,
       [null, "NULL Floor"],
     );
@@ -371,20 +389,20 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     csvRows.push("WALLS");
     csvRows.push(",,,,,");
     for (const [fid, fname] of fids) {
-      const curWalls = data.wall.data.filter((wall) => wall.floor_id == fid);
+      const curWalls = data.wall.data.filter((wall: Wall) => wall.floor_id == fid);
       for (const dir of ["X", "Y"]) {
         const keys = data.wall.keys;
         csvRows.push(fname + " Direction " + dir);
         csvRows.push(keys.join(","));
         const curDirWalls = fixLength(
-          curWalls.filter((wall) => wall.direction == dir),
+          curWalls.filter((wall: Wall) => wall.direction == dir),
           NUM_WALLS,
         );
         for (const row of curDirWalls) {
           if (row == null) {
             csvRows.push(",,,,,");
           } else {
-            const values = keys.map((k) => {
+            const values = keys.map((k: string) => {
               const val = row[k] === null || row[k] === undefined ? "" : row[k];
               return `"${val}"`; // wrap in quotes to handle commas
             });
@@ -401,7 +419,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     csvRows.push(",,,,,");
     for (const [fid, fname] of fids) {
       const curCols = fixLength(
-        data.column.data.filter((col) => col.floor_id == fid),
+        data.column.data.filter((col: Column) => col.floor_id == fid),
         NUM_COLUMNS,
       );
       const keys = data.column.keys;
@@ -411,7 +429,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
         if (row == null) {
           csvRows.push(",,,,,");
         } else {
-          const values = keys.map((k) => {
+          const values = keys.map((k: string) => {
             const val = row[k] === null || row[k] === undefined ? "" : row[k];
             return `"${val}"`; // wrap in quotes to handle commas
           });
@@ -427,7 +445,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     csvRows.push(",,,,,");
     for (const [fid, fname] of fids) {
       const curBeams = fixLength(
-        data.beam.data.filter((beam) => beam.floor_id == fid),
+        data.beam.data.filter((beam: Beam) => beam.floor_id == fid),
         NUM_BEAMS,
       );
       const keys = data.beam.keys;
@@ -437,7 +455,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
         if (row == null) {
           csvRows.push(",,,,,");
         } else {
-          const values = keys.map((k) => {
+          const values = keys.map((k: string) => {
             const val = row[k] === null || row[k] === undefined ? "" : row[k];
             return `"${val}"`; // wrap in quotes to handle commas
           });
@@ -453,7 +471,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     csvRows.push(",,,,,");
     for (const [fid, fname] of fids) {
       const curCeils = fixLength(
-        data.ceiling.data.filter((ceil) => ceil.floor_id == fid),
+        data.ceiling.data.filter((ceil: Ceiling) => ceil.floor_id == fid),
         NUM_CEILINGS,
       );
       const keys = data.ceiling.keys;
@@ -463,7 +481,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
         if (row == null) {
           csvRows.push(",,,,,");
         } else {
-          const values = keys.map((k) => {
+          const values = keys.map((k: string) => {
             const val = row[k] === null || row[k] === undefined ? "" : row[k];
             return `"${val}"`; // wrap in quotes to handle commas
           });
@@ -484,7 +502,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
       if (row == null) {
         csvRows.push(",,,,,");
       } else {
-        const values = keys.map((k) => {
+        const values = keys.map((k: string) => {
           const val = row[k] === null || row[k] === undefined ? "" : row[k];
           return `"${val}"`; // wrap in quotes to handle commas
         });
