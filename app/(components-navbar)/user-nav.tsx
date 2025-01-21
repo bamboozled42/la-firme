@@ -14,6 +14,7 @@ import { createBrowserSupabaseClient } from "@/lib/client-utils";
 import { type Database } from "@/lib/schema";
 import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "../../i18n/client";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
@@ -22,6 +23,8 @@ export default function UserNav({ profile }: { profile: Profile }) {
   const supabaseClient = createBrowserSupabaseClient();
 
   const router = useRouter();
+
+  const { t } = useTranslation("common");
 
   const handleSignOut = async () => {
     await supabaseClient.auth.signOut();
@@ -68,7 +71,7 @@ export default function UserNav({ profile }: { profile: Profile }) {
           }}
         >
           <LogOut className="mr-2 h-4 w-4" />
-          <span>Log out</span>
+          <span>{t("logOut")}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
