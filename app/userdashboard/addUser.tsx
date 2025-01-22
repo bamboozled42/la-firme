@@ -6,6 +6,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "../../i18n/client";
 import { type User } from "../../lib/utils";
 import { useSupabase } from "../providers";
 
@@ -25,6 +26,8 @@ const AddUser: React.FC<AddUserProps> = ({ AdminUser }) => {
   const router = useRouter();
   const supabase = useSupabase();
   const [open, setOpen] = React.useState(false);
+
+  const { t } = useTranslation("common");
 
   const {
     register,
@@ -131,12 +134,12 @@ const AddUser: React.FC<AddUserProps> = ({ AdminUser }) => {
         <DialogTrigger asChild>
           <Button size="sm" className={"bg-green-500 text-green-50"}>
             <Icons.add className="mr-2 h-4 w-4" />
-            <span className="mr-1">{"Invite User"}</span>
+            <span className="mr-1">{t("inviteUser")}</span>
           </Button>
         </DialogTrigger>
         <DialogContent className="max-h-screen w-5/6 overflow-y-auto p-8 pt-10">
           <DialogHeader>
-            <DialogTitle>Add User</DialogTitle>
+            <DialogTitle>{t("inviteUser")}</DialogTitle>
           </DialogHeader>
           <form
             onSubmit={(e) => {
@@ -146,15 +149,15 @@ const AddUser: React.FC<AddUserProps> = ({ AdminUser }) => {
           >
             <div>
               <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-                First Name
+                {t("firstName")}
               </label>
               <input
                 id="first_name"
                 {...register("first_name", {
-                  required: "Please enter a first name",
+                  required: t("firstNameRequired"),
                 })}
                 className="mt-1 block w-full rounded-md border-gray-300 bg-white/10 shadow-sm focus:border-green-500 focus:ring-green-500"
-                placeholder="Enter user's first name"
+                placeholder={t("firstNamePlaceholder")}
               />
 
               {errors.first_name && <p className="mt-1 text-sm text-red-600">{errors.first_name.message}</p>}
@@ -163,15 +166,15 @@ const AddUser: React.FC<AddUserProps> = ({ AdminUser }) => {
             {/* Last Name */}
             <div>
               <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-                Last Name
+                {t("lastName")}
               </label>
               <input
                 id="last_name"
                 {...register("last_name", {
-                  required: "Please enter a last name",
+                  required: t("lastNameRequired"),
                 })}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
-                placeholder="Enter user's last name"
+                placeholder={t("lastNamePlaceholder")}
               />
               {errors.last_name && <p className="mt-1 text-sm text-red-600">{errors.last_name.message}</p>}
             </div>
@@ -179,19 +182,19 @@ const AddUser: React.FC<AddUserProps> = ({ AdminUser }) => {
             {/* Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email
+                {t("email")}
               </label>
               <input
                 id="email"
                 {...register("email", {
-                  required: "Email is required",
+                  required: t("emailRequired"),
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: "Invalid email address",
+                    message: t("invalidEmail"),
                   },
                 })}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
-                placeholder="Enter user's email"
+                placeholder={t("emailPlaceholder")}
               />
               {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
             </div>
@@ -199,21 +202,21 @@ const AddUser: React.FC<AddUserProps> = ({ AdminUser }) => {
             {/* Role, is this necessary */}
             <div>
               <label htmlFor="role" className="block text-sm font-medium text-gray-700">
-                Role
+                {t("role")}
               </label>
               <select
                 id="role"
                 {...register("role", {
-                  required: "Please select a role",
+                  required: t("roleRequired"),
                 })}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
               >
                 <option value="" disabled>
-                  Select role
+                  {t("rolePlaceholder")}
                 </option>
-                <option value="admin">admin</option>
-                <option value="architect">architect</option>
-                <option value="client">client</option>
+                <option value="admin">{t("admin")}</option>
+                <option value="architect">{t("architect")}</option>
+                <option value="client">{t("client")}</option>
               </select>
               {errors.role && <p className="mt-1 text-sm text-red-600">{errors.role.message}</p>}
             </div>
@@ -222,15 +225,15 @@ const AddUser: React.FC<AddUserProps> = ({ AdminUser }) => {
             {role == "client" && (
               <div>
                 <label htmlFor="address" className="block text-sm font-medium text-gray-700">
-                  Address
+                  {t("address")}
                 </label>
                 <input
                   id="address"
                   {...register("address", {
-                    required: role === "client" ? "Address is required for clients" : false,
+                    required: role === "client" ? t("addressRequired") : false,
                   })}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
-                  placeholder="Enter address"
+                  placeholder={t("addressPlaceholder")}
                 />
                 {errors.address && <p className="mt-1 text-sm text-red-600">{errors.address.message}</p>}
               </div>
@@ -246,7 +249,7 @@ const AddUser: React.FC<AddUserProps> = ({ AdminUser }) => {
                   console.log("Button clicked");
                 }}
               >
-                Send Invite
+                {t("sendInvite")}
               </Button>
             </div>
           </form>
