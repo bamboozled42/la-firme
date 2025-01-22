@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "../../i18n/client";
 import { type Users } from "../../lib/utils";
 import { useSupabase } from "../providers";
 
@@ -18,6 +19,8 @@ type AddProjectSchema = {
 };
 
 const AddProjectCard: React.FC = () => {
+  const { t } = useTranslation("common");
+
   const {
     register,
     handleSubmit,
@@ -81,12 +84,12 @@ const AddProjectCard: React.FC = () => {
         <DialogTrigger asChild>
           <Button size="sm" className={"bg-green-500 text-green-50"}>
             <Icons.add className="mr-2 h-4 w-4" />
-            <span className="mr-1">{"Add"}</span>
+            <span className="mr-1">{t("add")}</span>
           </Button>
         </DialogTrigger>
         <DialogContent className="max-h-screen w-5/6 overflow-y-auto p-8 pt-10">
           <DialogHeader>
-            <DialogTitle>Add Project</DialogTitle>
+            <DialogTitle>{t("newProject")}</DialogTitle>
           </DialogHeader>
           <form
             onSubmit={(e) => {
@@ -96,79 +99,81 @@ const AddProjectCard: React.FC = () => {
           >
             <div>
               <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-                Title
+                {t("title")}
               </label>
               <input
                 id="title"
                 {...register("title")}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
               />
-              {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>}
+              {errors.title && <p className="mt-1 text-sm text-red-600">{t(errors.title.message ?? "")}</p>}
             </div>
 
             {/* Architect */}
             <div>
               <label htmlFor="architect_id" className="block text-sm font-medium text-gray-700">
-                Architect
+                {t("architect")}
               </label>
               <select
                 id="architect_id"
                 {...register("architect_id")}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
               >
-                <option value="">Select Architect</option>
+                <option value="">{t("architectPlaceholder")}</option>
                 {architects.map((architect) => (
                   <option key={architect.id} value={architect.id}>
                     {architect.first_name} {architect.last_name}
                   </option>
                 ))}
               </select>
-              {errors.architect_id && <p className="mt-1 text-sm text-red-600">{errors.architect_id.message}</p>}
+              {errors.architect_id && (
+                <p className="mt-1 text-sm text-red-600">{t(errors.architect_id.message ?? "")}</p>
+              )}
             </div>
 
             {/* Client */}
             <div>
               <label htmlFor="client" className="block text-sm font-medium text-gray-700">
-                Client
+                {t("client")}
               </label>
               <input
                 id="client"
                 {...register("client")}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
               />
-              {errors.client && <p className="mt-1 text-sm text-red-600">{errors.client.message}</p>}
+              {errors.client && <p className="mt-1 text-sm text-red-600">{t(errors.client.message ?? "")}</p>}
             </div>
 
             {/* Description */}
             <div>
               <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-                Description
+                {t("description")}
               </label>
               <input
                 id="description"
                 {...register("description")}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
               />
-              {errors.client && <p className="mt-1 text-sm text-red-600">{errors.client.message}</p>}
+              {errors.client && <p className="mt-1 text-sm text-red-600">{t(errors.client.message ?? "")}</p>}
             </div>
 
             {/* Location */}
             <div>
               <label htmlFor="location" className="block text-sm font-medium text-gray-700">
-                Location
+                {t("location")}
               </label>
               <input
                 id="location"
                 {...register("location")}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
               />
-              {errors.location && <p className="mt-1 text-sm text-red-600">{errors.location.message}</p>}
+              {errors.location && <p className="mt-1 text-sm text-red-600">{t(errors.location.message ?? "")}</p>}
             </div>
 
             {/* Start Date */}
             <div>
               <label htmlFor="start_date" className="block text-sm font-medium text-gray-700">
-                Start Date
+                {t("startDate")}
               </label>
               <input
                 type="date"
@@ -176,23 +181,23 @@ const AddProjectCard: React.FC = () => {
                 {...register("start_date")}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
               />
-              {errors.start_date && <p className="mt-1 text-sm text-red-600">{errors.start_date.message}</p>}
+              {errors.start_date && <p className="mt-1 text-sm text-red-600">{t(errors.start_date.message ?? "")}</p>}
             </div>
 
             {/* Status, is this necessary */}
             <div>
               <label htmlFor="status" className="block text-sm font-medium text-gray-700">
-                Status
+                {t("status")}
               </label>
               <select
                 id="status"
                 {...register("status")}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
               >
-                <option value="">Select status</option>
-                <option value="In Progress">In Progress</option>
+                <option value="">{t("statusPlaceholder")}</option>
+                <option value="In Progress">{t("inProgress")}</option>
               </select>
-              {errors.status && <p className="mt-1 text-sm text-red-600">{errors.status.message}</p>}
+              {errors.status && <p className="mt-1 text-sm text-red-600">{t(errors.status.message ?? "")}</p>}
             </div>
 
             <div className="mt-4 flex justify-end space-x-2">
@@ -205,7 +210,7 @@ const AddProjectCard: React.FC = () => {
                   console.log("Button clicked");
                 }}
               >
-                Create Project
+                {t("createProject")}
               </Button>
             </div>
           </form>
