@@ -252,5 +252,14 @@
   "notes": "Notes",
   "architectExportDisclaimer": "You are limited to exporting up to 3 floors, 15 walls, 15 beams, 15 columns, and 10 ceilings.",
   "columnsAtEnds": "Columns At Ends",
-  "floorPlanPlaceholder": "Upload Floor Plan Image"
+  "floorPlanPlaceholder": "Upload Floor Plan Image",
+
+  "success": "Success!",
+  "somethingWentWrong": "Something went wrong",
+  "accessDenied": "Access denied",
+  "notAuthenticated": "You are not authenticated for this application",
+  "notWhitelisted": "You are not on the whitelist for this application",
+  "projectDeleteSuccess": "Project was successfully deleted",
+  "projectDeleteError": "There was an error deleting this project",
+  "confirmDeleteProject": "Are you sure you want to delete this project?"
 }

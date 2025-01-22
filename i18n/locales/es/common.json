@@ -252,5 +252,14 @@
   "notes": "Notas",
   "architectExportDisclaimer": "Estás limitado a exportar hasta 3 pisos, 15 paredes, 15 vigas, 15 columnas y 10 techos.",
   "columnsAtEnds": "Columnas En Los Extremos",
-  "floorPlanPlaceholder": "Cargar Imagen Del Plano De Planta"
+  "floorPlanPlaceholder": "Cargar Imagen Del Plano De Planta",
+
+  "success": "¡Éxito!",
+  "somethingWentWrong": "Algo salió mal",
+  "accessDenied": "Acceso denegado",
+  "notAuthenticated": "No estás autenticado para esta aplicación",
+  "notWhitelisted": "No estás en la lista blanca para esta aplicación",
+  "projectDeleteSuccess": "El proyecto se eliminó con éxito",
+  "projectDeleteError": "Hubo un error al eliminar este proyecto",
+  "confirmDeleteProject": "¿Estás seguro de que deseas eliminar este proyecto?"
 }
