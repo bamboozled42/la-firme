@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm, type FieldErrors, type SubmitHandler } from "react-hook-form";
+import { useTranslation } from "../../i18n/client";
 import { type Floor } from "../../lib/utils";
 
 interface FloorsFormProps {
@@ -14,6 +15,8 @@ interface FloorsFormProps {
 }
 
 const FloorsForm: React.FC<FloorsFormProps> = ({ onNext, onCancel, floors }) => {
+  const { t } = useTranslation("common");
+
   const {
     register,
     handleSubmit,
@@ -23,9 +26,7 @@ const FloorsForm: React.FC<FloorsFormProps> = ({ onNext, onCancel, floors }) => 
   });
 
   const onSubmit: SubmitHandler<FloorFormSchema> = (data) => {
-    const formattedName = `Floor ${data.name}`;
-    const formattedData = { ...data, name: formattedName };
-    onNext(formattedData);
+    onNext(data);
   };
 
   const onError = (errors: FieldErrors<FloorFormSchema>) => {
@@ -46,26 +47,26 @@ const FloorsForm: React.FC<FloorsFormProps> = ({ onNext, onCancel, floors }) => 
       {/* Name Field */}
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-          Name
+          {t("name")}
         </label>
         <input
-          type="text"
+          type="number"
           id="name"
           {...register("name")}
           className={`mt-1 block w-full rounded-md border px-2 ${
             errors.name ? "border-red-600" : "border-gray-300"
           } shadow-sm focus:border-green-500 focus:ring-green-500`}
-          placeholder="Enter floor number"
+          placeholder={t("floorNamePlaceholder")}
         />
-        {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
+        {errors.name && <p className="mt-1 text-sm text-red-600">{t(errors.name.message ?? "")}</p>}
       </div>
 
       {/* Buttons */}
       <div className="mt-4 flex justify-end space-x-2">
         <Button type="button" variant="secondary" onClick={onCancel}>
-          Cancel
+          {t("cancel")}
         </Button>
-        <Button type="submit">Next</Button>
+        <Button type="submit">{t("next")}</Button>
       </div>
     </form>
   );

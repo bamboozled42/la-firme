@@ -80,5 +80,165 @@
   "addressRequired": "Address is required for clients",
   "addressPlaceholder": "Enter client's address",
   "sendInvite": "Send Invite",
-  "exportAsCSV": "Export as CSV"
+  "exportAsCSV": "Export as CSV",
+
+  "name": "Name",
+  "wallNamePlaceholder": "Enter wall number",
+  "direction": "Direction",
+  "floor": "Floor",
+
+  "length": "Length",
+  "width": "Width",
+  "height": "Height",
+
+  "windowSizeX": "Size of Window X",
+  "windowSizeY": "Size of Window Y",
+
+  "fhTitle": "Horizontal Cracks",
+  "fh1": "FH1 Crack in Beam",
+  "fh2": "FH2 Crack in Wall Ceiling",
+  "fh3": "FH3 Crack in Ceiling",
+  "fh4": "FH4 Crack in Ceiling",
+
+  "fvTitle": "Vertical Cracks",
+  "fv1": "FV1 Vertical Crack Column Wall",
+  "fv2": "FV2 Vertical Crack Column",
+
+  "lTitle": "Condition of Bricks",
+  "l1": "L1 Irregular Brick",
+  "l2": "L2 Bricks with Excessive Holes",
+  "l3": "L3 Walls Not Well Aligned",
+  "l4": "L4 Incomplete Mortar in Brick",
+  "l5": "L5 Variation in Thickness Joints",
+  "l6": "L6 Mortar Joints Too Thick",
+  "l7": "L7 Poor Adhesion",
+
+  "tTitle": "Pipes",
+  "t1": "Perforating Column",
+  "t2": "Perforating Beam",
+
+  "generalInfo": "General Information",
+
+  "kk": "KK",
+  "p": "P",
+  "c": "C",
+  "drywall": "Drywall",
+
+  "fullOrPartialHeight": "Full or Partial Height",
+
+  "high": "High",
+  "low": "Low",
+
+  "wallRepeatFloors": "Wall Repeats Floors",
+
+  "perimeter": "Perimeter",
+  "internal": "Internal",
+
+  "stucco": "Stucco",
+
+  "onlyInside": "Only inside",
+  "onlyOutside": "Only outside",
+  "insideAndOutside": "Inside and outside",
+  "noStucco": "No stucco",
+
+  "floorNamePlaceholder": "Enter floor number",
+
+  "material": "Material",
+  "materialPlaceholder": "Select Material",
+  "dirt": "Dirt",
+  "cement": "Cement",
+  "wood": "Wood",
+  "tiles": "Tiles",
+
+  "columnNamePlaceholder": "Enter column number",
+
+  "condition": "Condition",
+  "conditionPlaceholder": "Select Condition",
+  "bad": "Bad",
+  "good": "Good",
+  "select": "Select",
+
+  "type": "Type",
+  "typePlaceholder": "Select Type",
+  "bracingColumn": "Bracing Column",
+  "independentColumn": "Independent Column",
+
+  "verticalCracks": "Vertical cracks",
+
+  "pipes": "Pipes",
+
+  "ceilingNamePlaceholder": "Enter ceiling number",
+
+  "dimensionX": "Dimension X",
+  "dimensionY": "Dimension Y",
+  "jointDirection": "Direction of Joints",
+  "jointDirectionPlaceholder": "Select direction",
+  "cracks": "Cracks",
+
+  "beamNamePlaceholder": "Enter beam number",
+
+  "supportLeft": "Support Left Side",
+  "supportLeftPlaceholder": "Select support left side",
+  "supportRight": "Support Right Side",
+  "supportRightPlaceholder": "Select support right side",
+  "column": "Column",
+  "wall": "Wall",
+  "beam": "Beam",
+  "overhanging": "Overhanging",
+
+  "curvedSole": "Curved sole",
+  "flatSole": "Flat sole",
+  "invertedSole": "Inverted sole",
+  "curved": "Curved",
+  "flat": "Flat",
+  "inverted": "Inverted",
+
+  "cancel": "Cancel",
+  "next": "Next",
+  "delete": "Delete",
+  "save": "Save",
+
+  "nameRequired": "Name is required",
+  "numberRequired": "Number is required",
+  "numberInteger": "Number must be an integer",
+  "numberPositive": "Number must be positive",
+
+  "directionXY": "Direction must be either 'X' or 'Y'",
+
+  "lengthRequired": "Length is required",
+  "lengthPositive": "Length must be positive",
+  "widthRequired": "Width is required",
+  "widthPositive": "Width must be positive",
+  "heightRequired": "Height is required",
+  "heightPositive": "Height must be positive",
+  "windowSizeRequired": "Size of window is required",
+  "windowSizePositive": "Size of window must be positive",
+  "materialRequired": "Material is required",
+  "highLowHeightRequired": "High or low height is required",
+  "locationRequired": "Location is required",
+  "stuccoRequired": "Stucco condition must be selected",
+
+  "conditionRequired": "Condition is required",
+  "typeRequired": "Type is required",
+
+  "supportLeftRequired": "Support left side is required",
+  "supportRightRequired": "Support right side is required",
+
+  "dimXRequired": "Dimension X is required",
+  "dimYRequired": "Dimension Y is required",
+  "dimXPositive": "Dimension X must be positive",
+  "dimYPositive": "Dimension Y must be positive",
+  "jointDirectionRequired": "Direction of joints is required",
+
+  "titleRequired": "Title is required",
+  "startDateRequired": "Start date is required",
+  "architectRequired": "Architect is required",
+  "clientRequired": "Client is required",
+  "statusRequired": "Status is required",
+  "descriptionRequired": "Description is required",
+
+  "wallDetails": "Wall Details",
+  "columnDetails": "Column Details",
+  "beamDetails": "Beam Details",
+  "ceilingDetails": "Ceiling Details"
 }

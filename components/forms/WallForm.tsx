@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm, type FieldErrors, type SubmitHandler } from "react-hook-form";
+import { useTranslation } from "../../i18n/client";
 import { type Floor } from "../../lib/utils";
 
 interface WallFormProps {
@@ -14,6 +15,8 @@ interface WallFormProps {
 }
 
 const WallForm: React.FC<WallFormProps> = ({ onNext, onCancel, floors }) => {
+  const { t } = useTranslation("common");
+
   const {
     register,
     handleSubmit,
@@ -27,11 +30,8 @@ const WallForm: React.FC<WallFormProps> = ({ onNext, onCancel, floors }) => {
   console.log(floors);
 
   const onSubmit: SubmitHandler<WallFormSchema> = (data) => {
-    const formattedName = `Wall ${data.direction}${data.name}`;
-    const formattedData = { ...data, name: formattedName };
-
     console.log("WallForm Submitted Data:", data);
-    onNext(formattedData);
+    onNext({ ...data, name: `${data.name}${data.direction}` });
   };
 
   const onError = (errors: FieldErrors<WallFormSchema>) => {
@@ -52,23 +52,23 @@ const WallForm: React.FC<WallFormProps> = ({ onNext, onCancel, floors }) => {
       {/* Name Field */}
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-          Name
+          {t("name")}
         </label>
         <input
-          type="text"
+          type="number"
           id="name"
           {...register("name")}
           className={`mt-1 block w-full rounded-md border px-2 ${
             errors.name ? "border-red-600" : "border-gray-300"
           } shadow-sm focus:border-green-500 focus:ring-green-500`}
-          placeholder="Enter wall name as a number"
+          placeholder={t("wallNamePlaceholder")}
         />
-        {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
+        {errors.name && <p className="mt-1 text-sm text-red-600">{t(errors.name.message ?? "")}</p>}
       </div>
 
       {/* Direction Field */}
       <div>
-        <label className="block text-sm font-medium text-gray-700">Direction</label>
+        <label className="block text-sm font-medium text-gray-700">{t("direction")}</label>
         <div className="mt-1 flex items-center space-x-4">
           <label className="flex items-center space-x-2">
             <input
@@ -93,13 +93,13 @@ const WallForm: React.FC<WallFormProps> = ({ onNext, onCancel, floors }) => {
             <span>Y</span>
           </label>
         </div>
-        {errors.direction && <p className="mt-1 text-sm text-red-600">{errors.direction.message}</p>}
+        {errors.direction && <p className="mt-1 text-sm text-red-600">{t(errors.direction.message ?? "")}</p>}
       </div>
 
       {/* Floor Field */}
       <div>
         <label htmlFor="floor" className="block text-sm font-medium text-gray-700">
-          Floor
+          {t("floor")}
         </label>
 
         <select
@@ -116,15 +116,15 @@ const WallForm: React.FC<WallFormProps> = ({ onNext, onCancel, floors }) => {
           ))}
         </select>
 
-        {errors.floor_id && <p className="mt-1 text-sm text-red-600">{errors.floor_id.message}</p>}
+        {errors.floor_id && <p className="mt-1 text-sm text-red-600">{t(errors.floor_id.message ?? "")}</p>}
       </div>
 
       {/* Buttons */}
       <div className="mt-4 flex justify-end space-x-2">
         <Button type="button" variant="secondary" onClick={onCancel}>
-          Cancel
+          {t("cancel")}
         </Button>
-        <Button type="submit">Next</Button>
+        <Button type="submit">{t("next")}</Button>
       </div>
     </form>
   );

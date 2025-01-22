@@ -3,42 +3,47 @@ import { z } from "zod";
 
 // General Form Schema
 export const generalFormSchema = z.object({
-  name: z.string().min(1, { message: "Name is required" }),
+  name: z.string().min(1, { message: "nameRequired" }),
   number: z
-    .number({ required_error: "Number is required" })
-    .int("Number must be an integer")
-    .positive("Number must be positive")
+    .number({ required_error: "numberRequired" })
+    .int("numberInteger")
+    .positive("numberPositive")
     .nullable()
     .optional(),
-  floor_id: z
-    .number({ required_error: "Number is required" })
-    .int("Number must be an integer")
-    .positive("Number must be positive"),
+  floor_id: z.number({ required_error: "numberRequired" }).int("numberInteger").positive("numberPositive"),
 });
 
 export const wallFormSchema = generalFormSchema.extend({
   direction: z.enum(["X", "Y"], {
-    errorMap: () => ({ message: "Direction must be either 'x' or 'y'" }),
+    errorMap: () => ({ message: "directionXY" }),
   }),
 });
 
 export const wallDetailsFormSchema = z.object({
-  length: z.number({ required_error: "Length is required" }).positive("Length must be positive"),
-  width: z.number({ required_error: "Width is required" }).positive("Width must be positive"),
-  height: z.number({ required_error: "Height is required" }).positive("Height must be positive"),
-  window_size_x: z.number({ required_error: "Size of window is required" }).positive("Size of window must be positive"),
-  window_size_y: z.number({ required_error: "Size of window is required" }).positive("Size of window must be positive"),
+  length: z
+    .number({ required_error: "lengthRequired", invalid_type_error: "lengthRequired" })
+    .positive("lengthPositive"),
+  width: z.number({ required_error: "widthRequired", invalid_type_error: "widthRequired" }).positive("widthPositive"),
+  height: z
+    .number({ required_error: "heightRequired", invalid_type_error: "heightRequired" })
+    .positive("heightPositive"),
+  window_size_x: z
+    .number({ required_error: "windowSizeRequired", invalid_type_error: "windowSizeRequired" })
+    .positive("windowSizePositive"),
+  window_size_y: z
+    .number({ required_error: "windowSizeRequired", invalid_type_error: "windowSizeRequired" })
+    .positive("windowSizePositive"),
   material: z.enum(["KK", "P", "C", "Drywall", "Seleccionar"], {
-    errorMap: () => ({ message: "Material is required" }),
+    errorMap: () => ({ message: "materialRequired" }),
   }),
   height_type: z.enum(["High", "Low"], {
-    errorMap: () => ({ message: "High or low height is required" }),
+    errorMap: () => ({ message: "highLowHeightRequired" }),
   }),
   location: z.enum(["Perimeter", "Internal"], {
-    errorMap: () => ({ message: "Location is required" }),
+    errorMap: () => ({ message: "locationRequired" }),
   }),
   stucco: z.enum(["Only inside", "Only outside", "Inside and outside", "No stucco"], {
-    errorMap: () => ({ message: "Stucco must be selected" }),
+    errorMap: () => ({ message: "stuccoRequired" }),
   }),
   wallRepeatFloors: z.boolean().default(false),
   fh1CrackInBeam: z.boolean().default(false),
@@ -61,14 +66,18 @@ export const wallDetailsFormSchema = z.object({
 export const columnFormSchema = generalFormSchema;
 
 export const columnDetailsFormSchema = z.object({
-  length: z.number({ required_error: "Length is required" }).positive("Length must be positive"),
-  width: z.number({ required_error: "Width is required" }).positive("Width must be positive"),
-  height: z.number({ required_error: "Height is required" }).positive("Height must be positive"),
+  length: z
+    .number({ required_error: "lengthRequired", invalid_type_error: "lengthRequired" })
+    .positive("lengthPositive"),
+  width: z.number({ required_error: "widthRequired", invalid_type_error: "widthRequired" }).positive("widthPositive"),
+  height: z
+    .number({ required_error: "heightRequired", invalid_type_error: "heightRequired" })
+    .positive("heightPositive"),
   condition: z.enum(["Seleccionar", "Bad", "Good"], {
-    errorMap: () => ({ message: "Condition is required" }),
+    errorMap: () => ({ message: "conditionRequired" }),
   }),
   type: z.enum(["Column of 'arriostramiento'", "Independent column"], {
-    errorMap: () => ({ message: "Type is required" }),
+    errorMap: () => ({ message: "typeRequired" }),
   }),
   vertical_cracks: z.boolean().default(false),
   pipes: z.boolean().default(false),
@@ -77,57 +86,67 @@ export const columnDetailsFormSchema = z.object({
 export const beamFormSchema = generalFormSchema;
 
 export const beamDetailsFormSchema = z.object({
-  length: z.number({ required_error: "Length is required" }).positive("Length must be positive"),
-  width: z.number({ required_error: "Width is required" }).positive("Width must be positive"),
-  height: z.number({ required_error: "Height is required" }).positive("Height must be positive"),
+  length: z
+    .number({ required_error: "lengthRequired", invalid_type_error: "lengthRequired" })
+    .positive("lengthPositive"),
+  width: z.number({ required_error: "widthRequired", invalid_type_error: "widthRequired" }).positive("widthPositive"),
+  height: z
+    .number({ required_error: "heightRequired", invalid_type_error: "heightRequired" })
+    .positive("heightPositive"),
   support_left_side: z.enum(["Column", "Wall", "Beam", "Overhanging"], {
-    errorMap: () => ({ message: "Support left side is required" }),
+    errorMap: () => ({ message: "supportLeftRequired" }),
   }),
   support_right_side: z.enum(["Column", "Wall", "Beam", "Overhanging"], {
-    errorMap: () => ({ message: "Support right side is required" }),
+    errorMap: () => ({ message: "supportRightRequired" }),
   }),
   type: z.enum(["Curved sole", "Flat sole", "Inverted Sole", "Curved", "Flat", "Inverted"], {
-    errorMap: () => ({ message: "Type is required" }),
+    errorMap: () => ({ message: "typeRequired" }),
   }),
   condition: z.enum(["Seleccionar", "Bad", "Good"], {
-    errorMap: () => ({ message: "Condition is required" }),
+    errorMap: () => ({ message: "conditionRequired" }),
   }),
 });
 
 export const ceilingFormSchema = generalFormSchema;
 
 export const ceilingDetailsFormSchema = z.object({
-  height: z.number({ required_error: "Height is required" }).positive("Height must be positive"),
-  dimension_x: z.number({ required_error: "Dimension X is required" }).positive("Dimension X must be positive"),
-  dimension_y: z.number({ required_error: "Dimension Y is required" }).positive("Dimension Y must be positive"),
+  height: z
+    .number({ required_error: "heightRequired", invalid_type_error: "heightRequired" })
+    .positive("heightPositive"),
+  dimension_x: z
+    .number({ required_error: "dimXRequired", invalid_type_error: "dimXRequired" })
+    .positive("dimXPositive"),
+  dimension_y: z
+    .number({ required_error: "dimYRequired", invalid_type_error: "dimYRequired" })
+    .positive("dimYPositive"),
   direction_of_joints: z.enum(["X", "Y"], {
-    errorMap: () => ({ message: "Direction of joints is required" }),
+    errorMap: () => ({ message: "jointDirectionRequired" }),
   }),
   cracks: z.boolean().default(false),
   pipes: z.boolean().default(false),
 });
 
 export const floorFormSchema = z.object({
-  name: z.string().min(1, { message: "Name is required" }),
+  name: z.string().min(1, { message: "nameRequired" }),
 });
 
 export const floorDetailsFormSchema = z.object({
   materials: z.enum(["Dirt", "Cement", "Wood", "Tiles"], {
-    errorMap: () => ({ message: "Material is required" }),
+    errorMap: () => ({ message: "materialRequired" }),
   }),
 });
 
 export const projectFormSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  location: z.string().min(1, "Location is required"),
+  title: z.string().min(1, "titleRequired"),
+  location: z.string().min(1, "locationRequired"),
   start_date: z
     .string()
-    .min(1, "Start date is required")
+    .min(1, "statDateRequired")
     .transform((date) => new Date(date)),
-  architect_id: z.string().min(1, "Architect is required"),
-  client: z.string().min(1, "Client is required"),
-  status: z.string().min(1, "Status is required"),
-  description: z.string().min(1, "Description is required"),
+  architect_id: z.string().min(1, "architectRequired"),
+  client: z.string().min(1, "clientRequired"),
+  status: z.string().min(1, "statusRequired"),
+  description: z.string().min(1, "descriptionRequired"),
 });
 
 // TypeScript Types
