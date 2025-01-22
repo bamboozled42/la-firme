@@ -28,7 +28,7 @@ export default async function Navbar({ className, ...props }: React.HTMLAttribut
       )}
       {user && publicUser && publicUser.role == "admin" && (
         <Link href="/userdashboard" className="text-sm font-medium transition-colors hover:text-primary">
-          {t("Users")}
+          {t("users")}
         </Link>
       )}
     </nav>
