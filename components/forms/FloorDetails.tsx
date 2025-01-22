@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "../../i18n/client";
 import { type Floor } from "../../lib/utils";
 
 interface FloorDetailsFormProps {
@@ -16,6 +17,8 @@ interface FloorDetailsFormProps {
 }
 
 const FloorDetailsForm: React.FC<FloorDetailsFormProps> = ({ onSave, onCancel, onDelete, itemData }) => {
+  const { t } = useTranslation("common");
+
   const defaultValues = itemData ? itemData : {};
   const {
     register,
@@ -36,7 +39,7 @@ const FloorDetailsForm: React.FC<FloorDetailsFormProps> = ({ onSave, onCancel, o
       {/* Materials Field */}
       <div>
         <label htmlFor="materials" className="block text-sm font-medium text-gray-700">
-          Materials
+          {t("material")}
         </label>
         <select
           id="materials"
@@ -47,25 +50,25 @@ const FloorDetailsForm: React.FC<FloorDetailsFormProps> = ({ onSave, onCancel, o
           } shadow-sm focus:border-green-500 focus:ring-green-500`}
         >
           <option value="" disabled>
-            Select material
+            {t("materialPlaceholder")}
           </option>
-          <option value="Dirt">Dirt</option>
-          <option value="Cement">Cement</option>
-          <option value="Wood">Wood</option>
-          <option value="Tiles">Tiles</option>
+          <option value="Dirt">{t("dirt")}</option>
+          <option value="Cement">{t("cement")}</option>
+          <option value="Wood">{t("wood")}</option>
+          <option value="Tiles">{t("tiles")}</option>
         </select>
-        {errors.materials && <p className="mt-1 text-sm text-red-600">{errors.materials.message}</p>}
+        {errors.materials && <p className="mt-1 text-sm text-red-600">{t(errors.materials.message ?? "")}</p>}
       </div>
 
       {/* Buttons */}
       <div className="mt-4 flex justify-end space-x-2">
         <Button type="button" variant="destructive" onClick={onDelete}>
-          Delete
+          {t("delete")}
         </Button>
         <Button type="button" variant="secondary" onClick={onCancel}>
-          Cancel
+          {t("cancel")}
         </Button>
-        <Button type="submit">Save</Button>
+        <Button type="submit">{t("save")}</Button>
       </div>
     </form>
   );

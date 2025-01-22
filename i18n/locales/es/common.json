@@ -80,5 +80,165 @@
   "addressRequired": "La dirección es obligatoria para los clientes",
   "addressPlaceholder": "Ingrese la dirección del cliente",
   "sendInvite": "Enviar Invitación",
-  "exportAsCSV": "Exportar como CSV"
+  "exportAsCSV": "Exportar como CSV",
+
+  "name": "Nombre",
+  "wallNamePlaceholder": "Ingrese el número de la pared",
+  "direction": "Dirección",
+  "floor": "Piso",
+
+  "length": "Longitud",
+  "width": "Ancho",
+  "height": "Altura",
+
+  "windowSizeX": "Tamaño de Ventana X",
+  "windowSizeY": "Tamaño de Ventana Y",
+
+  "fhTitle": "Grietas Horizontales",
+  "fh1": "FH1 Grieta en Viga",
+  "fh2": "FH2 Grieta en Techo de Pared",
+  "fh3": "FH3 Grieta en Techo",
+  "fh4": "FH4 Grieta en Techo",
+
+  "fvTitle": "Grietas Verticales",
+  "fv1": "FV1 Grieta Vertical Columna Pared",
+  "fv2": "FV2 Grieta Vertical Columna",
+
+  "lTitle": "Condición de los Ladrillos",
+  "l1": "L1 Ladrillo Irregular",
+  "l2": "L2 Ladrillos con Agujeros Excesivos",
+  "l3": "L3 Paredes No Bien Alineadas",
+  "l4": "L4 Mortero Incompleto en Ladrillo",
+  "l5": "L5 Variación en el Espesor de las Juntas",
+  "l6": "L6 Juntas de Mortero Demasiado Gruesas",
+  "l7": "L7 Mala Adhesión",
+
+  "tTitle": "Tuberías",
+  "t1": "Perforando Columna",
+  "t2": "Perforando Viga",
+
+  "generalInfo": "Información General",
+
+  "kk": "KK",
+  "p": "P",
+  "c": "C",
+  "drywall": "Tablaroca",
+
+  "fullOrPartialHeight": "Altura Completa o Parcial",
+
+  "high": "Alto",
+  "low": "Bajo",
+
+  "wallRepeatFloors": "Pared Repite Pisos",
+
+  "perimeter": "Perímetro",
+  "internal": "Interno",
+
+  "stucco": "Estuco",
+
+  "onlyInside": "Solo adentro",
+  "onlyOutside": "Solo afuera",
+  "insideAndOutside": "Adentro y afuera",
+  "noStucco": "Sin estuco",
+
+  "floorNamePlaceholder": "Ingrese el número de piso",
+
+  "material": "Material",
+  "materialPlaceholder": "Seleccione Material",
+  "dirt": "Tierra",
+  "cement": "Cemento",
+  "wood": "Madera",
+  "tiles": "Azulejos",
+
+  "columnNamePlaceholder": "Ingrese el número de columna",
+
+  "condition": "Condición",
+  "conditionPlaceholder": "Seleccione Condición",
+  "bad": "Mala",
+  "good": "Buena",
+  "select": "Seleccionar",
+
+  "type": "Tipo",
+  "typePlaceholder": "Seleccione Tipo",
+  "bracingColumn": "Columna de Refuerzo",
+  "independentColumn": "Columna Independiente",
+
+  "verticalCracks": "Grietas verticales",
+
+  "pipes": "Tuberías",
+
+  "ceilingNamePlaceholder": "Ingrese el número de techo",
+
+  "dimensionX": "Dimensión X",
+  "dimensionY": "Dimensión Y",
+  "jointDirection": "Dirección de Juntas",
+  "jointDirectionPlaceholder": "Seleccione dirección",
+  "cracks": "Grietas",
+
+  "beamNamePlaceholder": "Ingrese el número de viga",
+
+  "supportLeft": "Soporte Lado Izquierdo",
+  "supportLeftPlaceholder": "Seleccione soporte lado izquierdo",
+  "supportRight": "Soporte Lado Derecho",
+  "supportRightPlaceholder": "Seleccione soporte lado derecho",
+  "column": "Columna",
+  "wall": "Pared",
+  "beam": "Viga",
+  "overhanging": "Saliente",
+
+  "curvedSole": "Soleado curvo",
+  "flatSole": "Soleado plano",
+  "invertedSole": "Soleado invertido",
+  "curved": "Curvo",
+  "flat": "Plano",
+  "inverted": "Invertido",
+
+  "cancel": "Cancelar",
+  "next": "Siguiente",
+  "delete": "Eliminar",
+  "save": "Guardar",
+
+  "nameRequired": "El nombre es obligatorio",
+  "numberRequired": "El número es obligatorio",
+  "numberInteger": "El número debe ser un entero",
+  "numberPositive": "El número debe ser positivo",
+
+  "directionXY": "La dirección debe ser 'X' o 'Y'",
+
+  "lengthRequired": "La longitud es obligatoria",
+  "lengthPositive": "La longitud debe ser positiva",
+  "widthRequired": "El ancho es obligatorio",
+  "widthPositive": "El ancho debe ser positivo",
+  "heightRequired": "La altura es obligatoria",
+  "heightPositive": "La altura debe ser positiva",
+  "windowSizeRequired": "El tamaño de la ventana es obligatorio",
+  "windowSizePositive": "El tamaño de la ventana debe ser positivo",
+  "materialRequired": "El material es obligatorio",
+  "highLowHeightRequired": "Se requiere altura alta o baja",
+  "locationRequired": "La ubicación es obligatoria",
+  "stuccoRequired": "Se debe seleccionar la condición del estuco",
+
+  "conditionRequired": "La condición es obligatoria",
+  "typeRequired": "El tipo es obligatorio",
+
+  "supportLeftRequired": "Se requiere soporte del lado izquierdo",
+  "supportRightRequired": "Se requiere soporte del lado derecho",
+
+  "dimXRequired": "La dimensión X es obligatoria",
+  "dimYRequired": "La dimensión Y es obligatoria",
+  "dimXPositive": "La dimensión X debe ser positiva",
+  "dimYPositive": "La dimensión Y debe ser positiva",
+  "jointDirectionRequired": "La dirección de las juntas es obligatoria",
+
+  "titleRequired": "El título es obligatorio",
+  "startDateRequired": "La fecha de inicio es obligatoria",
+  "architectRequired": "El arquitecto es obligatorio",
+  "clientRequired": "El cliente es obligatorio",
+  "statusRequired": "El estado es obligatorio",
+  "descriptionRequired": "La descripción es obligatoria",
+
+  "wallDetails": "Detalles del Muro",
+  "columnDetails": "Detalles de la Columna",
+  "beamDetails": "Detalles de la Viga",
+  "ceilingDetails": "Detalles de la Losa"
 }
