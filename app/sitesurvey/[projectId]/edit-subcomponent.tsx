@@ -104,7 +104,9 @@ export function EditDialog({
       </DialogTrigger>
       <DialogContent className="max-h-screen w-5/6 overflow-y-auto p-8 pt-10">
         <DialogHeader>
-          <DialogTitle className="mb-2 text-left leading-relaxed">{elementType} Details</DialogTitle>
+          <DialogTitle className="mb-2 text-left leading-relaxed">
+            {t(`${elementType.toLowerCase()}Details`)}
+          </DialogTitle>
         </DialogHeader>
         <DialogDescription />
         <DetailsForm onSave={handleSave} onCancel={handleCancel} onDelete={handleDelete} itemData={itemData} />

@@ -1,6 +1,7 @@
 "use server";
 import { createServerSupabaseClient } from "@/lib/server-utils";
 import { redirect } from "next/navigation";
+import { createTranslation } from "../../i18n/server";
 import AddUser from "./addUser";
 import UserTable from "./userTable";
 
@@ -10,6 +11,8 @@ export default async function Dashboard() {
   const {
     data: { user: authUser },
   } = await supabase.auth.getUser();
+
+  const { t } = await createTranslation("common");
 
   if (!authUser) {
     // this is a protected route - only users who are signed in can view this route
@@ -43,12 +46,12 @@ export default async function Dashboard() {
   return (
     <div>
       <div className="mb-10 flex items-center justify-between">
-        <h1 style={{ marginLeft: 10, marginBottom: 10 }}> Staff Table</h1>
+        <h1 style={{ marginLeft: 10, marginBottom: 10 }}>{t("staffTable")}</h1>
         <AddUser AdminUser={user as any} />
       </div>
       <UserTable tableType="staff" users={users} currentUserId={currentUserId} />
       <div className="mb-5 mt-10 flex items-center justify-between">
-        <h1 style={{ marginLeft: 10, marginBottom: 10 }}>Client Table</h1>
+        <h1 style={{ marginLeft: 10, marginBottom: 10 }}>{t("clientTable")}</h1>
       </div>
       <UserTable tableType="clients" users={clients} currentUserId={currentUserId} />
     </div>

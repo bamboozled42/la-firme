@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "../../i18n/client";
 import { type Wall } from "../../lib/utils";
 
 interface WallDetailsFormProps {
@@ -15,6 +16,8 @@ interface WallDetailsFormProps {
 }
 
 const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onDelete, itemData }) => {
+  const { t } = useTranslation("common");
+
   const defaultValues = itemData ? itemData : {};
   const {
     register,
@@ -32,50 +35,70 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
 
   // Define the fields
   const generalFields = [
-    { id: "material", label: "Material", options: ["KK", "P", "C", "Drywall", "Seleccionar"], type: "select" },
-    { id: "height_type", label: "Full or Partial Height", options: ["High", "Low"], type: "select" },
-    { id: "wallRepeatFloors", label: "Wall Repeat Floors", options: ["Yes", "No"], type: "checkbox" },
-    { id: "location", label: "Location", options: ["Perimeter", "Internal"], type: "select" },
-    { id: "stucco", label: "Stucco", options: ["Only inside", "Only outside", "Inside and outside", "No stucco"], type: "select" },
+    {
+      id: "material",
+      label: t("material"),
+      options: { KK: t("kk"), P: t("p"), C: t("c"), Drywall: t("drywall"), Seleccionar: t("select") },
+      type: "select",
+    },
+    { id: "height_type", label: t("fullOrPartialHeight"), options: { High: t("high"), Low: t("low") }, type: "select" },
+    { id: "wallRepeatFloors", label: t("wallRepeatFloors"), options: {}, type: "checkbox" },
+    {
+      id: "location",
+      label: t("location"),
+      options: { Perimeter: t("perimeter"), Internal: t("internal") },
+      type: "select",
+    },
+    {
+      id: "stucco",
+      label: t("stucco"),
+      options: {
+        "Only inside": t("onlyInside"),
+        "Only outside": t("onlyOutside"),
+        "Inside and outside": t("insideAndOutside"),
+        "No stucco": t("noStucco"),
+      },
+      type: "select",
+    },
   ];
 
   const fhFields = [
-    { id: "fh1CrackInBeam", label: "FH1 Crack in Beam", type: "checkbox" },
-    { id: "fh2CrackInWallCeiling", label: "FH2 Crack in Wall Ceiling", type: "checkbox" },
-    { id: "fh3CrackInCeiling", label: "FH3 Crack in Ceiling", type: "checkbox" },
-    { id: "fh4CrackInCeiling", label: "FH4 Crack in Ceiling", type: "checkbox" },
+    { id: "fh1CrackInBeam", label: t("fh1"), type: "checkbox" },
+    { id: "fh2CrackInWallCeiling", label: t("fh2"), type: "checkbox" },
+    { id: "fh3CrackInCeiling", label: t("fh3"), type: "checkbox" },
+    { id: "fh4CrackInCeiling", label: t("fh4"), type: "checkbox" },
   ];
 
   const fvFields = [
-    { id: "fv1VerticalCrackColumnWall", label: "FV1 Vertical Crack Column Wall", type: "checkbox" },
-    { id: "fv2VerticalCrackColumn", label: "FV2 Vertical Crack Column", type: "checkbox" },
+    { id: "fv1VerticalCrackColumnWall", label: t("fv1"), type: "checkbox" },
+    { id: "fv2VerticalCrackColumn", label: t("fv2"), type: "checkbox" },
   ];
 
   const lFields = [
-    { id: "l1IrregularBrick", label: "L1 Irregular Brick", type: "checkbox" },
-    { id: "l2BricksWithExcessiveHoles", label: "L2 Bricks with Excessive Holes", type: "checkbox" },
-    { id: "l3WallsNotWellAligned", label: "L3 Walls Not Well Aligned", type: "checkbox" },
-    { id: "l4IncompleteMortarInBrick", label: "L4 Incomplete Mortar in Brick", type: "checkbox" },
-    { id: "l5VariationInThicknessJoints", label: "L5 Variation in Thickness Joints", type: "checkbox" },
-    { id: "l6MortarJointsTooThick", label: "L6 Mortar Joints Too Thick", type: "checkbox" },
-    { id: "l7PoorAdhesion", label: "L7 Poor Adhesion", type: "checkbox" },
+    { id: "l1IrregularBrick", label: t("l1"), type: "checkbox" },
+    { id: "l2BricksWithExcessiveHoles", label: t("l2"), type: "checkbox" },
+    { id: "l3WallsNotWellAligned", label: t("l3"), type: "checkbox" },
+    { id: "l4IncompleteMortarInBrick", label: t("l4"), type: "checkbox" },
+    { id: "l5VariationInThicknessJoints", label: t("l5"), type: "checkbox" },
+    { id: "l6MortarJointsTooThick", label: t("l6"), type: "checkbox" },
+    { id: "l7PoorAdhesion", label: t("l7"), type: "checkbox" },
   ];
 
-  const perforatingFields = [
-    { id: "perforatingColumn", label: "Perforating Column", type: "checkbox" },
-    { id: "perforatingBeam", label: "Perforating Beam", type: "checkbox" },
+  const tFields = [
+    { id: "perforatingColumn", label: t("t1"), type: "checkbox" },
+    { id: "perforatingBeam", label: t("t2"), type: "checkbox" },
   ];
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* General Information */}
       <section>
-        <h2 className="text-lg font-semibold">General Information</h2>
+        <h2 className="text-lg font-semibold">{t("generalInfo")}</h2>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {/* Length Field */}
           <div>
             <label htmlFor="length" className="block text-sm font-medium text-gray-700">
-              Length
+              {t("length")}
             </label>
             <input
               type="number"
@@ -85,13 +108,13 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
                 errors.length ? "border-red-600" : "border-gray-300"
               } shadow-sm focus:border-green-500 focus:ring-green-500`}
             />
-            {errors.length && <p className="mt-1 text-sm text-red-600">{errors.length.message}</p>}
+            {errors.length && <p className="mt-1 text-sm text-red-600">{t(errors.length.message ?? "")}</p>}
           </div>
 
           {/* Width Field */}
           <div>
             <label htmlFor="width" className="block text-sm font-medium text-gray-700">
-              Width
+              {t("width")}
             </label>
             <input
               type="number"
@@ -101,13 +124,13 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
                 errors.width ? "border-red-600" : "border-gray-300"
               } shadow-sm focus:border-green-500 focus:ring-green-500`}
             />
-            {errors.width && <p className="mt-1 text-sm text-red-600">{errors.width.message}</p>}
+            {errors.width && <p className="mt-1 text-sm text-red-600">{t(errors.width.message ?? "")}</p>}
           </div>
 
           {/* Height Field */}
           <div>
             <label htmlFor="height" className="block text-sm font-medium text-gray-700">
-              Height
+              {t("height")}
             </label>
             <input
               type="number"
@@ -117,13 +140,13 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
                 errors.height ? "border-red-600" : "border-gray-300"
               } shadow-sm focus:border-green-500 focus:ring-green-500`}
             />
-            {errors.height && <p className="mt-1 text-sm text-red-600">{errors.height.message}</p>}
+            {errors.height && <p className="mt-1 text-sm text-red-600">{t(errors.height.message ?? "")}</p>}
           </div>
 
           {/* Window Size X Field */}
           <div>
             <label htmlFor="window_size_x" className="block text-sm font-medium text-gray-700">
-              Size of Window X
+              {t("windowSizeX")}
             </label>
             <input
               type="number"
@@ -133,13 +156,15 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
                 errors.window_size_x ? "border-red-600" : "border-gray-300"
               } shadow-sm focus:border-green-500 focus:ring-green-500`}
             />
-            {errors.window_size_x && <p className="mt-1 text-sm text-red-600">{errors.window_size_x.message}</p>}
+            {errors.window_size_x && (
+              <p className="mt-1 text-sm text-red-600">{t(errors.window_size_x.message ?? "")}</p>
+            )}
           </div>
 
           {/* Window Size Y Field */}
           <div>
             <label htmlFor="window_size_y" className="block text-sm font-medium text-gray-700">
-              Size of Window Y
+              {t("windowSizeY")}
             </label>
             <input
               type="number"
@@ -149,7 +174,9 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
                 errors.window_size_y ? "border-red-600" : "border-gray-300"
               } shadow-sm focus:border-green-500 focus:ring-green-500`}
             />
-            {errors.window_size_y && <p className="mt-1 text-sm text-red-600">{errors.window_size_y.message}</p>}
+            {errors.window_size_y && (
+              <p className="mt-1 text-sm text-red-600">{t(errors.window_size_y.message ?? "")}</p>
+            )}
           </div>
 
           {/* Additional General Fields */}
@@ -169,7 +196,7 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
                 </label>
                 {errors[field.id as keyof WallDetailsFormSchema] && (
                   <p className="mt-1 text-sm text-red-600">
-                    {errors[field.id as keyof WallDetailsFormSchema]?.message}
+                    {t(errors[field.id as keyof WallDetailsFormSchema]?.message ?? "")}
                   </p>
                 )}
               </div>
@@ -189,15 +216,15 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
                   <option value="" disabled>
                     Select {field.label.toLowerCase()}
                   </option>
-                  {field.options.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
+                  {Object.keys(field.options).map((optionKey) => (
+                    <option key={optionKey} value={optionKey}>
+                      {field.options[optionKey as keyof typeof field.options]}
                     </option>
                   ))}
                 </select>
                 {errors[field.id as keyof WallDetailsFormSchema] && (
                   <p className="mt-1 text-sm text-red-600">
-                    {errors[field.id as keyof WallDetailsFormSchema]?.message}
+                    {t(errors[field.id as keyof WallDetailsFormSchema]?.message ?? "")}
                   </p>
                 )}
               </div>
@@ -208,7 +235,7 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
 
       {/* FH Fields */}
       <section>
-        <h2 className="text-lg font-semibold">FH Fields</h2>
+        <h2 className="text-lg font-semibold">{t("fhTitle")}</h2>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {fhFields.map((field) => (
             <div key={field.id} className="flex items-center">
@@ -225,7 +252,7 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
               </label>
               {errors[field.id as keyof WallDetailsFormSchema] && (
                 <p className="mt-1 text-sm text-red-600">
-                  {errors[field.id as keyof WallDetailsFormSchema]?.message}
+                  {t(errors[field.id as keyof WallDetailsFormSchema]?.message ?? "")}
                 </p>
               )}
             </div>
@@ -235,7 +262,7 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
 
       {/* FV Fields */}
       <section>
-        <h2 className="text-lg font-semibold">FV Fields</h2>
+        <h2 className="text-lg font-semibold">{t("fvTitle")}</h2>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {fvFields.map((field) => (
             <div key={field.id} className="flex items-center">
@@ -252,7 +279,7 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
               </label>
               {errors[field.id as keyof WallDetailsFormSchema] && (
                 <p className="mt-1 text-sm text-red-600">
-                  {errors[field.id as keyof WallDetailsFormSchema]?.message}
+                  {t(errors[field.id as keyof WallDetailsFormSchema]?.message ?? "")}
                 </p>
               )}
             </div>
@@ -262,7 +289,7 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
 
       {/* L Fields */}
       <section>
-        <h2 className="text-lg font-semibold">L Fields</h2>
+        <h2 className="text-lg font-semibold">{t("lTitle")}</h2>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {lFields.map((field) => (
             <div key={field.id} className="flex items-center">
@@ -279,7 +306,7 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
               </label>
               {errors[field.id as keyof WallDetailsFormSchema] && (
                 <p className="mt-1 text-sm text-red-600">
-                  {errors[field.id as keyof WallDetailsFormSchema]?.message}
+                  {t(errors[field.id as keyof WallDetailsFormSchema]?.message ?? "")}
                 </p>
               )}
             </div>
@@ -287,11 +314,11 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
         </div>
       </section>
 
-      {/* Perforating Fields */}
+      {/* T Fields */}
       <section>
-        <h2 className="text-lg font-semibold">Perforating Fields</h2>
+        <h2 className="text-lg font-semibold">{t("tTitle")}</h2>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {perforatingFields.map((field) => (
+          {tFields.map((field) => (
             <div key={field.id} className="flex items-center">
               <input
                 type="checkbox"
@@ -306,7 +333,7 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
               </label>
               {errors[field.id as keyof WallDetailsFormSchema] && (
                 <p className="mt-1 text-sm text-red-600">
-                  {errors[field.id as keyof WallDetailsFormSchema]?.message}
+                  {t(errors[field.id as keyof WallDetailsFormSchema]?.message ?? "")}
                 </p>
               )}
             </div>
@@ -333,12 +360,12 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
       {/* Buttons */}
       <div className="mt-6 flex justify-end space-x-2">
         <Button type="button" variant="destructive" onClick={onDelete}>
-          Delete
+          {t("delete")}
         </Button>
         <Button type="button" variant="secondary" onClick={onCancel}>
-          Cancel
+          {t("cancel")}
         </Button>
-        <Button type="submit">Save</Button>
+        <Button type="submit">{t("save")}</Button>
       </div>
     </form>
   );

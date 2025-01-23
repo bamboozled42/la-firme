@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm, type FieldErrors, type SubmitHandler } from "react-hook-form";
+import { useTranslation } from "../../i18n/client";
 import { type Floor } from "../../lib/utils";
 
 interface CeilingFormProps {
@@ -14,6 +15,8 @@ interface CeilingFormProps {
 }
 
 const CeilingForm: React.FC<CeilingFormProps> = ({ onNext, onCancel, floors }) => {
+  const { t } = useTranslation("common");
+
   const {
     register,
     handleSubmit,
@@ -23,9 +26,7 @@ const CeilingForm: React.FC<CeilingFormProps> = ({ onNext, onCancel, floors }) =
   });
 
   const onSubmit: SubmitHandler<ColumnFormSchema> = (data) => {
-    const formattedName = `Ceilings ${data.name}`;
-    const formattedData = { ...data, name: formattedName };
-    onNext(formattedData);
+    onNext(data);
   };
 
   const onError = (errors: FieldErrors<ColumnFormSchema>) => {
@@ -46,7 +47,7 @@ const CeilingForm: React.FC<CeilingFormProps> = ({ onNext, onCancel, floors }) =
       {/* Name Field */}
       <div>
         <label htmlFor="number" className="block text-sm font-medium text-gray-700">
-          Ceiling Number
+        {t("name")}
         </label>
         <input
           type="number"
@@ -55,15 +56,15 @@ const CeilingForm: React.FC<CeilingFormProps> = ({ onNext, onCancel, floors }) =
           className={`mt-1 block w-full rounded-md border px-2 ${
             errors.name ? "border-red-600" : "border-gray-300"
           } shadow-sm focus:border-green-500 focus:ring-green-500`}
-          placeholder="Enter Ceiling Number"
+          placeholder={t("ceilingNamePlaceholder")}
         />
-        {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
+        {errors.name && <p className="mt-1 text-sm text-red-600">{t(errors.name.message ?? "")}</p>}
       </div>
 
       {/* Floor Field */}
       <div>
         <label htmlFor="floor" className="block text-sm font-medium text-gray-700">
-          Floor
+          {t("floor")}
         </label>
         <select
           id="floor"
@@ -78,15 +79,15 @@ const CeilingForm: React.FC<CeilingFormProps> = ({ onNext, onCancel, floors }) =
             </option>
           ))}
         </select>
-        {errors.floor_id && <p className="mt-1 text-sm text-red-600">{errors.floor_id.message}</p>}
+        {errors.floor_id && <p className="mt-1 text-sm text-red-600">{t(errors.floor_id.message ?? "")}</p>}
       </div>
 
       {/* Buttons */}
       <div className="mt-4 flex justify-end space-x-2">
         <Button type="button" variant="secondary" onClick={onCancel}>
-          Cancel
+          {t("cancel")}
         </Button>
-        <Button type="submit">Next</Button>
+        <Button type="submit">{t("next")}</Button>
       </div>
     </form>
   );

@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "../../i18n/client";
 import { useSupabase } from "../providers";
 
 interface UserTableProps {
@@ -19,6 +20,8 @@ interface UserTableProps {
 const UserTable = ({ tableType, users, currentUserId }: UserTableProps) => {
   const router = useRouter();
   const supabase = useSupabase();
+
+  const { t } = useTranslation("common");
 
   const deleteUser = async (userInfo: any) => {
     if (userInfo.role === "admin") return;
@@ -66,10 +69,10 @@ const UserTable = ({ tableType, users, currentUserId }: UserTableProps) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[200px]">User</TableHead>
-            <TableHead className="w-[400px]">Email</TableHead>
-            <TableHead className="w-[200px] text-left">{tableType === "staff" ? "Role" : "Address"}</TableHead>
-            <TableHead className="w-[100px] text-right">Edit</TableHead>
+            <TableHead className="w-[200px]">{t("user")}</TableHead>
+            <TableHead className="w-[400px]">{t("email")}</TableHead>
+            <TableHead className="w-[200px] text-left">{tableType === "staff" ? t("role") : t("address")}</TableHead>
+            <TableHead className="w-[100px] text-right">{t("edit")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -94,12 +97,12 @@ const UserTable = ({ tableType, users, currentUserId }: UserTableProps) => {
                       <DropdownMenuItem
                         className="cursor-pointer text-red-600"
                         onClick={() => {
-                          if (confirm("Are you sure you want to delete this user?")) {
+                          if (confirm(t("confirmDeleteUser"))) {
                             deleteUser(currentUser);
                           }
                         }}
                       >
-                        Delete user
+                        {t("deleteUser")}
                       </DropdownMenuItem>
                       {/* <DropdownMenuItem className="text-black-600 cursor-pointer" onClick={() => {}}>
                         Edit user
