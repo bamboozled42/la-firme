@@ -31,9 +31,13 @@ export default function Dashboard({ params }: { params: { projectId: string } })
   const supabase = useSupabase();
   const [projectData, setProjectData] = useState<ProjectDashboardType | null>(null);
   const [currentFloorData, setCurrentFloorData] = useState<ProjectDashboardType | null>(null);
-  const [currentFloorId, setCurrentFloorId] = useState<string>("all");
+  const [currentFloorId, setCurrentFloorId] = useState<string>("1");
+  const [nextFloorId, setNextFloorId] = useState<string | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [dataVersion, setDataVersion] = useState(0);
+
+
+
 
   const [imgUrl, setImgUrl] = useState("/placeholder_img.jpg");
 
@@ -76,6 +80,17 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     };
     fetchProjectData();
   }, [supabase, params.projectId, dataVersion]);
+
+  useEffect(() => {
+    // Set default floor ID to the first available floor's ID, if projectData and floors exist
+    if (projectData?.floors && projectData.floors.length > 0) {
+      // Sort floors by floor_id in ascending order
+      const sortedFloors = projectData.floors.sort((a, b) => a.floor_id - b.floor_id);
+
+      // Set the current floor ID to the smallest floor_id
+      setCurrentFloorId(sortedFloors[0].floor_id.toString());
+    }
+  }, [projectData]);
 
   const changeFloor = (value: string) => {
     setCurrentFloorId(value);
@@ -423,12 +438,21 @@ export default function Dashboard({ params }: { params: { projectId: string } })
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
+                  {projectData?.floors
+                    ?.slice() // Create a shallow copy of the array to avoid mutating the original
+                    .sort((a, b) => {
+                      // Extract the integers from the floor names
+                      const floorNumberA = parseInt(a.name.match(/\d+/)?.[0] || "0", 10);
+                      const floorNumberB = parseInt(b.name.match(/\d+/)?.[0] || "0", 10);
+
+                      return floorNumberA - floorNumberB; // Sort by the extracted integers
+                    })
+                    .map((floor: Floor) => (
+                      <SelectItem key={floor.floor_id} value={floor.floor_id.toString()}>
+                        {floor.name}
+                      </SelectItem>
+                    ))}
                   <SelectItem value="all">{t("selectAllFloors")}</SelectItem>
-                  {projectData?.floors?.map((floor: Floor) => (
-                    <SelectItem key={floor.floor_id} value={floor.floor_id.toString()}>
-                      {floor.name}
-                    </SelectItem>
-                  ))}
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -444,7 +468,24 @@ export default function Dashboard({ params }: { params: { projectId: string } })
               buttonName={t('addFloorButton')}
               dbname="floors"
               projectId={params.projectId}
-              onDataAdded={() => setDataVersion((prevVersion) => prevVersion + 1)}
+              onDataAdded={(floorName) => {
+                if (floorName) {
+                  console.log(`Floor added: ${floorName}`); // Log the added floor name
+
+                  const match = floorName.match(/^Floor (\d+)$/);
+                  const floorNumber = match ? parseInt(match[1], 10) : null;
+
+                  if (floorNumber !== null) {
+                    console.log(`Extracted floor number: ${floorNumber}`);
+                    // Store the extracted floor number in a variable
+                    setNextFloorId(floorNumber.toString()); // Update a temporary state for the next floor ID
+                  }
+                }
+                setDataVersion((prevVersion) => prevVersion + 1); // Increment data version to trigger re-renders
+                setCurrentFloorId(floorNumber.setNumber())
+                // Extract the number from "Floor number"
+
+              }}
             />
 
             {currentFloorId !== "all" && currentFloor && (
@@ -453,6 +494,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                 DetailsForm={FloorDetailsForm}
                 itemData={currentFloor}
                 onUpdate={handleUpdate}
+                onDelete={handleDelete}
                 buttonName={t("floorDetailsTitle")}
                 onDataUpdated={() => setDataVersion((prevVersion) => prevVersion + 1)}
               />

@@ -51,17 +51,17 @@ const WallForm: React.FC<WallFormProps> = ({ onNext, onCancel, floors }) => {
     <form onSubmit={handleFormSubmit} className="space-y-4">
       {/* Name Field */}
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-          Name
+        <label htmlFor="number" className="block text-sm font-medium text-gray-700">
+          Wall Number
         </label>
         <input
-          type="text"
-          id="name"
+          type="number"
+          id="number"
           {...register("name")}
           className={`mt-1 block w-full rounded-md border px-2 ${
             errors.name ? "border-red-600" : "border-gray-300"
           } shadow-sm focus:border-green-500 focus:ring-green-500`}
-          placeholder="Enter wall name as a number"
+          placeholder="Enter Wall Number"
         />
         {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
       </div>

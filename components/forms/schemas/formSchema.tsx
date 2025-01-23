@@ -56,6 +56,7 @@ export const wallDetailsFormSchema = z.object({
   l7PoorAdhesion: z.boolean().default(false),
   perforatingColumn: z.boolean().default(false),
   perforatingBeam: z.boolean().default(false),
+  notes: z.string().optional(),
 });
 
 export const columnFormSchema = generalFormSchema;
@@ -72,6 +73,7 @@ export const columnDetailsFormSchema = z.object({
   }),
   vertical_cracks: z.boolean().default(false),
   pipes: z.boolean().default(false),
+  notes: z.string().optional(),
 });
 
 export const beamFormSchema = generalFormSchema;
@@ -92,6 +94,7 @@ export const beamDetailsFormSchema = z.object({
   condition: z.enum(["Seleccionar", "Bad", "Good"], {
     errorMap: () => ({ message: "Condition is required" }),
   }),
+  notes: z.string().optional(),
 });
 
 export const ceilingFormSchema = generalFormSchema;
@@ -105,6 +108,7 @@ export const ceilingDetailsFormSchema = z.object({
   }),
   cracks: z.boolean().default(false),
   pipes: z.boolean().default(false),
+  notes: z.string().optional(),
 });
 
 export const floorFormSchema = z.object({

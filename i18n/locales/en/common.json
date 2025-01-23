@@ -3,7 +3,7 @@
     "spanish": "Spanish",
     "backButton": "Back",
     "projectDashboardTitle": "Project Dashboard",
-    "selectAllFloors": "All floors",
+    "selectAllFloors": "All Floors",
     "addFloorButton": "Add new floor",
     "addFloorElementTitle": "Add Floor Element",
     "floorDetailsTitle": "Floor Details",
@@ -51,4 +51,3 @@
     "welcome": "Welcome to La Firme!",
     "gotodashboard": "Go to project dashboard"
   }
-  

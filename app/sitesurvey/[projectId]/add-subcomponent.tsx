@@ -27,7 +27,7 @@ interface AddDialogProps {
   buttonName?: string;
   dbname: string;
   projectId: string;
-  onDataAdded?: () => void;
+  onDataAdded?: (floor_name?: string) => void;
   floors?: Floor[];
 }
 
@@ -64,13 +64,13 @@ export default function AddDialog({
 
   const handleSave = async (data: any) => {
     const completeData = { ...formData, ...data, projectId }; // Combine data from both forms
-    // console.log("Complete Data:", completeData);
+    console.log("Complete Data:", completeData);
     console.log(data);
 
     try {
       let existingData = null;
-      let fetchError = null; 
-      
+      let fetchError = null;
+
       if (dbname !== "floors") {
         ({ data: existingData, error: fetchError } = await supabase
         .from(dbname)
@@ -94,7 +94,11 @@ export default function AddDialog({
       const { data: supabaseData, error } = await supabase.from(dbname).insert([completeData]);
 
       if (!error && onDataAdded) {
-        onDataAdded();
+        if (dbname === "floors") {
+          onDataAdded(completeData.name); // Pass the floor name
+        } else {
+          onDataAdded(); // Default behavior
+        }
       }
     } catch (err) {
       // console.error("Error saving data:", err);
@@ -126,7 +130,7 @@ export default function AddDialog({
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button size="sm" className={buttonClass || "bg-green-700 text-green-50"}>
-          <Icons.add className="mr-2 h-4 w-4"/> 
+          <Icons.add className="mr-2 h-4 w-4"/>
           <span className="mr-1">
             {buttonName || t('add')}
           </span>
