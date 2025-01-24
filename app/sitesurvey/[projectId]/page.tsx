@@ -234,7 +234,6 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     }
   };
 
-<<<<<<< HEAD
   const sortByFloorIdAndName = (data) => {
     return data.sort((a, b) => {
       // First, compare by floor_id
@@ -244,14 +243,6 @@ export default function Dashboard({ params }: { params: { projectId: string } })
       // If floor_id is the same, compare by name
       return a.name.localeCompare(b.name); // String comparison
     });
-=======
-  const sortByName = (data: any[]) => {
-    return data.sort((a, b) => a.name.localeCompare(b.name));
-  };
-
-  const fixLength = (data: [], length: number, defaultVal: any = null) => {
-    return Array.from({ length }, (_, i) => data[i] ?? defaultVal);
->>>>>>> 2707964 (Fixed type errors??)
   };
 
   // Combine all project arrays into one, tagging each with elementType
