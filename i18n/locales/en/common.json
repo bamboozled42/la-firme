@@ -251,5 +251,6 @@
   "noDescription": "No description",
   "notes": "Notes",
   "architectExportDisclaimer": "You are limited to exporting up to 3 floors, 15 walls, 15 beams, 15 columns, and 10 ceilings.",
-  "columnsAtEnds": "Columns At Ends"
+  "columnsAtEnds": "Columns At Ends",
+  "floorPlanPlaceholder": "Upload Floor Plan Image"
 }

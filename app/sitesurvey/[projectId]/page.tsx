@@ -48,7 +48,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
 
 
 
-  const [imgUrl, setImgUrl] = useState("/placeholder_img.jpg");
+  const [imgUrl, setImgUrl] = useState(null); // Default to null in order to make a check
 
   const currentFloor =
     currentFloorId !== "all"
@@ -170,69 +170,94 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     if (!file) {
       return;
     }
-
-    // Upload the image
-    const fileName = file.name; //`floorId${currentFloorId}`;
-    // check if this fileName exists in the objects storage table under name with bucket-id floor-plans and then delete it
+    // create unique image name
     try {
-      // Check if the file exists in the storage bucket
-      const { data: existingFiles, error: checkError } = await supabase.storage
+      //List existing files in the bucket to find the smallest missing number
+      const { data: existingFiles, error: listError } = await supabase.storage
         .from("floor-plans")
-        .list("", { search: fileName });
+        .list();
 
-      if (checkError) {
-        console.error("Error checking file existence:", checkError.message);
+      if (listError) {
+        console.error("Error listing files:", listError.message);
         return;
       }
 
-      // If the file exists, delete it
-      if (existingFiles?.some((file) => file.name === fileName)) {
-        const { error: deleteError } = await supabase.storage.from("floor-plans").remove([fileName]);
+      // Extract existing floorplan numbers and find the smallest missing number
+      const existingNumbers = existingFiles
+        ?.map((file) => {
+          const match = file.name.match(/floorplan_(\d+)/); // Extract the number from the naming scheme
+          return match ? parseInt(match[1], 10) : null;
+        })
+        .filter((num) => num !== null)
+        .sort((a, b) => a - b);
 
+      let newNumber = 1; // Start with 1
+      for (const num of existingNumbers) {
+        if (num === newNumber) {
+          newNumber++; // Increment if the number is already taken
+        } else {
+          break; // Found the first missing number
+        }
+      }
+
+      const newFileName = `floorplan_${newNumber}`;
+
+      // Delete the existing image for the current floor (if any)
+      const currentFloor = projectData?.floors?.find((floor) => floor.floor_id.toString() === currentFloorId);
+      if (currentFloor?.floor_plan) {
+        const existingPath = currentFloor.floor_plan.split("/").pop(); // Extract file name from the URL
+        const { error: deleteError } = await supabase.storage.from("floor-plans").remove([existingPath]);
         if (deleteError) {
-          console.error("Error deleting existing file:", deleteError.message);
+          console.error("Error deleting existing image:", deleteError.message);
           return;
         }
+      }
+
+          // Step 3: Upload the new image with the calculated name
+        const { data, error: uploadError } = await supabase.storage
+        .from("floor-plans")
+        .upload(newFileName, file, { upsert: true });
+
+      if (uploadError) {
+        console.error("Error uploading image:", uploadError.message);
+        return;
+      }
+
+      // Step 4: Get the public URL for the new image
+      const publicUrl = getPublicUrl(data.path);
+      if (!publicUrl) {
+        console.error("Failed to retrieve image URL");
+        return;
+      }
+
+      console.log("New Image URL:", publicUrl);
+
+      // Step 5: Update the floor with the new image in the database
+      const { error: updateError } = await supabase
+        .from("floors")
+        .update({ floor_plan: publicUrl })
+        .eq("floor_id", currentFloorId);
+
+      if (updateError) {
+        throw new Error(`Error updating database: ${updateError.message}`);
+      }
+
+      // Step 6: Update local state
+      setImgUrl(publicUrl + "?t=" + new Date().getTime()); // Update with cache-busting timestamp
+      const updatedFloors = projectData?.floors?.map((floor) =>
+        floor.floor_id.toString() === currentFloorId
+          ? { ...floor, floor_plan: publicUrl }
+          : floor
+      );
+
+      if (projectData) {
+        projectData.floors = updatedFloors;
       }
     } catch (err) {
       console.error("Unexpected error:", err.message);
     }
-    // then upload
-    const { data, error } = await supabase.storage.from("floor-plans").upload(fileName, file, { upsert: true });
+    };
 
-    if (error) {
-      console.error("Error uploading image:", error.message);
-      return;
-    }
-
-    const publicUrl = getPublicUrl(data.path);
-    if (publicUrl) {
-      console.log("Image URL:", publicUrl);
-    } else {
-      console.error("Failed to retrieve image URL");
-    }
-
-    const { data: updateData, error: updateError } = await supabase
-      .from("floors")
-      .update({ floor_plan: publicUrl })
-      .eq("floor_id", currentFloorId);
-
-    if (updateError) {
-      throw new Error(`Error updating database: ${updateError.message}`);
-    }
-
-    setImgUrl((publicUrl || "/placeholder_img.jpg") + "?t=" + new Date().getTime());
-    const updatedFloors = projectData?.floors?.map((floor) =>
-      floor.floor_id.toString() === currentFloorId
-        ? { ...floor, floor_plan: publicUrl || "/placeholder_img.jpg" }
-        : floor,
-    );
-
-    if (projectData) {
-      // Update the projectData with the updated floors array
-      projectData.floors = updatedFloors;
-    }
-  };
 
   const sortByFloorIdAndName = (data) => {
     return data.sort((a, b) => {
@@ -613,27 +638,36 @@ export default function Dashboard({ params }: { params: { projectId: string } })
             )}
           </div>
 
-          {currentFloorId != "all" && (
-            <div>
+          {currentFloorId !== "all" && (
+          <div>
+            {imgUrl ? (
+              // Render the uploaded image
               <div className="relative h-64 w-full">
-                <Image src={imgUrl || "/placeholder_img.jpg"} alt="Floor Plan" fill style={{ objectFit: "contain" }} />
+                <Image src={imgUrl} alt="Floor Plan" fill style={{ objectFit: "contain" }} />
               </div>
+            ) : (
+              // Render a prompt to upload an image
+              <div className="flex items-center justify-center h-64 w-full border border-dashed border-gray-300">
+                <p className="text-gray-500">{t("floorPlanPlaceholder")}</p>
+              </div>
+            )}
 
-              <div className="flex justify-center">
-                <input type="file" id="file-upload" className="hidden" onChange={handleUpload} />
-                <label
-                  htmlFor="file-upload"
-                  className="mb-6 mt-5 inline-flex cursor-pointer items-center rounded-md bg-secondary px-4 py-2 text-sm"
-                >
-                  <Icons.upload className="mr-2 h-5 w-5" />
-                  <span>{t("uploadButton")}</span>
-                </label>
-              </div>
-              <div className="mb-6 w-full rounded-md bg-red-100/80 p-2 text-center text-sm text-red-800">
-                {t("architectExportDisclaimer")}
-              </div>
+            <div className="flex justify-center">
+              <input type="file" id="file-upload" className="hidden" onChange={handleUpload} />
+              <label
+                htmlFor="file-upload"
+                className="mb-6 mt-5 inline-flex cursor-pointer items-center rounded-md bg-secondary px-4 py-2 text-sm"
+              >
+                <Icons.upload className="mr-2 h-5 w-5" />
+                <span>{t("uploadButton")}</span>
+              </label>
             </div>
-          )}
+
+            <div className="mb-6 w-full rounded-md bg-red-100/80 p-2 text-center text-sm text-red-800">
+              {t("architectExportDisclaimer")}
+            </div>
+          </div>
+        )}
 
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="walls" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
