@@ -1,6 +1,8 @@
+import { projectFormSchema } from "@/components/forms/schemas/formSchema";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -27,6 +29,7 @@ const AddProjectCard: React.FC = () => {
     formState: { errors },
     reset,
   } = useForm<AddProjectSchema>({
+    resolver: zodResolver(projectFormSchema),
     defaultValues: {
       title: "",
       architect_id: "",
@@ -78,9 +81,13 @@ const AddProjectCard: React.FC = () => {
     }
   };
 
+  const handleDialogClose = () => {
+    reset();
+  };
+
   return (
     <div className="m-4 flex w-72 min-w-72 flex-none items-center justify-center rounded-lg p-3">
-      <Dialog>
+      <Dialog onOpenChange={handleDialogClose}>
         <DialogTrigger asChild>
           <Button size="sm" className={"bg-green-500 text-green-50"}>
             <Icons.add className="mr-2 h-4 w-4" />
@@ -154,7 +161,7 @@ const AddProjectCard: React.FC = () => {
                 {...register("description")}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
               />
-              {errors.client && <p className="mt-1 text-sm text-red-600">{t(errors.client.message ?? "")}</p>}
+              {errors.client && <p className="mt-1 text-sm text-red-600">{t(errors.description?.message ?? "")}</p>}
             </div>
 
             {/* Location */}
