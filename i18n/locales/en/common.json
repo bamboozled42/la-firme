@@ -234,7 +234,6 @@
   "architectRequired": "Architect is required",
   "clientRequired": "Client is required",
   "statusRequired": "Status is required",
-  "descriptionRequired": "Description is required",
 
   "wallDetails": "Wall Details",
   "columnDetails": "Column Details",
@@ -246,5 +245,7 @@
   "architectPlaceholder": "Select architect",
   "createProject": "Create Project",
   "statusPlaceholder": "Select status",
-  "inProgress": "In progress"
+  "inProgress": "In progress",
+
+  "noDescription": "No description"
 }

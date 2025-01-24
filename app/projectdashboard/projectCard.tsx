@@ -160,7 +160,9 @@ export default function ProjectCard({
               <DialogTitle className="text-center">{project.title}</DialogTitle>
             </DialogHeader>
             <DialogTitle>{t("description")}</DialogTitle>
-            <DialogDescription>{project.description}</DialogDescription>
+            <DialogDescription>
+              {project.description == "" ? t("noDescription") : project.description}
+            </DialogDescription>
             <DialogTitle>{t("location")}</DialogTitle>
             <DialogDescription>{project.location}</DialogDescription>
             <DialogTitle>{t("clients")}</DialogTitle>

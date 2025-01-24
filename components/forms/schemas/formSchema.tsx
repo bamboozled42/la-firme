@@ -145,12 +145,12 @@ export const projectFormSchema = z.object({
   location: z.string().min(1, "locationRequired"),
   start_date: z
     .string()
-    .min(1, "statDateRequired")
+    .min(1, "startDateRequired")
     .transform((date) => new Date(date)),
   architect_id: z.string().min(1, "architectRequired"),
   client: z.string().min(1, "clientRequired"),
   status: z.string().min(1, "statusRequired"),
-  description: z.string().min(1, "descriptionRequired"),
+  description: z.string().optional(),
 });
 
 // TypeScript Types

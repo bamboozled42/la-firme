@@ -234,7 +234,6 @@
   "architectRequired": "El arquitecto es obligatorio",
   "clientRequired": "El cliente es obligatorio",
   "statusRequired": "El estado es obligatorio",
-  "descriptionRequired": "La descripción es obligatoria",
 
   "wallDetails": "Detalles del Muro",
   "columnDetails": "Detalles de la Columna",
@@ -246,5 +245,7 @@
   "architectPlaceholder": "Seleccionar arquitecto",
   "createProject": "Crear Proyecto",
   "statusPlaceholder": "Seleccionar estado",
-  "inProgress": "En progreso"
+  "inProgress": "En progreso",
+
+  "noDescription": "Sin descripción"
 }
