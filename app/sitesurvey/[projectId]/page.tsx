@@ -213,7 +213,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
         }
       }
 
-          // Step 3: Upload the new image with the calculated name
+          // Upload the new image with the calculated name
         const { data, error: uploadError } = await supabase.storage
         .from("floor-plans")
         .upload(newFileName, file, { upsert: true });
@@ -223,7 +223,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
         return;
       }
 
-      // Step 4: Get the public URL for the new image
+      // Get the public URL for the new image
       const publicUrl = getPublicUrl(data.path);
       if (!publicUrl) {
         console.error("Failed to retrieve image URL");
@@ -232,7 +232,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
 
       console.log("New Image URL:", publicUrl);
 
-      // Step 5: Update the floor with the new image in the database
+      // Update the floor with the new image in the database
       const { error: updateError } = await supabase
         .from("floors")
         .update({ floor_plan: publicUrl })
@@ -242,7 +242,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
         throw new Error(`Error updating database: ${updateError.message}`);
       }
 
-      // Step 6: Update local state
+      // Update local state
       setImgUrl(publicUrl + "?t=" + new Date().getTime()); // Update with cache-busting timestamp
       const updatedFloors = projectData?.floors?.map((floor) =>
         floor.floor_id.toString() === currentFloorId
