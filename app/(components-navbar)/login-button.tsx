@@ -25,7 +25,7 @@ export default function LoginButton() {
 
     if (error) {
       return toast({
-        title: "Something went wrong.",
+        title: t("somethingWentWrong"),
         description: error.message,
         variant: "destructive",
       });

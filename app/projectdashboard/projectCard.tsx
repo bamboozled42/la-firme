@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TypographyH2 } from "@/components/ui/typography";
+import { toast } from "@/components/ui/use-toast";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -29,6 +30,8 @@ export default function ProjectCard({
 }) {
   const router = useRouter();
   const { i18n, t } = useTranslation("common");
+
+  const [open, setOpen] = useState(false);
 
   const supabase = useSupabase();
   const [currentArchitect, setCurrentArchitect] = useState<string>(
@@ -91,6 +94,54 @@ export default function ProjectCard({
       console.error("Error updating status:", error);
     }
   };
+
+  const onDeleteProject = async () => {
+    // Show confirmation dialog first
+    const confirmed = window.confirm(t("confirmDeleteProject"));
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      // Delete all elements associated with this project
+      const tables = ["walls", "ceilings", "beams", "columns", "floors"];
+
+      for (const table of tables) {
+        const { error } = await supabase.from(table).delete().eq("projectId", project.id);
+
+        if (error) {
+          throw error;
+        }
+      }
+
+      // Finally delete the project itself
+      const { error } = await supabase.from("projects").delete().eq("id", project.id);
+
+      if (error) {
+        throw error;
+      }
+
+      setOpen(false);
+      router.refresh();
+
+      // Show success toast
+      toast({
+        title: t("success"),
+        description: t("projectDeleteSuccess"),
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("Error deleting project:", error);
+      // Show error toast
+      toast({
+        title: t("somethingWentWrong"),
+        description: t("projectDeleteError"),
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="m-4 w-72 min-w-96 flex-none rounded-lg border-2 p-5 shadow">
       <TypographyH2 className="text-center text-2xl">{project.title}</TypographyH2>
@@ -151,7 +202,7 @@ export default function ProjectCard({
       </h4>
 
       <div className="mt-4 flex justify-center">
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger>
             <Button className="row-span-1 mr-1 w-full border bg-blue-700 text-blue-50">{t("expand")}</Button>
           </DialogTrigger>
@@ -167,6 +218,11 @@ export default function ProjectCard({
             <DialogDescription>{project.location}</DialogDescription>
             <DialogTitle>{t("clients")}</DialogTitle>
             <DialogDescription>{project.client}</DialogDescription>
+            {isAdmin && (
+              <Button type="button" variant="destructive" onClick={onDeleteProject}>
+                {t("delete")}
+              </Button>
+            )}
           </DialogContent>
           <Button
             className="row-span-1 ml-1 w-full border bg-green-700 text-green-50"
