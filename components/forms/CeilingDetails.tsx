@@ -41,14 +41,19 @@ const CeilingDetailsForm: React.FC<CeilingDetailsFormProps> = ({ onSave, onCance
         <label htmlFor="height" className="block text-sm font-medium text-gray-700">
           {t("height")}
         </label>
-        <input
-          type="number"
-          id="height"
-          {...register("height", { valueAsNumber: true })}
-          className={`mt-1 block w-full rounded-md border ${
-            errors.height ? "border-red-600" : "border-gray-300"
-          } shadow-sm focus:border-green-500 focus:ring-green-500`}
-        />
+        <div className="relative mt-1">
+          <input
+            type="number"
+            id="height"
+            {...register("height", { valueAsNumber: true })}
+            className={`block w-full pr-10 rounded-md border ${
+              errors.height ? "border-red-600" : "border-gray-300"
+            } shadow-sm focus:border-green-500 focus:ring-green-500`}
+          />
+          <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">
+            m
+          </span>
+        </div>
         {errors.height && <p className="mt-1 text-sm text-red-600">{t(errors.height.message ?? "")}</p>}
       </div>
 
@@ -57,14 +62,19 @@ const CeilingDetailsForm: React.FC<CeilingDetailsFormProps> = ({ onSave, onCance
         <label htmlFor="dimension_x" className="block text-sm font-medium text-gray-700">
           {t("dimensionX")}
         </label>
-        <input
-          type="number"
-          id="dimension_x"
-          {...register("dimension_x", { valueAsNumber: true })}
-          className={`mt-1 block w-full rounded-md border ${
-            errors.dimension_x ? "border-red-600" : "border-gray-300"
-          } shadow-sm focus:border-green-500 focus:ring-green-500`}
-        />
+        <div className="relative mt-1">
+          <input
+            type="number"
+            id="dimension_x"
+            {...register("dimension_x", { valueAsNumber: true })}
+            className={`block w-full pr-10 rounded-md border ${
+              errors.dimension_x ? "border-red-600" : "border-gray-300"
+            } shadow-sm focus:border-green-500 focus:ring-green-500`}
+          />
+          <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">
+            m
+          </span>
+        </div>
         {errors.dimension_x && <p className="mt-1 text-sm text-red-600">{t(errors.dimension_x.message ?? "")}</p>}
       </div>
 
@@ -73,14 +83,19 @@ const CeilingDetailsForm: React.FC<CeilingDetailsFormProps> = ({ onSave, onCance
         <label htmlFor="dimension_y" className="block text-sm font-medium text-gray-700">
           {t("dimensionY")}
         </label>
-        <input
-          type="number"
-          id="dimension_y"
-          {...register("dimension_y", { valueAsNumber: true })}
-          className={`mt-1 block w-full rounded-md border ${
-            errors.dimension_y ? "border-red-600" : "border-gray-300"
-          } shadow-sm focus:border-green-500 focus:ring-green-500`}
-        />
+        <div className="relative mt-1">
+          <input
+            type="number"
+            id="dimension_y"
+            {...register("dimension_y", { valueAsNumber: true })}
+            className={`block w-full pr-10 rounded-md border ${
+              errors.dimension_y ? "border-red-600" : "border-gray-300"
+            } shadow-sm focus:border-green-500 focus:ring-green-500`}
+          />
+          <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">
+            m
+          </span>
+        </div>
         {errors.dimension_y && <p className="mt-1 text-sm text-red-600">{t(errors.dimension_y.message ?? "")}</p>}
       </div>
 
@@ -139,7 +154,7 @@ const CeilingDetailsForm: React.FC<CeilingDetailsFormProps> = ({ onSave, onCance
       {/* Notes Field */}
       <div>
         <label htmlFor="notes" className="block text-sm font-medium text-gray-700">
-          Notes
+        {t("notes")}
         </label>
         <input
           type="text"

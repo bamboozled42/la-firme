@@ -49,7 +49,6 @@ export const wallDetailsFormSchema = z.object({
   fh1CrackInBeam: z.boolean().default(false),
   fh2CrackInWallCeiling: z.boolean().default(false),
   fh3CrackInCeiling: z.boolean().default(false),
-  fh4CrackInCeiling: z.boolean().default(false),
   fv1VerticalCrackColumnWall: z.boolean().default(false),
   fv2VerticalCrackColumn: z.boolean().default(false),
   l1IrregularBrick: z.boolean().default(false),

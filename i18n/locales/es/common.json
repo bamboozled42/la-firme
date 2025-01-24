@@ -248,5 +248,6 @@
   "statusPlaceholder": "Seleccionar estado",
   "inProgress": "En progreso",
 
-  "noDescription": "Sin descripción"
+  "noDescription": "Sin descripción",
+  "notes": "Notas"
 }

@@ -777,7 +777,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
 
           <div className="mt-6 flex justify-center">
             <Button variant="default" onClick={handleExportCSV}>
-              {t("Export as CSV")}
+              {t("exportAsCSV")}
             </Button>
           </div>
         </div>

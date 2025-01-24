@@ -41,12 +41,19 @@ const BeamDetailsForm: React.FC<BeamDetailsFormProps> = ({ itemData, onSave, onC
         <label htmlFor="length" className="block text-sm font-medium text-gray-700">
           {t("length")}
         </label>
-        <input
-          type="number"
-          id="length"
-          {...register("length", { valueAsNumber: true })}
-          className={`mt-1 block w-full rounded-md border ${errors.length ? "border-red-600" : "border-gray-300"} shadow-sm focus:border-green-500 focus:ring-green-500`}
-        />
+        <div className="relative mt-1">
+          <input
+            type="number"
+            id="length"
+            {...register("length", { valueAsNumber: true })}
+            className={`block w-full pr-10 rounded-md border ${
+              errors.length ? "border-red-600" : "border-gray-300"
+            } shadow-sm focus:border-green-500 focus:ring-green-500`}
+          />
+          <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">
+            m
+          </span>
+        </div>
         {errors.length && <p className="mt-1 text-sm text-red-600">{t(errors.length.message ?? "")}</p>}
       </div>
 
@@ -55,26 +62,39 @@ const BeamDetailsForm: React.FC<BeamDetailsFormProps> = ({ itemData, onSave, onC
         <label htmlFor="width" className="block text-sm font-medium text-gray-700">
           {t("width")}
         </label>
-        <input
-          type="number"
-          id="width"
-          {...register("width", { valueAsNumber: true })}
-          className={`mt-1 block w-full rounded-md border ${errors.width ? "border-red-600" : "border-gray-300"} shadow-sm focus:border-green-500 focus:ring-green-500`}
-        />
+        <div className="relative mt-1">
+          <input
+            type="number"
+            id="width"
+            {...register("width", { valueAsNumber: true })}
+            className={`block w-full pr-10 rounded-md border ${
+              errors.width ? "border-red-600" : "border-gray-300"
+            } shadow-sm focus:border-green-500 focus:ring-green-500`}
+          />
+          <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">
+            m
+          </span>
+        </div>
         {errors.width && <p className="mt-1 text-sm text-red-600">{t(errors.width.message ?? "")}</p>}
       </div>
-
       {/* Height Field */}
       <div>
         <label htmlFor="height" className="block text-sm font-medium text-gray-700">
           {t("height")}
         </label>
-        <input
-          type="number"
-          id="height"
-          {...register("height", { valueAsNumber: true })}
-          className={`mt-1 block w-full rounded-md border ${errors.height ? "border-red-600" : "border-gray-300"} shadow-sm focus:border-green-500 focus:ring-green-500`}
-        />
+        <div className="relative mt-1">
+          <input
+            type="number"
+            id="height"
+            {...register("height", { valueAsNumber: true })}
+            className={`block w-full pr-10 rounded-md border ${
+              errors.height ? "border-red-600" : "border-gray-300"
+            } shadow-sm focus:border-green-500 focus:ring-green-500`}
+          />
+          <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">
+            m
+          </span>
+        </div>
         {errors.height && <p className="mt-1 text-sm text-red-600">{t(errors.height.message ?? "")}</p>}
       </div>
 
@@ -162,7 +182,7 @@ const BeamDetailsForm: React.FC<BeamDetailsFormProps> = ({ itemData, onSave, onC
           className={`mt-1 block w-full rounded-md border ${errors.condition ? "border-red-600" : "border-gray-300"} shadow-sm focus:border-green-500 focus:ring-green-500`}
         >
           <option value="" disabled>
-            {t("contitionPlaceholder")}
+          {t("conditionPlaceholder")}
           </option>
           <option value="Seleccionar">{t("select")}</option>
           <option value="Bad">{t("bad")}</option>
@@ -174,7 +194,7 @@ const BeamDetailsForm: React.FC<BeamDetailsFormProps> = ({ itemData, onSave, onC
       {/* Notes Field */}
       <div>
         <label htmlFor="notes" className="block text-sm font-medium text-gray-700">
-          Notes
+        {t("notes")}
         </label>
         <input
           type="text"

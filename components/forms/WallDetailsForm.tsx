@@ -66,7 +66,6 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
     { id: "fh1CrackInBeam", label: t("fh1"), type: "checkbox" },
     { id: "fh2CrackInWallCeiling", label: t("fh2"), type: "checkbox" },
     { id: "fh3CrackInCeiling", label: t("fh3"), type: "checkbox" },
-    { id: "fh4CrackInCeiling", label: t("fh4"), type: "checkbox" },
   ];
 
   const fvFields = [
@@ -97,87 +96,112 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {/* Length Field */}
           <div>
-            <label htmlFor="length" className="block text-sm font-medium text-gray-700">
-              {t("length")}
-            </label>
+          <label htmlFor="length" className="block text-sm font-medium text-gray-700">
+            {t("length")}
+          </label>
+          <div className="relative mt-1">
             <input
               type="number"
               id="length"
               {...register("length", { valueAsNumber: true })}
-              className={`mt-1 block w-full rounded-md border ${
+              className={`block w-full pr-10 rounded-md border ${
                 errors.length ? "border-red-600" : "border-gray-300"
               } shadow-sm focus:border-green-500 focus:ring-green-500`}
             />
-            {errors.length && <p className="mt-1 text-sm text-red-600">{t(errors.length.message ?? "")}</p>}
+            <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">
+              m
+            </span>
           </div>
+          {errors.length && <p className="mt-1 text-sm text-red-600">{t(errors.length.message ?? "")}</p>}
+        </div>
 
           {/* Width Field */}
           <div>
-            <label htmlFor="width" className="block text-sm font-medium text-gray-700">
-              {t("width")}
-            </label>
+          <label htmlFor="width" className="block text-sm font-medium text-gray-700">
+            {t("width")}
+          </label>
+          <div className="relative mt-1">
             <input
               type="number"
               id="width"
               {...register("width", { valueAsNumber: true })}
-              className={`mt-1 block w-full rounded-md border ${
+              className={`block w-full pr-10 rounded-md border ${
                 errors.width ? "border-red-600" : "border-gray-300"
               } shadow-sm focus:border-green-500 focus:ring-green-500`}
             />
-            {errors.width && <p className="mt-1 text-sm text-red-600">{t(errors.width.message ?? "")}</p>}
+            <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">
+              m
+            </span>
           </div>
+          {errors.width && <p className="mt-1 text-sm text-red-600">{t(errors.width.message ?? "")}</p>}
+        </div>
 
           {/* Height Field */}
           <div>
             <label htmlFor="height" className="block text-sm font-medium text-gray-700">
               {t("height")}
             </label>
-            <input
-              type="number"
-              id="height"
-              {...register("height", { valueAsNumber: true })}
-              className={`mt-1 block w-full rounded-md border ${
-                errors.height ? "border-red-600" : "border-gray-300"
-              } shadow-sm focus:border-green-500 focus:ring-green-500`}
-            />
+            <div className="relative mt-1">
+              <input
+                type="number"
+                id="height"
+                {...register("height", { valueAsNumber: true })}
+                className={`block w-full pr-10 rounded-md border ${
+                  errors.height ? "border-red-600" : "border-gray-300"
+                } shadow-sm focus:border-green-500 focus:ring-green-500`}
+              />
+              <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">
+                m
+              </span>
+            </div>
             {errors.height && <p className="mt-1 text-sm text-red-600">{t(errors.height.message ?? "")}</p>}
           </div>
 
           {/* Window Size X Field */}
           <div>
-            <label htmlFor="window_size_x" className="block text-sm font-medium text-gray-700">
-              {t("windowSizeX")}
-            </label>
+          <label htmlFor="window_size_x" className="block text-sm font-medium text-gray-700">
+            {t("windowSizeX")}
+          </label>
+          <div className="relative mt-1">
             <input
               type="number"
               id="window_size_x"
               {...register("window_size_x", { valueAsNumber: true })}
-              className={`mt-1 block w-full rounded-md border ${
+              className={`block w-full pr-10 rounded-md border ${
                 errors.window_size_x ? "border-red-600" : "border-gray-300"
               } shadow-sm focus:border-green-500 focus:ring-green-500`}
             />
-            {errors.window_size_x && (
-              <p className="mt-1 text-sm text-red-600">{t(errors.window_size_x.message ?? "")}</p>
-            )}
+            <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">
+              m
+            </span>
           </div>
+          {errors.window_size_x && (
+            <p className="mt-1 text-sm text-red-600">{t(errors.window_size_x.message ?? "")}</p>
+          )}
+        </div>
 
           {/* Window Size Y Field */}
           <div>
-            <label htmlFor="window_size_y" className="block text-sm font-medium text-gray-700">
-              {t("windowSizeY")}
-            </label>
+          <label htmlFor="window_size_y" className="block text-sm font-medium text-gray-700">
+            {t("windowSizeY")}
+          </label>
+          <div className="relative mt-1">
             <input
               type="number"
               id="window_size_y"
               {...register("window_size_y", { valueAsNumber: true })}
-              className={`mt-1 block w-full rounded-md border ${
+              className={`block w-full pr-10 rounded-md border ${
                 errors.window_size_y ? "border-red-600" : "border-gray-300"
               } shadow-sm focus:border-green-500 focus:ring-green-500`}
             />
-            {errors.window_size_y && (
-              <p className="mt-1 text-sm text-red-600">{t(errors.window_size_y.message ?? "")}</p>
-            )}
+            <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">
+              m
+            </span>
           </div>
+          {errors.window_size_y && (
+            <p className="mt-1 text-sm text-red-600">{t(errors.window_size_y.message ?? "")}</p>
+          )}
+        </div>
 
           {/* Additional General Fields */}
           {generalFields.map((field) =>
@@ -339,12 +363,12 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
             </div>
           ))}
         </div>
+      </section>
 
         {/* Notes Field */}
+        <section>
+        <h2 className="text-lg font-semibold">{t("notes")}</h2>
       <div>
-        <label htmlFor="notes" className="block text-sm font-medium text-gray-700">
-          Notes
-        </label>
         <input
           type="text"
           id="notes"
