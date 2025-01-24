@@ -7,9 +7,8 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "../../i18n/client";
 import { Beam, Ceiling, Column, Project, Wall } from "../../lib/utils";
 import { useSupabase } from "../providers";
-import ProjectCard from "./projectCard";
 import AddProjectCard from "./addProjectCard";
-
+import ProjectCard from "./projectCard";
 
 export type ProjectDashboardType = Project & {
   // I don't think I need to pass in anything other than name
@@ -37,8 +36,8 @@ export default function ProjectDashboard() {
 
       if (!user) {
         toast({
-          title: "Access Denied",
-          description: "You are not authenticated for this application.",
+          title: t("accessDenied"),
+          description: t("notAuthenticated"),
           variant: "destructive",
         });
         router.push("/");
@@ -53,8 +52,8 @@ export default function ProjectDashboard() {
 
       if (!whitelistCheck) {
         toast({
-          title: "Access Denied",
-          description: "You are not on the whitelist for this application.",
+          title: t("accessDenied"),
+          description: t("notWhitelisted"),
           variant: "destructive",
         });
         router.push("/");
@@ -124,20 +123,22 @@ export default function ProjectDashboard() {
   }
   return (
     <div>
-      <TypographyH2 className="text-center font-bold">{t('projectDashboard')}</TypographyH2>
+      <TypographyH2 className="text-center font-bold">{t("projectDashboard")}</TypographyH2>
       <div className="flex flex-wrap justify-center align-top">
-      {projects === null ? (
-        <div>Loading...</div>
-      ) : projects.length === 0 ? (
-        <div>No projects found.</div>
-      ) : (
-        <>
-          {projects?.map((project: ProjectDashboardType) => <ProjectCard key={project.id} project={project} />)}
-          <AddProjectCard />
-        </>
-      )}
-      {/* Insert Add projects */}
-    </div>
+        {projects === null ? (
+          <div>Loading...</div>
+        ) : projects.length === 0 ? (
+          <div>No projects found.</div>
+        ) : (
+          <>
+            {projects?.map((project: ProjectDashboardType) => (
+              <ProjectCard key={project.id} project={project} architects={architects} isAdmin={isAdmin} />
+            ))}
+            <AddProjectCard />
+          </>
+        )}
+        {/* Insert Add projects */}
+      </div>
     </div>
   );
 }

@@ -246,5 +246,14 @@
   "architectPlaceholder": "Seleccionar arquitecto",
   "createProject": "Crear Proyecto",
   "statusPlaceholder": "Seleccionar estado",
-  "inProgress": "En progreso"
+  "inProgress": "En progreso",
+
+  "success": "¡Éxito!",
+  "somethingWentWrong": "Algo salió mal",
+  "accessDenied": "Acceso denegado",
+  "notAuthenticated": "No estás autenticado para esta aplicación",
+  "notWhitelisted": "No estás en la lista blanca para esta aplicación",
+  "projectDeleteSuccess": "El proyecto se eliminó con éxito",
+  "projectDeleteError": "Hubo un error al eliminar este proyecto",
+  "confirmDeleteProject": "¿Estás seguro de que deseas eliminar este proyecto?"
 }
