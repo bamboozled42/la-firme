@@ -629,6 +629,9 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                   <span>{t("uploadButton")}</span>
                 </label>
               </div>
+              <div className="mb-6 w-full rounded-md bg-red-100/80 p-2 text-center text-sm text-red-800">
+                {t("architectExportDisclaimer")}
+              </div>
             </div>
           )}
 

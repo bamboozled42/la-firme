@@ -249,5 +249,7 @@
   "inProgress": "En progreso",
 
   "noDescription": "Sin descripción",
-  "notes": "Notas"
+  "notes": "Notas",
+  "architectExportDisclaimer": "Estás limitado a exportar hasta 3 pisos, 15 paredes, 15 vigas, 15 columnas y 10 techos.",
+  "columnsAtEnds": "Columnas En Los Extremos"
 }

@@ -58,6 +58,7 @@ export const wallDetailsFormSchema = z.object({
   l5VariationInThicknessJoints: z.boolean().default(false),
   l6MortarJointsTooThick: z.boolean().default(false),
   l7PoorAdhesion: z.boolean().default(false),
+  columnsAtEnds: z.boolean().default(false),
   perforatingColumn: z.boolean().default(false),
   perforatingBeam: z.boolean().default(false),
   notes: z.string().optional(),

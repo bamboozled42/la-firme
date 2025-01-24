@@ -42,7 +42,6 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
       type: "select",
     },
     { id: "height_type", label: t("fullOrPartialHeight"), options: { High: t("high"), Low: t("low") }, type: "select" },
-    { id: "wallRepeatFloors", label: t("wallRepeatFloors"), options: {}, type: "checkbox" },
     {
       id: "location",
       label: t("location"),
@@ -60,6 +59,8 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
       },
       type: "select",
     },
+    { id: "wallRepeatFloors", label: t("wallRepeatFloors"), options: {}, type: "checkbox" },
+    { id: "columnsAtEnds", label: t("columnsAtEnds"), options: {}, type: "checkbox" },
   ];
 
   const fhFields = [
