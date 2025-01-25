@@ -31,7 +31,9 @@ const WallForm: React.FC<WallFormProps> = ({ onNext, onCancel, floors }) => {
 
   const onSubmit: SubmitHandler<WallFormSchema> = (data) => {
     console.log("WallForm Submitted Data:", data);
-    onNext({ ...data, name: `${data.name}${data.direction}` });
+    const floorName = floors?.find((floor) => floor.floor_id === data.floor_id)?.name;
+    const formattedName = `M${data.name}${data.direction} P${floorName}`;
+    onNext({ ...data, name: formattedName });
   };
 
   const onError = (errors: FieldErrors<WallFormSchema>) => {
@@ -52,7 +54,7 @@ const WallForm: React.FC<WallFormProps> = ({ onNext, onCancel, floors }) => {
       {/* Name Field */}
       <div>
         <label htmlFor="number" className="block text-sm font-medium text-gray-700">
-        {t("name")}
+          {t("name")}
         </label>
         <input
           type="number"

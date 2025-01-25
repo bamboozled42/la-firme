@@ -261,5 +261,9 @@
   "notWhitelisted": "No estás en la lista blanca para esta aplicación",
   "projectDeleteSuccess": "El proyecto se eliminó con éxito",
   "projectDeleteError": "Hubo un error al eliminar este proyecto",
-  "confirmDeleteProject": "¿Estás seguro de que deseas eliminar este proyecto?"
+  "confirmDeleteProject": "¿Estás seguro de que deseas eliminar este proyecto?",
+
+  "duplicateNameError": "Ya existe una entrada con este nombre",
+
+  "floorPlan": "Plano de Piso"
 }

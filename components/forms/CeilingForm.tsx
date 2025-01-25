@@ -26,7 +26,9 @@ const CeilingForm: React.FC<CeilingFormProps> = ({ onNext, onCancel, floors }) =
   });
 
   const onSubmit: SubmitHandler<ColumnFormSchema> = (data) => {
-    onNext(data);
+    const floorName = floors?.find((floor) => floor.floor_id === data.floor_id)?.name;
+    const formattedName = `L${data.name} P${floorName}`;
+    onNext({ ...data, name: formattedName });
   };
 
   const onError = (errors: FieldErrors<ColumnFormSchema>) => {
@@ -47,7 +49,7 @@ const CeilingForm: React.FC<CeilingFormProps> = ({ onNext, onCancel, floors }) =
       {/* Name Field */}
       <div>
         <label htmlFor="number" className="block text-sm font-medium text-gray-700">
-        {t("name")}
+          {t("name")}
         </label>
         <input
           type="number"

@@ -261,5 +261,9 @@
   "notWhitelisted": "You are not on the whitelist for this application",
   "projectDeleteSuccess": "Project was successfully deleted",
   "projectDeleteError": "There was an error deleting this project",
-  "confirmDeleteProject": "Are you sure you want to delete this project?"
+  "confirmDeleteProject": "Are you sure you want to delete this project?",
+
+  "duplicateNameError": "An entry with this name already exists",
+
+  "floorPlan": "Floor Plan"
 }

@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { supabase } from "@/lib/supabase";
 import React, { useState } from "react";
-import { useTranslation } from '../../../i18n/client';
+import { useTranslation } from "../../../i18n/client";
 import { type Floor } from "../../../lib/utils";
 
 interface AddDialogProps {
@@ -45,13 +45,47 @@ export default function AddDialog({
   floors,
   onDataAdded,
 }: AddDialogProps) {
-  const {i18n, t} = useTranslation('common');
+  const { i18n, t } = useTranslation("common");
 
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState<"form1" | "form2">("form1");
   const [formData, setFormData] = useState<any>({});
 
-  const handleNext = (data: any) => {
+  const handleNext = async (data: any) => {
+    let existingData = null;
+    let fetchError = null;
+
+    if (dbname == "floors") {
+      ({ data: existingData, error: fetchError } = await supabase
+        .from(dbname)
+        .select("floor_id")
+        .eq("name", data.name)
+        .eq("projectId", projectId)
+        .single());
+    } else if (dbname == "walls") {
+      ({ data: existingData, error: fetchError } = await supabase
+        .from(dbname)
+        .select("id") // Adjust this to the primary key or relevant field
+        .eq("name", data.name) // Assuming `name` is the unique field to check
+        .eq("projectId", projectId)
+        .eq("floor_id", data.floor_id)
+        .eq("direction", data.direction)
+        .single());
+    } else {
+      ({ data: existingData, error: fetchError } = await supabase
+        .from(dbname)
+        .select("id") // Adjust this to the primary key or relevant field
+        .eq("name", data.name) // Assuming `name` is the unique field to check
+        .eq("projectId", projectId)
+        .eq("floor_id", data.floor_id)
+        .single());
+    }
+
+    if (existingData) {
+      alert(t("duplicateNameError"));
+      return;
+    }
+
     setFormData(data);
     setStep("form2");
   };
@@ -67,42 +101,15 @@ export default function AddDialog({
     console.log("Complete Data:", completeData);
     console.log(data);
 
-    try {
-      let existingData = null;
-      let fetchError = null;
+    // Insert combined data into Supabase
+    const { data: supabaseData, error } = await supabase.from(dbname).insert([completeData]);
 
-      if (dbname !== "floors") {
-        ({ data: existingData, error: fetchError } = await supabase
-        .from(dbname)
-        .select("id") // Adjust this to the primary key or relevant field
-        .eq("name", completeData.name) // Assuming `name` is the unique field to check
-        .single());
+    if (!error && onDataAdded) {
+      if (dbname === "floors") {
+        onDataAdded(completeData.name); // Pass the floor name
+      } else {
+        onDataAdded(); // Default behavior
       }
-      else {
-        ({ data: existingData, error: fetchError } = await supabase
-        .from(dbname)
-        .select("floor_id")
-        .eq("name", completeData.name)
-        .single());
-      }
-
-      if (existingData) {
-        alert(t("duplicate_name_error", "An entry with this name already exists."));
-        return;
-      }
-      // Insert combined data into Supabase
-      const { data: supabaseData, error } = await supabase.from(dbname).insert([completeData]);
-
-      if (!error && onDataAdded) {
-        if (dbname === "floors") {
-          onDataAdded(completeData.name); // Pass the floor name
-        } else {
-          onDataAdded(); // Default behavior
-        }
-      }
-    } catch (err) {
-      // console.error("Error saving data:", err);
-      // Optionally, handle the error
     }
 
     // Reset state and close dialog
@@ -130,10 +137,8 @@ export default function AddDialog({
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button size="sm" className={buttonClass || "bg-green-700 text-green-50"}>
-          <Icons.add className="mr-2 h-4 w-4"/>
-          <span className="mr-1">
-            {buttonName || t('add')}
-          </span>
+          <Icons.add className="mr-2 h-4 w-4" />
+          <span className="mr-1">{buttonName || t("add")}</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-screen w-5/6 overflow-y-auto p-8 pt-10">

@@ -26,7 +26,7 @@ const FloorsForm: React.FC<FloorsFormProps> = ({ onNext, onCancel, floors }) => 
   });
 
   const onSubmit: SubmitHandler<FloorFormSchema> = (data) => {
-    onNext(data);
+    onNext({ ...data, name: `P${data.name}` });
   };
 
   const onError = (errors: FieldErrors<FloorFormSchema>) => {
@@ -47,7 +47,7 @@ const FloorsForm: React.FC<FloorsFormProps> = ({ onNext, onCancel, floors }) => 
       {/* Name Field */}
       <div>
         <label htmlFor="number" className="block text-sm font-medium text-gray-700">
-        {t("name")}
+          {t("name")}
         </label>
         <input
           type="number"

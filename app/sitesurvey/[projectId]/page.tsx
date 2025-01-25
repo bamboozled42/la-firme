@@ -14,6 +14,7 @@ import WallForm from "@/components/forms/WallForm";
 import { Icons } from "@/components/icons";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TypographyH2 } from "@/components/ui/typography";
 import Image from "next/image";
@@ -44,9 +45,6 @@ export default function Dashboard({ params }: { params: { projectId: string } })
   const [nextFloorId, setNextFloorId] = useState<string | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [dataVersion, setDataVersion] = useState(0);
-
-
-
 
   const [imgUrl, setImgUrl] = useState(null); // Default to null in order to make a check
 
@@ -173,9 +171,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     // create unique image name
     try {
       //List existing files in the bucket to find the smallest missing number
-      const { data: existingFiles, error: listError } = await supabase.storage
-        .from("floor-plans")
-        .list();
+      const { data: existingFiles, error: listError } = await supabase.storage.from("floor-plans").list();
 
       if (listError) {
         console.error("Error listing files:", listError.message);
@@ -213,8 +209,8 @@ export default function Dashboard({ params }: { params: { projectId: string } })
         }
       }
 
-          // Upload the new image with the calculated name
-        const { data, error: uploadError } = await supabase.storage
+      // Upload the new image with the calculated name
+      const { data, error: uploadError } = await supabase.storage
         .from("floor-plans")
         .upload(newFileName, file, { upsert: true });
 
@@ -245,9 +241,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
       // Update local state
       setImgUrl(publicUrl + "?t=" + new Date().getTime()); // Update with cache-busting timestamp
       const updatedFloors = projectData?.floors?.map((floor) =>
-        floor.floor_id.toString() === currentFloorId
-          ? { ...floor, floor_plan: publicUrl }
-          : floor
+        floor.floor_id.toString() === currentFloorId ? { ...floor, floor_plan: publicUrl } : floor,
       );
 
       if (projectData) {
@@ -256,8 +250,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     } catch (err) {
       console.error("Unexpected error:", err.message);
     }
-    };
-
+  };
 
   const sortByFloorIdAndName = (data) => {
     return data.sort((a, b) => {
@@ -619,9 +612,8 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                   }
                 }
                 setDataVersion((prevVersion) => prevVersion + 1); // Increment data version to trigger re-renders
-                setCurrentFloorId(floorNumber.setNumber())
+                setCurrentFloorId(floorNumber.setNumber());
                 // Extract the number from "Floor number"
-
               }}
             />
 
@@ -639,35 +631,47 @@ export default function Dashboard({ params }: { params: { projectId: string } })
           </div>
 
           {currentFloorId !== "all" && (
-          <div>
-            {imgUrl ? (
-              // Render the uploaded image
-              <div className="relative h-64 w-full">
-                <Image src={imgUrl} alt="Floor Plan" fill style={{ objectFit: "contain" }} />
-              </div>
-            ) : (
-              // Render a prompt to upload an image
-              <div className="flex items-center justify-center h-64 w-full border border-dashed border-gray-300">
-                <p className="text-gray-500">{t("floorPlanPlaceholder")}</p>
-              </div>
-            )}
+            <div>
+              {imgUrl ? (
+                // Render the uploaded image
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <div className="relative h-64 w-full cursor-pointer">
+                      <Image src={imgUrl} alt="Floor Plan" fill style={{ objectFit: "contain" }} />
+                    </div>
+                  </DialogTrigger>
+                  <DialogContent className="h-fit max-h-[95vh] w-fit max-w-[95vw]">
+                    <DialogHeader>
+                      <DialogTitle>t('floorPlan')</DialogTitle>
+                    </DialogHeader>
+                    <div className="relative h-[80vh] w-[90vw]">
+                      <Image src={imgUrl} alt="Floor Plan" fill style={{ objectFit: "contain" }} quality={100} />
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              ) : (
+                // Render a prompt to upload an image
+                <div className="flex h-64 w-full items-center justify-center border border-dashed border-gray-300">
+                  <p className="text-gray-500">{t("floorPlanPlaceholder")}</p>
+                </div>
+              )}
 
-            <div className="flex justify-center">
-              <input type="file" id="file-upload" className="hidden" onChange={handleUpload} />
-              <label
-                htmlFor="file-upload"
-                className="mb-6 mt-5 inline-flex cursor-pointer items-center rounded-md bg-secondary px-4 py-2 text-sm"
-              >
-                <Icons.upload className="mr-2 h-5 w-5" />
-                <span>{t("uploadButton")}</span>
-              </label>
-            </div>
+              <div className="flex justify-center">
+                <input type="file" id="file-upload" className="hidden" onChange={handleUpload} />
+                <label
+                  htmlFor="file-upload"
+                  className="mb-6 mt-5 inline-flex cursor-pointer items-center rounded-md bg-secondary px-4 py-2 text-sm"
+                >
+                  <Icons.upload className="mr-2 h-5 w-5" />
+                  <span>{t("uploadButton")}</span>
+                </label>
+              </div>
 
-            <div className="mb-6 w-full rounded-md bg-red-100/80 p-2 text-center text-sm text-red-800">
-              {t("architectExportDisclaimer")}
+              <div className="mb-6 w-full rounded-md bg-red-100/80 p-2 text-center text-sm text-red-800">
+                {t("architectExportDisclaimer")}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="walls" className="mb-3 rounded-lg bg-primary-foreground px-4 py-1">
