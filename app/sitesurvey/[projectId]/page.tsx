@@ -21,7 +21,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useTranslation } from "../../../i18n/client";
-import DeleteDialog from "./delete-subcomponent";
 import {
   Beam,
   Ceiling,
@@ -33,6 +32,7 @@ import {
   type StateAction,
 } from "../../../lib/utils";
 import AddDialog from "./add-subcomponent";
+import DeleteDialog from "./delete-subcomponent";
 import { EditDialog } from "./edit-subcomponent";
 import Subcomponent from "./subcomponent";
 
@@ -92,14 +92,11 @@ export default function Dashboard({ params }: { params: { projectId: string } })
   useEffect(() => {
     if (projectData?.floors?.length > 0 && currentFloorId === null) {
       // Sort floors and select the first one
-      const sortedFloors = projectData.floors.sort((a, b) =>
-        a.name.localeCompare(b.name)
-      );
+      const sortedFloors = projectData.floors.sort((a, b) => a.name.localeCompare(b.name));
       const initialFloorId = sortedFloors[0].floor_id.toString();
       setCurrentFloorId(initialFloorId);
       changeFloor(initialFloorId);
-    }
-    else{
+    } else {
       changeFloor(currentFloorId);
     }
   }, [projectData, currentFloorId]);
@@ -123,7 +120,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
     } else {
       // Filter data for specific floor
       const floorId = parseInt(value, 10);
-      const selectedFloor = projectData.floors.find(floor => floor.floor_id === floorId);
+      const selectedFloor = projectData.floors.find((floor) => floor.floor_id === floorId);
 
       if (!selectedFloor) {
         console.error("No matching floor found");
@@ -133,10 +130,10 @@ export default function Dashboard({ params }: { params: { projectId: string } })
       // Update current floor data
       setCurrentFloorData({
         ...projectData,
-        walls: projectData.walls?.filter(wall => wall.floor_id === floorId) || [],
-        columns: projectData.columns?.filter(column => column.floor_id === floorId) || [],
-        beams: projectData.beams?.filter(beam => beam.floor_id === floorId) || [],
-        ceilings: projectData.ceilings?.filter(ceiling => ceiling.floor_id === floorId) || [],
+        walls: projectData.walls?.filter((wall) => wall.floor_id === floorId) || [],
+        columns: projectData.columns?.filter((column) => column.floor_id === floorId) || [],
+        beams: projectData.beams?.filter((beam) => beam.floor_id === floorId) || [],
+        ceilings: projectData.ceilings?.filter((ceiling) => ceiling.floor_id === floorId) || [],
       });
 
       // Update floor plan image
@@ -580,87 +577,87 @@ export default function Dashboard({ params }: { params: { projectId: string } })
 
           <TypographyH2 className="mt-2 font-bold">{projectData?.title}</TypographyH2>
 
-          <div className="mb-6 mt-4 flex items-center gap-2 flex-nowrap">
-          {/* Dropdown for selecting a floor */}
-          <div className="flex-shrink-0">
-            <Select value={currentFloorId} onValueChange={(value) => changeFloor(value)}>
-              <SelectTrigger className="px-4 py-2 min-w-[140px]">
-                {/* Added a minimum width and adjusted padding */}
-                <SelectValue>
-                  {currentFloorId === "all"
-                    ? t("selectAllFloors")
-                    : projectData?.floors?.find((floor) => floor.floor_id.toString() === currentFloorId)?.name}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  {projectData?.floors
-                    ?.slice()
-                    .sort((a, b) => {
-                      const floorNumberA = parseInt(a.name.match(/\d+/)?.[0] || "0", 10);
-                      const floorNumberB = parseInt(b.name.match(/\d+/)?.[0] || "0", 10);
+          <div className="mb-6 mt-4 flex flex-nowrap items-center gap-2">
+            {/* Dropdown for selecting a floor */}
+            <div className="flex-shrink-0">
+              <Select value={currentFloorId} onValueChange={(value) => changeFloor(value)}>
+                <SelectTrigger className="min-w-[140px] px-4 py-2">
+                  {/* Added a minimum width and adjusted padding */}
+                  <SelectValue>
+                    {currentFloorId === "all"
+                      ? t("selectAllFloors")
+                      : projectData?.floors?.find((floor) => floor.floor_id.toString() === currentFloorId)?.name}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {projectData?.floors
+                      ?.slice()
+                      .sort((a, b) => {
+                        const floorNumberA = parseInt(a.name.match(/\d+/)?.[0] || "0", 10);
+                        const floorNumberB = parseInt(b.name.match(/\d+/)?.[0] || "0", 10);
 
-                      return floorNumberA - floorNumberB;
-                    })
-                    .map((floor: Floor) => (
-                      <SelectItem key={floor.floor_id} value={floor.floor_id.toString()}>
-                        {floor.name}
-                      </SelectItem>
-                    ))}
-                  <SelectItem value="all">{t("selectAllFloors")}</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
+                        return floorNumberA - floorNumberB;
+                      })
+                      .map((floor: Floor) => (
+                        <SelectItem key={floor.floor_id} value={floor.floor_id.toString()}>
+                          {floor.name}
+                        </SelectItem>
+                      ))}
+                    <SelectItem value="all">{t("selectAllFloors")}</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
 
-          {/* Add Floor Button */}
-          <AddDialog
-            Form1={FloorsForm}
-            Form2={FloorDetailsForm}
-            form1Title={t("addFloorElementTitle")}
-            form2Title={t("floorDetailsTitle")}
-            form1Description={t("floorElementDescription")}
-            form2Description={t("floorDetailsDescription")}
-            buttonClass="bg-green-700 text-green-50 px-4 py-2 min-h-[40px] h-auto"
-            buttonName={t("addFloorButton")}
-            dbname="floors"
-            projectId={params.projectId}
-            onDataAdded={(passed_floorID) => {
-              if (passed_floorID) {
-                setCurrentFloorId(passed_floorID.toString());
-                setDataVersion((prevVersion) => prevVersion + 1);
-              }
-            }}
-          />
-
-          {/* Edit Floor Button */}
-          {currentFloorId !== "all" && currentFloor && (
-            <EditDialog
-              elementType="floor"
-              DetailsForm={FloorDetailsForm}
-              itemData={currentFloor}
-              onUpdate={handleUpdate}
-              onDelete={handleDelete}
-              buttonClass="bg-blue-700 text-blue-50 px-4 py-2 min-h-[40px] h-auto"
-              buttonName={t("floorDetailsTitle")}
-              onDataUpdated={() => setDataVersion((prevVersion) => prevVersion + 1)}
-            />
-          )}
-
-          {/* Delete Floor Button */}
-          {currentFloorId !== "all" && currentFloor && (
-            <DeleteDialog
-              itemData={projectData?.floors?.find((floor) => floor.floor_id.toString() === currentFloorId)}
-              onDelete={() => {
-                // Custom logic after deletion
-                setCurrentFloorId(null);
-                setDataVersion((prevVersion) => prevVersion + 1);
+            {/* Add Floor Button */}
+            <AddDialog
+              Form1={FloorsForm}
+              Form2={FloorDetailsForm}
+              form1Title={t("newFloor")}
+              form2Title={t("floorDetailsTitle")}
+              form1Description={t("floorElementDescription")}
+              form2Description={t("floorDetailsDescription")}
+              buttonClass="bg-green-700 text-green-50 px-4 py-2 min-h-[40px] h-auto"
+              buttonName={t("addFloorButton")}
+              dbname="floors"
+              projectId={params.projectId}
+              onDataAdded={(passed_floorID) => {
+                if (passed_floorID) {
+                  setCurrentFloorId(passed_floorID.toString());
+                  setDataVersion((prevVersion) => prevVersion + 1);
+                }
               }}
-              elementType={"Floor"}
-              buttonClass="bg-red-700 text-red-50 px-4 py-2 min-h-[40px] h-auto"
             />
-          )}
-        </div>
+
+            {/* Edit Floor Button */}
+            {currentFloorId !== "all" && currentFloor && (
+              <EditDialog
+                elementType="floor"
+                DetailsForm={FloorDetailsForm}
+                itemData={currentFloor}
+                onUpdate={handleUpdate}
+                onDelete={handleDelete}
+                buttonClass="bg-blue-700 text-blue-50 px-4 py-2 min-h-[40px] h-auto"
+                buttonName={t("floorDetailsTitle")}
+                onDataUpdated={() => setDataVersion((prevVersion) => prevVersion + 1)}
+              />
+            )}
+
+            {/* Delete Floor Button */}
+            {currentFloorId !== "all" && currentFloor && (
+              <DeleteDialog
+                itemData={projectData?.floors?.find((floor) => floor.floor_id.toString() === currentFloorId)}
+                onDelete={() => {
+                  // Custom logic after deletion
+                  setCurrentFloorId(null);
+                  setDataVersion((prevVersion) => prevVersion + 1);
+                }}
+                elementType={"Floor"}
+                buttonClass="bg-red-700 text-red-50 px-4 py-2 min-h-[40px] h-auto"
+              />
+            )}
+          </div>
 
           {currentFloorId !== "all" && (
             <div>
@@ -674,7 +671,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                   </DialogTrigger>
                   <DialogContent className="h-fit max-h-[95vh] w-fit max-w-[95vw]">
                     <DialogHeader>
-                      <DialogTitle>{t('floorPlan')}</DialogTitle>
+                      <DialogTitle>{t("floorPlan")}</DialogTitle>
                     </DialogHeader>
                     <div className="relative h-[80vh] w-[90vw]">
                       <Image src={imgUrl} alt="Floor Plan" fill style={{ objectFit: "contain" }} quality={100} />
@@ -714,7 +711,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                 <AddDialog
                   Form1={WallForm}
                   Form2={WallDetailsForm}
-                  form1Title={t("addWallElementTitle")}
+                  form1Title={t("newWall")}
                   form2Title={t("wallDetailsTitle")}
                   form1Description={t("wallElementDescription")}
                   form2Description={t("wallDetailsDescription")}
@@ -749,7 +746,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                 <AddDialog
                   Form1={ColumnsForm}
                   Form2={ColumnDetailsForm}
-                  form1Title={t("addColumnElementTitle")}
+                  form1Title={t("newColumn")}
                   form2Title={t("columnDetailsTitle")}
                   form1Description={t("columnElementDescription")}
                   form2Description={t("columnDetailsDescription")}
@@ -784,7 +781,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                 <AddDialog
                   Form1={BeamForm}
                   Form2={BeamDetailsForm}
-                  form1Title={t("addBeamElementTitle")}
+                  form1Title={t("newBeam")}
                   form2Title={t("beamDetailsTitle")}
                   form1Description={t("beamElementDescription")}
                   form2Description={t("beamDetailsDescription")}
@@ -820,7 +817,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                 <AddDialog
                   Form1={CeilingForm}
                   Form2={CeilingDetailsForm}
-                  form1Title={t("addCeilingElementTitle")}
+                  form1Title={t("newCeiling")}
                   form2Title={t("ceilingDetailsTitle")}
                   form1Description={t("ceilingElementDescription")}
                   form2Description={t("ceilingDetailsDescription")}

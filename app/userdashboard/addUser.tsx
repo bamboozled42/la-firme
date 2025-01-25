@@ -134,12 +134,12 @@ const AddUser: React.FC<AddUserProps> = ({ AdminUser }) => {
         <DialogTrigger asChild>
           <Button size="sm" className={"bg-green-500 text-green-50"}>
             <Icons.add className="mr-2 h-4 w-4" />
-            <span className="mr-1">{t("inviteUser")}</span>
+            <span className="mr-1">{t("invite")}</span>
           </Button>
         </DialogTrigger>
         <DialogContent className="max-h-screen w-5/6 overflow-y-auto p-8 pt-10">
           <DialogHeader>
-            <DialogTitle>{t("inviteUser")}</DialogTitle>
+            <DialogTitle>{t("invite")}</DialogTitle>
           </DialogHeader>
           <form
             onSubmit={(e) => {
