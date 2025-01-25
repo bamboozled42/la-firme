@@ -21,6 +21,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useTranslation } from "../../../i18n/client";
+import DeleteDialog from "./delete-subcomponent";
 import {
   Beam,
   Ceiling,
@@ -57,6 +58,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
   };
 
   const handleDelete = (deletedItem: any) => {
+    console.log("Deleting item:", deletedItem);
     updateDataState({ type: "delete", item: deletedItem });
   };
 
@@ -96,6 +98,9 @@ export default function Dashboard({ params }: { params: { projectId: string } })
       const initialFloorId = sortedFloors[0].floor_id.toString();
       setCurrentFloorId(initialFloorId);
       changeFloor(initialFloorId);
+    }
+    else{
+      changeFloor(currentFloorId);
     }
   }, [projectData, currentFloorId]);
   console.log("currentFloorId:", currentFloorId);
@@ -575,9 +580,12 @@ export default function Dashboard({ params }: { params: { projectId: string } })
 
           <TypographyH2 className="mt-2 font-bold">{projectData?.title}</TypographyH2>
 
-          <div className="mb-6 mt-4 flex flex-row items-center space-x-3">
-          <Select value={currentFloorId} onValueChange={(value) => changeFloor(value)}>
-              <SelectTrigger className="w-[180px]">
+          <div className="mb-6 mt-4 flex items-center gap-2 flex-nowrap">
+          {/* Dropdown for selecting a floor */}
+          <div className="flex-shrink-0">
+            <Select value={currentFloorId} onValueChange={(value) => changeFloor(value)}>
+              <SelectTrigger className="px-4 py-2 min-w-[140px]">
+                {/* Added a minimum width and adjusted padding */}
                 <SelectValue>
                   {currentFloorId === "all"
                     ? t("selectAllFloors")
@@ -587,13 +595,12 @@ export default function Dashboard({ params }: { params: { projectId: string } })
               <SelectContent>
                 <SelectGroup>
                   {projectData?.floors
-                    ?.slice() // Create a shallow copy of the array to avoid mutating the original
+                    ?.slice()
                     .sort((a, b) => {
-                      // Extract the integers from the floor names
                       const floorNumberA = parseInt(a.name.match(/\d+/)?.[0] || "0", 10);
                       const floorNumberB = parseInt(b.name.match(/\d+/)?.[0] || "0", 10);
 
-                      return floorNumberA - floorNumberB; // Sort by the extracted integers
+                      return floorNumberA - floorNumberB;
                     })
                     .map((floor: Floor) => (
                       <SelectItem key={floor.floor_id} value={floor.floor_id.toString()}>
@@ -604,38 +611,56 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                 </SelectGroup>
               </SelectContent>
             </Select>
-
-            <AddDialog
-              Form1={FloorsForm}
-              Form2={FloorDetailsForm}
-              form1Title={t("addFloorElementTitle")}
-              form2Title={t("floorDetailsTitle")}
-              form1Description={t("floorElementDescription")}
-              form2Description={t("floorDetailsDescription")}
-              buttonClass="bg-green-700 text-green-50 min-h-10 h-auto"
-              buttonName={t("addFloorButton")}
-              dbname="floors"
-              projectId={params.projectId}
-              onDataAdded={(passed_floorID) => {
-                if (passed_floorID) {
-                  setCurrentFloorId(passed_floorID.toString());
-                  setDataVersion((prevVersion) => prevVersion + 1);
-                }
-              }}
-            />
-
-            {currentFloorId !== "all" && currentFloor && (
-              <EditDialog
-                elementType="floor"
-                DetailsForm={FloorDetailsForm}
-                itemData={currentFloor}
-                onUpdate={handleUpdate}
-                onDelete={handleDelete}
-                buttonName={t("floorDetailsTitle")}
-                onDataUpdated={() => setDataVersion((prevVersion) => prevVersion + 1)}
-              />
-            )}
           </div>
+
+          {/* Add Floor Button */}
+          <AddDialog
+            Form1={FloorsForm}
+            Form2={FloorDetailsForm}
+            form1Title={t("addFloorElementTitle")}
+            form2Title={t("floorDetailsTitle")}
+            form1Description={t("floorElementDescription")}
+            form2Description={t("floorDetailsDescription")}
+            buttonClass="bg-green-700 text-green-50 px-4 py-2 min-h-[40px] h-auto"
+            buttonName={t("addFloorButton")}
+            dbname="floors"
+            projectId={params.projectId}
+            onDataAdded={(passed_floorID) => {
+              if (passed_floorID) {
+                setCurrentFloorId(passed_floorID.toString());
+                setDataVersion((prevVersion) => prevVersion + 1);
+              }
+            }}
+          />
+
+          {/* Edit Floor Button */}
+          {currentFloorId !== "all" && currentFloor && (
+            <EditDialog
+              elementType="floor"
+              DetailsForm={FloorDetailsForm}
+              itemData={currentFloor}
+              onUpdate={handleUpdate}
+              onDelete={handleDelete}
+              buttonClass="bg-blue-700 text-blue-50 px-4 py-2 min-h-[40px] h-auto"
+              buttonName={t("floorDetailsTitle")}
+              onDataUpdated={() => setDataVersion((prevVersion) => prevVersion + 1)}
+            />
+          )}
+
+          {/* Delete Floor Button */}
+          {currentFloorId !== "all" && currentFloor && (
+            <DeleteDialog
+              itemData={projectData?.floors?.find((floor) => floor.floor_id.toString() === currentFloorId)}
+              onDelete={() => {
+                // Custom logic after deletion
+                setCurrentFloorId(null);
+                setDataVersion((prevVersion) => prevVersion + 1);
+              }}
+              elementType={"Floor"}
+              buttonClass="bg-red-700 text-red-50 px-4 py-2 min-h-[40px] h-auto"
+            />
+          )}
+        </div>
 
           {currentFloorId !== "all" && (
             <div>

@@ -29,13 +29,26 @@ export default function DeleteDialog({
   };
 
   const handleDelete = async () => {
-    try {
-      const tableName = getTableName(elementType);
-      const { error } = await supabase.from(tableName).delete().eq("id", itemData.id);
+    if (!itemData) return; // Prevent deletion if itemData is null or undefined
+  try {
+    const tableName = getTableName(elementType);
 
-      // if (error) {
-      //   console.log("Error deleting data:", error);
-      // }
+    let error;
+    if (elementType === "Floor") {
+      // Delete based on "floor_id" if the element is a Floor
+      const { error: floorError } = await supabase.from(tableName).delete().eq("floor_id", itemData.floor_id);
+      error = floorError;
+      console.log("Deleting Floor:", itemData);
+    } else {
+      // Default delete operation for other elements
+      const { error: defaultError } = await supabase.from(tableName).delete().eq("id", itemData.id);
+      error = defaultError;
+    }
+
+    if (error) {
+      console.error("Error deleting data:", error);
+      return;
+    }
 
       onDelete({
         ...itemData,

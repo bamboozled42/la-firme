@@ -384,9 +384,6 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
 
       {/* Buttons */}
       <div className="mt-6 flex justify-end space-x-2">
-        <Button type="button" variant="destructive" onClick={onDelete}>
-          {t("delete")}
-        </Button>
         <Button type="button" variant="secondary" onClick={onCancel}>
           {t("cancel")}
         </Button>
