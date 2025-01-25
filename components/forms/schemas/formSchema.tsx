@@ -82,7 +82,6 @@ export const columnDetailsFormSchema = z.object({
   }),
   vertical_cracks: z.boolean().default(false),
   pipes: z.boolean().default(false),
-  notes: z.string().optional(),
 });
 
 export const beamFormSchema = generalFormSchema;
@@ -107,7 +106,6 @@ export const beamDetailsFormSchema = z.object({
   condition: z.enum(["Seleccionar", "Bad", "Good"], {
     errorMap: () => ({ message: "conditionRequired" }),
   }),
-  notes: z.string().optional(),
 });
 
 export const ceilingFormSchema = generalFormSchema;
@@ -127,7 +125,6 @@ export const ceilingDetailsFormSchema = z.object({
   }),
   cracks: z.boolean().default(false),
   pipes: z.boolean().default(false),
-  notes: z.string().optional(),
 });
 
 export const floorFormSchema = z.object({

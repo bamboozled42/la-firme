@@ -712,7 +712,13 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                   {t("wallsTitle")} {"(" + (currentFloorData?.walls ? currentFloorData?.walls.length : 0) + ")"}
                 </AccordionTrigger>
                 <AddDialog
-                  Form1={WallForm}
+                  Form1={(props) => (
+                    <WallForm
+                      {...props}
+                      floors={projectData?.floors || []}
+                      defaultFloorId={currentFloorId} // Replace `1` with the desired floor_id
+                    />
+                  )}
                   Form2={WallDetailsForm}
                   form1Title={t("addWallElementTitle")}
                   form2Title={t("wallDetailsTitle")}
@@ -747,7 +753,13 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                   {t("columnsTitle")} {"(" + (currentFloorData?.columns ? currentFloorData?.columns.length : 0) + ")"}
                 </AccordionTrigger>
                 <AddDialog
-                  Form1={ColumnsForm}
+                  Form1={(props) => (
+                    <ColumnsForm
+                      {...props}
+                      floors={projectData?.floors || []}
+                      defaultFloorId={currentFloorId} // Replace `1` with the desired floor_id
+                    />
+                  )}
                   Form2={ColumnDetailsForm}
                   form1Title={t("addColumnElementTitle")}
                   form2Title={t("columnDetailsTitle")}
@@ -782,7 +794,13 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                   {t("beamsTitle")} {"(" + (currentFloorData?.beams ? currentFloorData?.beams.length : 0) + ")"}
                 </AccordionTrigger>
                 <AddDialog
-                  Form1={BeamForm}
+                  Form1={(props) => (
+                    <BeamForm
+                      {...props}
+                      floors={projectData?.floors || []}
+                      defaultFloorId={currentFloorId} // Replace `1` with the desired floor_id
+                    />
+                  )}
                   Form2={BeamDetailsForm}
                   form1Title={t("addBeamElementTitle")}
                   form2Title={t("beamDetailsTitle")}
@@ -818,7 +836,13 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                   {"(" + (currentFloorData?.ceilings ? currentFloorData?.ceilings.length : 0) + ")"}
                 </AccordionTrigger>
                 <AddDialog
-                  Form1={CeilingForm}
+                  Form1={(props) => (
+                    <CeilingForm
+                      {...props}
+                      floors={projectData?.floors || []}
+                      defaultFloorId={currentFloorId} // Replace `1` with the desired floor_id
+                    />
+                  )}
                   Form2={CeilingDetailsForm}
                   form1Title={t("addCeilingElementTitle")}
                   form2Title={t("ceilingDetailsTitle")}

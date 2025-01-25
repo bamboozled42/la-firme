@@ -12,9 +12,10 @@ interface CeilingFormProps {
   onNext: (data: ColumnFormSchema) => void;
   onCancel: () => void;
   floors: Floor[] | null;
+  defaultFloorId?: number;
 }
 
-const CeilingForm: React.FC<CeilingFormProps> = ({ onNext, onCancel, floors }) => {
+const CeilingForm: React.FC<CeilingFormProps> = ({ onNext, onCancel, floors, defaultFloorId }) => {
   const { t } = useTranslation("common");
 
   const {
@@ -23,6 +24,10 @@ const CeilingForm: React.FC<CeilingFormProps> = ({ onNext, onCancel, floors }) =
     formState: { errors },
   } = useForm<ColumnFormSchema>({
     resolver: zodResolver(columnFormSchema),
+    defaultValues: {
+      name: "",
+      floor_id: defaultFloorId || undefined,
+    },
   });
 
   const onSubmit: SubmitHandler<ColumnFormSchema> = (data) => {

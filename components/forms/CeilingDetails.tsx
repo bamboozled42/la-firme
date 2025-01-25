@@ -151,22 +151,6 @@ const CeilingDetailsForm: React.FC<CeilingDetailsFormProps> = ({ onSave, onCance
       </div>
       {errors.pipes && <p className="mt-1 text-sm text-red-600">{t(errors.pipes.message ?? "")}</p>}
 
-      {/* Notes Field */}
-      <div>
-        <label htmlFor="notes" className="block text-sm font-medium text-gray-700">
-        {t("notes")}
-        </label>
-        <input
-          type="text"
-          id="notes"
-          {...register("notes")}
-          className={`mt-1 block w-full rounded-md border ${
-            errors.notes ? "border-red-600" : "border-gray-300"
-          } shadow-sm focus:border-green-500 focus:ring-green-500`}
-        />
-        {errors.notes && <p className="mt-1 text-sm text-red-600">{errors.notes.message}</p>}
-      </div>
-
       {/* Buttons */}
       <div className="mt-4 flex justify-end space-x-2">
         <Button type="button" variant="secondary" onClick={onCancel}>

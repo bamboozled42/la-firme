@@ -12,9 +12,10 @@ interface BeamFormProps {
   onNext: (data: ColumnFormSchema) => void;
   onCancel: () => void;
   floors: Floor[] | null;
+  defaultFloorId?: number;
 }
 
-const BeamForm: React.FC<BeamFormProps> = ({ onNext, onCancel, floors }) => {
+const BeamForm: React.FC<BeamFormProps> = ({ onNext, onCancel, floors, defaultFloorId }) => {
   const { t } = useTranslation("common");
 
   const {
@@ -23,6 +24,10 @@ const BeamForm: React.FC<BeamFormProps> = ({ onNext, onCancel, floors }) => {
     formState: { errors },
   } = useForm<ColumnFormSchema>({
     resolver: zodResolver(columnFormSchema),
+    defaultValues: {
+      name: "",
+      floor_id: defaultFloorId || undefined,
+    },
   });
 
   const onSubmit: SubmitHandler<ColumnFormSchema> = (data) => {

@@ -12,9 +12,10 @@ interface WallFormProps {
   onNext: (data: WallFormSchema) => void;
   onCancel: () => void;
   floors: Floor[] | null;
+  defaultFloorId?: number;
 }
 
-const WallForm: React.FC<WallFormProps> = ({ onNext, onCancel, floors }) => {
+const WallForm: React.FC<WallFormProps> = ({ onNext, onCancel, floors, defaultFloorId}) => {
   const { t } = useTranslation("common");
 
   const {
@@ -25,9 +26,11 @@ const WallForm: React.FC<WallFormProps> = ({ onNext, onCancel, floors }) => {
     resolver: zodResolver(wallFormSchema),
     defaultValues: {
       name: "",
+      floor_id: defaultFloorId || undefined,
     },
   });
   console.log(floors);
+  console.log("Floor id: ", defaultFloorId)
 
   const onSubmit: SubmitHandler<WallFormSchema> = (data) => {
     console.log("WallForm Submitted Data:", data);
