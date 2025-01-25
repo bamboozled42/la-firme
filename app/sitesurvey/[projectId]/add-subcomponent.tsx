@@ -106,10 +106,26 @@ export default function AddDialog({
 
     if (!error && onDataAdded) {
       if (dbname === "floors") {
-        onDataAdded(completeData.name); // Pass the floor name
+        // Fetch floor_id for the newly added floor
+        const { data: floorData, error: fetchError } = await supabase
+          .from("floors")
+          .select("floor_id")
+          .eq("name", completeData.name)
+          .eq("projectId", completeData.projectId)
+          .single();
+
+        if (fetchError || !floorData) {
+          console.error("Error fetching floor_id:", fetchError);
+        } else {
+          // Pass the floor_id to onDataAdded
+          onDataAdded(floorData.floor_id);
+        }
       } else {
-        onDataAdded(); // Default behavior
+        // For other database tables, invoke onDataAdded without floor-specific logic
+        onDataAdded();
       }
+    } else {
+      console.error("Error inserting data into Supabase:", error);
     }
 
     // Reset state and close dialog

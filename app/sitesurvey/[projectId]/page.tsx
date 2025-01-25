@@ -41,8 +41,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
   const supabase = useSupabase();
   const [projectData, setProjectData] = useState<ProjectDashboardType | null>(null);
   const [currentFloorData, setCurrentFloorData] = useState<ProjectDashboardType | null>(null);
-  const [currentFloorId, setCurrentFloorId] = useState<string>("1");
-  const [nextFloorId, setNextFloorId] = useState<string | null>(null);
+  const [currentFloorId, setCurrentFloorId] = useState<string | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [dataVersion, setDataVersion] = useState(0);
 
@@ -89,35 +88,54 @@ export default function Dashboard({ params }: { params: { projectId: string } })
   }, [supabase, params.projectId, dataVersion]);
 
   useEffect(() => {
-    // Set default floor ID to the first available floor's ID, if projectData and floors exist
-    if (projectData?.floors && projectData.floors.length > 0) {
-      // Sort floors by floor_id in ascending order
-      const sortedFloors = projectData.floors.sort((a, b) => a.floor_id - b.floor_id);
-
-      // Set the current floor ID to the smallest floor_id
-      setCurrentFloorId(sortedFloors[0].floor_id.toString());
+    if (projectData?.floors?.length > 0 && currentFloorId === null) {
+      // Sort floors and select the first one
+      const sortedFloors = projectData.floors.sort((a, b) =>
+        a.name.localeCompare(b.name)
+      );
+      const initialFloorId = sortedFloors[0].floor_id.toString();
+      setCurrentFloorId(initialFloorId);
+      changeFloor(initialFloorId);
     }
-  }, [projectData]);
+  }, [projectData, currentFloorId]);
+  console.log("currentFloorId:", currentFloorId);
+  console.log("projectData:", projectData);
 
   const changeFloor = (value: string) => {
+    // Ensure projectData and floors exist
+    if (!projectData?.floors || projectData.floors.length === 0) {
+      console.error("No floors available");
+      return;
+    }
+
+    // Update current floor ID
     setCurrentFloorId(value);
 
     if (value === "all") {
+      // Show all floor data
       setCurrentFloorData(projectData);
+      setImgUrl(null);
     } else {
-      const floorId = parseInt(value);
-      if (projectData) {
-        setCurrentFloorData({
-          ...projectData,
-          walls: projectData.walls?.filter((wall) => wall.floor_id === floorId) || [],
-          columns: projectData.columns?.filter((column) => column.floor_id === floorId) || [],
-          beams: projectData.beams?.filter((beam) => beam.floor_id === floorId) || [],
-          ceilings: projectData.ceilings?.filter((ceiling) => ceiling.floor_id === floorId) || [],
-        });
+      // Filter data for specific floor
+      const floorId = parseInt(value, 10);
+      const selectedFloor = projectData.floors.find(floor => floor.floor_id === floorId);
 
-        setImgUrl(projectData?.floors?.find((floor) => floor.floor_id === floorId)?.floor_plan || "");
-        console.log(projectData?.floors?.find((floor) => floor.floor_id === floorId)?.floor_plan);
+      if (!selectedFloor) {
+        console.error("No matching floor found");
+        return;
       }
+
+      // Update current floor data
+      setCurrentFloorData({
+        ...projectData,
+        walls: projectData.walls?.filter(wall => wall.floor_id === floorId) || [],
+        columns: projectData.columns?.filter(column => column.floor_id === floorId) || [],
+        beams: projectData.beams?.filter(beam => beam.floor_id === floorId) || [],
+        ceilings: projectData.ceilings?.filter(ceiling => ceiling.floor_id === floorId) || [],
+      });
+
+      // Update floor plan image
+      setImgUrl(selectedFloor.floor_plan || null);
     }
   };
 
@@ -558,7 +576,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
           <TypographyH2 className="mt-2 font-bold">{projectData?.title}</TypographyH2>
 
           <div className="mb-6 mt-4 flex flex-row items-center space-x-3">
-            <Select value={currentFloorId} onValueChange={changeFloor}>
+          <Select value={currentFloorId} onValueChange={(value) => changeFloor(value)}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue>
                   {currentFloorId === "all"
@@ -598,22 +616,11 @@ export default function Dashboard({ params }: { params: { projectId: string } })
               buttonName={t("addFloorButton")}
               dbname="floors"
               projectId={params.projectId}
-              onDataAdded={(floorName) => {
-                if (floorName) {
-                  console.log(`Floor added: ${floorName}`); // Log the added floor name
-
-                  const match = floorName.match(/^Floor (\d+)$/);
-                  const floorNumber = match ? parseInt(match[1], 10) : null;
-
-                  if (floorNumber !== null) {
-                    console.log(`Extracted floor number: ${floorNumber}`);
-                    // Store the extracted floor number in a variable
-                    setNextFloorId(floorNumber.toString()); // Update a temporary state for the next floor ID
-                  }
+              onDataAdded={(passed_floorID) => {
+                if (passed_floorID) {
+                  setCurrentFloorId(passed_floorID.toString());
+                  setDataVersion((prevVersion) => prevVersion + 1);
                 }
-                setDataVersion((prevVersion) => prevVersion + 1); // Increment data version to trigger re-renders
-                setCurrentFloorId(floorNumber.setNumber());
-                // Extract the number from "Floor number"
               }}
             />
 
@@ -642,7 +649,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                   </DialogTrigger>
                   <DialogContent className="h-fit max-h-[95vh] w-fit max-w-[95vw]">
                     <DialogHeader>
-                      <DialogTitle>t('floorPlan')</DialogTitle>
+                      <DialogTitle>{t('floorPlan')}</DialogTitle>
                     </DialogHeader>
                     <div className="relative h-[80vh] w-[90vw]">
                       <Image src={imgUrl} alt="Floor Plan" fill style={{ objectFit: "contain" }} quality={100} />

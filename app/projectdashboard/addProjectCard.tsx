@@ -70,7 +70,7 @@ const AddProjectCard: React.FC = () => {
       reset();
       const { data: floor, error: floor_error } = await supabase.from("floors").insert({
         projectId: project.id,
-        name: "Floor 1",
+        name: "P1",
       });
       console.log("Floor:", floor);
       if (floor_error) {
