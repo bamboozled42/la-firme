@@ -90,16 +90,19 @@ export default function Dashboard({ params }: { params: { projectId: string } })
   }, [supabase, params.projectId, dataVersion]);
 
   useEffect(() => {
-    if (projectData?.floors?.length > 0 && currentFloorId === null) {
+    if (projectData?.floors && projectData.floors.length > 0 && currentFloorId === null) {
       // Sort floors and select the first one
       const sortedFloors = projectData.floors.sort((a, b) => a.name.localeCompare(b.name));
-      const initialFloorId = sortedFloors[0].floor_id.toString();
-      setCurrentFloorId(initialFloorId);
-      changeFloor(initialFloorId);
-    } else {
+      if (sortedFloors.length > 0) {
+        const initialFloorId = sortedFloors[0].floor_id.toString();
+        setCurrentFloorId(initialFloorId);
+        changeFloor(initialFloorId);
+      }
+    } else if (currentFloorId) {
       changeFloor(currentFloorId);
     }
   }, [projectData, currentFloorId]);
+
   console.log("currentFloorId:", currentFloorId);
   console.log("projectData:", projectData);
 
@@ -200,31 +203,40 @@ export default function Dashboard({ params }: { params: { projectId: string } })
 
       // Extract existing floorplan numbers and find the smallest missing number
       const existingNumbers = existingFiles
-        ?.map((file) => {
-          const match = file.name.match(/floorplan_(\d+)/); // Extract the number from the naming scheme
-          return match ? parseInt(match[1], 10) : null;
-        })
-        .filter((num) => num !== null)
-        .sort((a, b) => a - b);
+      ?.map((file) => {
+        const match = file.name.match(/floorplan_(\d+)/); // Extract the number from the naming scheme
+        return match && match[1] ? parseInt(match[1], 10) : null;
+      })
+      .filter((num): num is number => num !== null) // Type guard to ensure only numbers
+      .sort((a, b) => a - b);
 
-      let newNumber = 1; // Start with 1
-      for (const num of existingNumbers) {
-        if (num === newNumber) {
-          newNumber++; // Increment if the number is already taken
-        } else {
-          break; // Found the first missing number
-        }
+    let newNumber = 1; // Start with 1
+    for (const num of existingNumbers) {
+      if (num === newNumber) {
+        newNumber++; // Increment if the number is already taken
+      } else {
+        break; // Found the first missing number
       }
+    }
 
       const newFileName = `floorplan_${newNumber}`;
 
       // Delete the existing image for the current floor (if any)
-      const currentFloor = projectData?.floors?.find((floor) => floor.floor_id.toString() === currentFloorId);
+      const currentFloor = projectData?.floors?.find(
+        (floor) => floor.floor_id.toString() === currentFloorId
+      );
+
       if (currentFloor?.floor_plan) {
         const existingPath = currentFloor.floor_plan.split("/").pop(); // Extract file name from the URL
-        const { error: deleteError } = await supabase.storage.from("floor-plans").remove([existingPath]);
-        if (deleteError) {
-          console.error("Error deleting existing image:", deleteError.message);
+
+        if (existingPath) {
+          const { error: deleteError } = await supabase.storage.from("floor-plans").remove([existingPath]);
+          if (deleteError) {
+            console.error("Error deleting existing image:", deleteError.message);
+            return;
+          }
+        } else {
+          console.error("Error: Unable to extract a valid file name from the floor plan URL.");
           return;
         }
       }
@@ -268,19 +280,12 @@ export default function Dashboard({ params }: { params: { projectId: string } })
         projectData.floors = updatedFloors;
       }
     } catch (err) {
-      console.error("Unexpected error:", err.message);
-    }
-  };
-
-  const sortByFloorIdAndName = (data) => {
-    return data.sort((a, b) => {
-      // First, compare by floor_id
-      if (a.floor_id !== b.floor_id) {
-        return a.floor_id - b.floor_id; // Numeric comparison
+      if (err instanceof Error) {
+        console.error("Unexpected error:", err.message); // Safe to access message
+      } else {
+        console.error("Unexpected error:", err); // Handle non-Error cases
       }
-      // If floor_id is the same, compare by name
-      return a.name.localeCompare(b.name); // String comparison
-    });
+    }
   };
 
   const sortByName = (data: any[]) => {
@@ -580,7 +585,10 @@ export default function Dashboard({ params }: { params: { projectId: string } })
           <div className="mb-6 mt-4 flex flex-nowrap items-center gap-2">
             {/* Dropdown for selecting a floor */}
             <div className="flex-shrink-0">
-              <Select value={currentFloorId} onValueChange={(value) => changeFloor(value)}>
+            <Select
+              value={currentFloorId ?? undefined} // Convert null to undefined
+                onValueChange={(value) => changeFloor(value)}
+              >
                 <SelectTrigger className="min-w-[140px] px-4 py-2">
                   {/* Added a minimum width and adjusted padding */}
                   <SelectValue>

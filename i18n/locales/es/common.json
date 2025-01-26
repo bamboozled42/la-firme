@@ -227,5 +227,6 @@
 
   "duplicateNameError": "Ya existe una entrada con este nombre",
 
-  "floorPlan": "Plano de Piso"
+  "floorPlan": "Plano de Piso",
+  "logOut": "Cerrar Sesión"
 }
