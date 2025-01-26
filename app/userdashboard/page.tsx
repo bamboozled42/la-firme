@@ -39,17 +39,22 @@ export default async function Dashboard() {
   const currentUserId = user.id;
 
   // Get all users from the database
-  const { data: users, error } = await supabase.from("users").select("*");
+  const { data: admin, error: adminError } = await supabase.from("users").select("*").eq("role", "admin");
+  const { data: architects, error: architectError } = await supabase.from("users").select("*").eq("role", "architect");
   // and clients
   const { data: clients } = await supabase.from("clients").select("*");
 
   return (
     <div>
-      <div className="mb-10 flex items-center justify-between">
-        <h1 style={{ marginLeft: 10, marginBottom: 10 }}>{t("staffTable")}</h1>
+      <div className="mb-5 flex items-center justify-between">
+        <h1 style={{ marginLeft: 10, marginBottom: 10 }}>{t("adminTable")}</h1>
         <AddUser AdminUser={user as any} />
       </div>
-      <UserTable tableType="staff" users={users} currentUserId={currentUserId} />
+      <UserTable tableType="admin" users={admin} currentUserId={currentUserId} />
+      <div className="mb-5 mt-10 flex items-center justify-between">
+        <h1 style={{ marginLeft: 10, marginBottom: 10 }}>{t("architectTable")}</h1>
+      </div>
+      <UserTable tableType="architect" users={architects} currentUserId={currentUserId} />
       <div className="mb-5 mt-10 flex items-center justify-between">
         <h1 style={{ marginLeft: 10, marginBottom: 10 }}>{t("clientTable")}</h1>
       </div>

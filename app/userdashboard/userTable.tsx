@@ -69,10 +69,10 @@ const UserTable = ({ tableType, users, currentUserId }: UserTableProps) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[200px]">{t("user")}</TableHead>
+            <TableHead className="w-[200px]">{t("name")}</TableHead>
             <TableHead className="w-[400px]">{t("email")}</TableHead>
-            <TableHead className="w-[200px] text-left">{tableType === "staff" ? t("role") : t("address")}</TableHead>
-            <TableHead className="w-[100px] text-right">{t("edit")}</TableHead>
+            <TableHead className="w-[200px] text-left">{tableType === "clients" ? t("address") : ""}</TableHead>
+            <TableHead className="w-[100px] text-right">{tableType !== "admin" ? t("edit") : ""}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -83,7 +83,7 @@ const UserTable = ({ tableType, users, currentUserId }: UserTableProps) => {
               </TableCell>
               <TableCell className="w-[400px]">{currentUser.email}</TableCell>
               <TableCell className="w-[200px] text-left">
-                {tableType === "staff" ? currentUser.role : currentUser.address}
+                {tableType === "clients" ? currentUser.address : ""}
               </TableCell>
               {currentUser.role !== "admin" && (
                 <TableCell className="w-[100px] text-right">
