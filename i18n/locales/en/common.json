@@ -227,5 +227,6 @@
 
   "duplicateNameError": "An entry with this name already exists",
 
-  "floorPlan": "Floor Plan"
+  "floorPlan": "Floor Plan",
+  "users": "Users"
 }
