@@ -97,6 +97,7 @@ const AddUser: React.FC<AddUserProps> = ({ AdminUser }) => {
           template_id: process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
           user_id: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY,
           template_params: {
+            from_email: AdminUser.email,
             from_name: AdminUser.first_name + " " + AdminUser.last_name,
             to_name: first_name + " " + last_name,
             to_email: email,
