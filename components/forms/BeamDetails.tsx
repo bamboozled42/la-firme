@@ -46,13 +46,11 @@ const BeamDetailsForm: React.FC<BeamDetailsFormProps> = ({ itemData, onSave, onC
             type="number"
             id="length"
             {...register("length", { valueAsNumber: true })}
-            className={`block w-full pr-10 rounded-md border ${
+            className={`block w-full rounded-md border pr-10 ${
               errors.length ? "border-red-600" : "border-gray-300"
             } shadow-sm focus:border-green-500 focus:ring-green-500`}
           />
-          <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">
-            m
-          </span>
+          <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">m</span>
         </div>
         {errors.length && <p className="mt-1 text-sm text-red-600">{t(errors.length.message ?? "")}</p>}
       </div>
@@ -67,13 +65,11 @@ const BeamDetailsForm: React.FC<BeamDetailsFormProps> = ({ itemData, onSave, onC
             type="number"
             id="width"
             {...register("width", { valueAsNumber: true })}
-            className={`block w-full pr-10 rounded-md border ${
+            className={`block w-full rounded-md border pr-10 ${
               errors.width ? "border-red-600" : "border-gray-300"
             } shadow-sm focus:border-green-500 focus:ring-green-500`}
           />
-          <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">
-            m
-          </span>
+          <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">m</span>
         </div>
         {errors.width && <p className="mt-1 text-sm text-red-600">{t(errors.width.message ?? "")}</p>}
       </div>
@@ -87,13 +83,11 @@ const BeamDetailsForm: React.FC<BeamDetailsFormProps> = ({ itemData, onSave, onC
             type="number"
             id="height"
             {...register("height", { valueAsNumber: true })}
-            className={`block w-full pr-10 rounded-md border ${
+            className={`block w-full rounded-md border pr-10 ${
               errors.height ? "border-red-600" : "border-gray-300"
             } shadow-sm focus:border-green-500 focus:ring-green-500`}
           />
-          <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">
-            m
-          </span>
+          <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">m</span>
         </div>
         {errors.height && <p className="mt-1 text-sm text-red-600">{t(errors.height.message ?? "")}</p>}
       </div>
@@ -163,7 +157,7 @@ const BeamDetailsForm: React.FC<BeamDetailsFormProps> = ({ itemData, onSave, onC
           <option value="Curved sole">{t("curvedSole")}</option>
           <option value="Flat sole">{t("flatSole")}</option>
           <option value="Inverted Sole">{t("invertedSole")}</option>
-          <option value="Curved">{t("curvedSole")}</option>
+          <option value="Curved">{t("curved")}</option>
           <option value="Flat">{t("flat")}</option>
           <option value="Inverted">{t("inverted")}</option>
         </select>
@@ -182,9 +176,8 @@ const BeamDetailsForm: React.FC<BeamDetailsFormProps> = ({ itemData, onSave, onC
           className={`mt-1 block w-full rounded-md border ${errors.condition ? "border-red-600" : "border-gray-300"} shadow-sm focus:border-green-500 focus:ring-green-500`}
         >
           <option value="" disabled>
-          {t("conditionPlaceholder")}
+            {t("conditionPlaceholder")}
           </option>
-          <option value="Seleccionar">{t("select")}</option>
           <option value="Bad">{t("bad")}</option>
           <option value="Good">{t("good")}</option>
         </select>

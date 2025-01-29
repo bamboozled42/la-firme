@@ -228,5 +228,10 @@
   "duplicateNameError": "Ya existe una entrada con este nombre",
 
   "floorPlan": "Plano de Piso",
-  "logOut": "Cerrar Sesión"
+  "logOut": "Cerrar Sesión",
+  "loginError": "Hubo un error al iniciar sesión",
+
+  "confirmDeleteBlank": "¿Estás seguro de que deseas eliminar",
+  "noUndo": "No puedes deshacer esta acción"
+
 }

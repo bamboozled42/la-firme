@@ -32,7 +32,7 @@ import {
   type StateAction,
 } from "../../../lib/utils";
 import AddDialog from "./add-subcomponent";
-import DeleteDialog from "./delete-subcomponent";
+import DeleteSubcomponentDialog from "./delete-subcomponent";
 import { EditDialog } from "./edit-subcomponent";
 import Subcomponent from "./subcomponent";
 
@@ -617,12 +617,24 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                 </SelectContent>
               </Select>
             </div>
+                        return floorNumberA - floorNumberB;
+                      })
+                      .map((floor: Floor) => (
+                        <SelectItem key={floor.floor_id} value={floor.floor_id.toString()}>
+                          {floor.name}
+                        </SelectItem>
+                      ))}
+                    <SelectItem value="all">{t("selectAllFloors")}</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
 
             {/* Add Floor Button */}
             <AddDialog
               Form1={FloorsForm}
               Form2={FloorDetailsForm}
-              form1Title={t("newFloor")}
+              form1Title={t("addFloorElementTitle")}
               form2Title={t("floorDetailsTitle")}
               form1Description={t("floorElementDescription")}
               form2Description={t("floorDetailsDescription")}
@@ -654,7 +666,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
 
             {/* Delete Floor Button */}
             {currentFloorId !== "all" && currentFloor && (
-              <DeleteDialog
+              <DeleteSubcomponentDialog
                 itemData={projectData?.floors?.find((floor) => floor.floor_id.toString() === currentFloorId)}
                 onDelete={() => {
                   // Custom logic after deletion
@@ -702,10 +714,6 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                   <Icons.upload className="mr-2 h-5 w-5" />
                   <span>{t("uploadButton")}</span>
                 </label>
-              </div>
-
-              <div className="mb-6 w-full rounded-md bg-red-100/80 p-2 text-center text-sm text-red-800">
-                {t("architectExportDisclaimer")}
               </div>
             </div>
           )}
@@ -881,6 +889,9 @@ export default function Dashboard({ params }: { params: { projectId: string } })
             <Button variant="default" onClick={handleExportCSV}>
               {t("exportAsCSV")}
             </Button>
+          </div>
+          <div className="mt-6 w-full rounded-md border border-gray-200 bg-gray-100 p-2 text-center text-sm text-gray-600">
+            {t("architectExportDisclaimer")}
           </div>
         </div>
       </div>

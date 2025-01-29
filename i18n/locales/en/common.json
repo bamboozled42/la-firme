@@ -229,5 +229,10 @@
 
   "floorPlan": "Floor Plan",
   "users": "Users",
-  "logOut": "Log Out"
+  "logOut": "Log Out",
+  "loginError": "There was an error logging in",
+
+  "confirmDeleteBlank": "Are you sure you want to delete",
+  "noUndo": "You cannot undo this action"
+
 }

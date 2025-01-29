@@ -32,7 +32,7 @@ const ColumnsForm: React.FC<ColumnFormProps> = ({ onNext, onCancel, floors, defa
 
   const onSubmit: SubmitHandler<ColumnFormSchema> = (data) => {
     const floorName = floors?.find((floor) => floor.floor_id === data.floor_id)?.name;
-    const formattedName = `C${data.name} P${floorName}`;
+    const formattedName = `C${data.name} ${floorName}`;
     onNext({ ...data, name: formattedName });
   };
 

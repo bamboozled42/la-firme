@@ -46,13 +46,11 @@ const CeilingDetailsForm: React.FC<CeilingDetailsFormProps> = ({ onSave, onCance
             type="number"
             id="height"
             {...register("height", { valueAsNumber: true })}
-            className={`block w-full pr-10 rounded-md border ${
+            className={`block w-full rounded-md border pr-10 ${
               errors.height ? "border-red-600" : "border-gray-300"
             } shadow-sm focus:border-green-500 focus:ring-green-500`}
           />
-          <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">
-            m
-          </span>
+          <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">m</span>
         </div>
         {errors.height && <p className="mt-1 text-sm text-red-600">{t(errors.height.message ?? "")}</p>}
       </div>
@@ -67,13 +65,11 @@ const CeilingDetailsForm: React.FC<CeilingDetailsFormProps> = ({ onSave, onCance
             type="number"
             id="dimension_x"
             {...register("dimension_x", { valueAsNumber: true })}
-            className={`block w-full pr-10 rounded-md border ${
+            className={`block w-full rounded-md border pr-10 ${
               errors.dimension_x ? "border-red-600" : "border-gray-300"
             } shadow-sm focus:border-green-500 focus:ring-green-500`}
           />
-          <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">
-            m
-          </span>
+          <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">m</span>
         </div>
         {errors.dimension_x && <p className="mt-1 text-sm text-red-600">{t(errors.dimension_x.message ?? "")}</p>}
       </div>
@@ -88,13 +84,11 @@ const CeilingDetailsForm: React.FC<CeilingDetailsFormProps> = ({ onSave, onCance
             type="number"
             id="dimension_y"
             {...register("dimension_y", { valueAsNumber: true })}
-            className={`block w-full pr-10 rounded-md border ${
+            className={`block w-full rounded-md border pr-10 ${
               errors.dimension_y ? "border-red-600" : "border-gray-300"
             } shadow-sm focus:border-green-500 focus:ring-green-500`}
           />
-          <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">
-            m
-          </span>
+          <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">m</span>
         </div>
         {errors.dimension_y && <p className="mt-1 text-sm text-red-600">{t(errors.dimension_y.message ?? "")}</p>}
       </div>
@@ -104,20 +98,30 @@ const CeilingDetailsForm: React.FC<CeilingDetailsFormProps> = ({ onSave, onCance
         <label htmlFor="direction_of_joints" className="block text-sm font-medium text-gray-700">
           {t("jointDirection")}
         </label>
-        <select
-          id="direction_of_joints"
-          {...register("direction_of_joints")}
-          defaultValue=""
-          className={`mt-1 block w-full rounded-md border ${
-            errors.direction_of_joints ? "border-red-600" : "border-gray-300"
-          } shadow-sm focus:border-green-500 focus:ring-green-500`}
-        >
-          <option value="" disabled>
-            {t("jointDirectionPlaceholder")}
-          </option>
-          <option value="X">X</option>
-          <option value="Y">Y</option>
-        </select>
+        <div className="mt-1 flex items-center space-x-4">
+          <label className="flex items-center space-x-2">
+            <input
+              type="radio"
+              value="X"
+              {...register("direction_of_joints")}
+              className={`h-4 w-4 border-gray-300 text-green-500 focus:ring-green-500 ${
+                errors.direction_of_joints ? "border-red-600" : ""
+              }`}
+            />
+            <span>X</span>
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="radio"
+              value="Y"
+              {...register("direction_of_joints")}
+              className={`h-4 w-4 border-gray-300 text-green-500 focus:ring-green-500 ${
+                errors.direction_of_joints ? "border-red-600" : ""
+              }`}
+            />
+            <span>Y</span>
+          </label>
+        </div>
         {errors.direction_of_joints && (
           <p className="mt-1 text-sm text-red-600">{t(errors.direction_of_joints.message ?? "")}</p>
         )}

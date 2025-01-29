@@ -1,5 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import DeleteDialog from "@/components/ui/delete-confirmation";
 import {
   Dialog,
   DialogContent,
@@ -97,11 +98,6 @@ export default function ProjectCard({
 
   const onDeleteProject = async () => {
     // Show confirmation dialog first
-    const confirmed = window.confirm(t("confirmDeleteProject"));
-
-    if (!confirmed) {
-      return;
-    }
 
     try {
       // Delete all elements associated with this project
@@ -219,9 +215,11 @@ export default function ProjectCard({
             <DialogTitle>{t("clients")}</DialogTitle>
             <DialogDescription>{project.client}</DialogDescription>
             {isAdmin && (
-              <Button type="button" variant="destructive" onClick={onDeleteProject}>
-                {t("delete")}
-              </Button>
+              <DeleteDialog name={project.title} onDelete={onDeleteProject}>
+                <Button type="button" variant="destructive">
+                  {t("delete")}
+                </Button>
+              </DeleteDialog>
             )}
           </DialogContent>
           <Button

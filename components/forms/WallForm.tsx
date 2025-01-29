@@ -15,7 +15,7 @@ interface WallFormProps {
   defaultFloorId?: number;
 }
 
-const WallForm: React.FC<WallFormProps> = ({ onNext, onCancel, floors, defaultFloorId}) => {
+const WallForm: React.FC<WallFormProps> = ({ onNext, onCancel, floors, defaultFloorId }) => {
   const { t } = useTranslation("common");
 
   const {
@@ -30,12 +30,12 @@ const WallForm: React.FC<WallFormProps> = ({ onNext, onCancel, floors, defaultFl
     },
   });
   console.log(floors);
-  console.log("Floor id: ", defaultFloorId)
+  console.log("Floor id: ", defaultFloorId);
 
   const onSubmit: SubmitHandler<WallFormSchema> = (data) => {
     console.log("WallForm Submitted Data:", data);
     const floorName = floors?.find((floor) => floor.floor_id === data.floor_id)?.name;
-    const formattedName = `M${data.name}${data.direction} P${floorName}`;
+    const formattedName = `M${data.name}${data.direction} ${floorName}`;
     onNext({ ...data, name: formattedName });
   };
 

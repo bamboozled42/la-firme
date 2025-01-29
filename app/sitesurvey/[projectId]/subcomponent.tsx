@@ -3,7 +3,7 @@ import CeilingDetailsForm from "@/components/forms/CeilingDetails";
 import ColumnDetailsForm from "@/components/forms/ColumnsDetails";
 import FloorDetailsForm from "@/components/forms/FloorDetails";
 import WallDetailsForm from "@/components/forms/WallDetailsForm";
-import DeleteDialog from "./delete-subcomponent";
+import DeleteSubcomponentDialog from "./delete-subcomponent";
 import { EditDialog } from "./edit-subcomponent";
 
 export default function Subcomponent({
@@ -43,7 +43,7 @@ export default function Subcomponent({
           onUpdate={onUpdate}
           onDataUpdated={onDataUpdated}
         />
-        <DeleteDialog itemData={itemData} onDelete={onDelete} elementType={type} />
+        <DeleteSubcomponentDialog itemData={itemData} onDelete={onDelete} elementType={type} />
       </div>
     </div>
   );
