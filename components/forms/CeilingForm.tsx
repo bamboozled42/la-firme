@@ -32,7 +32,7 @@ const CeilingForm: React.FC<CeilingFormProps> = ({ onNext, onCancel, floors, def
 
   const onSubmit: SubmitHandler<ColumnFormSchema> = (data) => {
     const floorName = floors?.find((floor) => floor.floor_id === data.floor_id)?.name;
-    const formattedName = `L${data.name} P${floorName}`;
+    const formattedName = `L${data.name} ${floorName}`;
     onNext({ ...data, name: formattedName });
   };
 

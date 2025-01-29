@@ -156,7 +156,6 @@
   "conditionPlaceholder": "Seleccione Condición",
   "bad": "Mala",
   "good": "Buena",
-  "select": "Seleccionar",
 
   "type": "Tipo",
   "typePlaceholder": "Seleccione Tipo",
@@ -265,5 +264,10 @@
 
   "duplicateNameError": "Ya existe una entrada con este nombre",
 
-  "floorPlan": "Plano de Piso"
+  "floorPlan": "Plano de Piso",
+
+  "loginError": "Hubo un error al iniciar sesión",
+
+  "confirmDeleteBlank": "¿Estás seguro de que deseas eliminar",
+  "noUndo": "No puedes deshacer esta acción"
 }

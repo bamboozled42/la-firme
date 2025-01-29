@@ -156,7 +156,6 @@
   "conditionPlaceholder": "Select Condition",
   "bad": "Bad",
   "good": "Good",
-  "select": "Select",
 
   "type": "Type",
   "typePlaceholder": "Select Type",
@@ -265,5 +264,10 @@
 
   "duplicateNameError": "An entry with this name already exists",
 
-  "floorPlan": "Floor Plan"
+  "floorPlan": "Floor Plan",
+
+  "loginError": "There was an error logging in",
+
+  "confirmDeleteBlank": "Are you sure you want to delete",
+  "noUndo": "You cannot undo this action"
 }

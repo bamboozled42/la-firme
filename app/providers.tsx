@@ -4,6 +4,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { ThemeProvider } from "next-themes";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, type ReactNode } from "react";
+import { useTranslation } from "../i18n/client";
 import { createBrowserSupabaseClient } from "../lib/client-utils";
 
 interface SupabaseContextProps {
@@ -37,17 +38,18 @@ interface ToastHandlerProps {
 
 export default function ToastHandler({ notWhitelisted, loginError }: ToastHandlerProps) {
   const router = useRouter();
+  const { t } = useTranslation("common");
   useEffect(() => {
     if (notWhitelisted) {
       toast({
-        title: "Access Denied",
-        description: "You are not on the whitelist for this application.",
+        title: t("accessDenied"),
+        description: t("notWhitelisted"),
         variant: "destructive", // Adjust based on your toast library
       });
     } else if (loginError) {
       toast({
-        title: "Error Logging in",
-        description: "There was an error logging in. Please try again.",
+        title: t("somethingWentWrong"),
+        description: t("loginError"),
         variant: "destructive", // Adjust based on your toast library
       });
     }

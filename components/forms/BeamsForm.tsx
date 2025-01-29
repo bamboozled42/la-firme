@@ -32,7 +32,7 @@ const BeamForm: React.FC<BeamFormProps> = ({ onNext, onCancel, floors, defaultFl
 
   const onSubmit: SubmitHandler<ColumnFormSchema> = (data) => {
     const floorName = floors?.find((floor) => floor.floor_id === data.floor_id)?.name;
-    const formattedName = `V${data.name} P${floorName}`;
+    const formattedName = `V${data.name} ${floorName}`;
     onNext({ ...data, name: formattedName });
   };
 

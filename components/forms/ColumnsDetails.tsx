@@ -37,24 +37,22 @@ const ColumnDetailsForm: React.FC<ColumnDetailsFormProps> = ({ onSave, onCancel,
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {/* Length Field */}
       <div>
-      <label htmlFor="length" className="block text-sm font-medium text-gray-700">
-        {t("length")}
-      </label>
-      <div className="relative mt-1">
-        <input
-          type="number"
-          id="length"
-          {...register("length", { valueAsNumber: true })}
-          className={`block w-full pr-10 rounded-md border ${
-            errors.length ? "border-red-600" : "border-gray-300"
-          } shadow-sm focus:border-green-500 focus:ring-green-500`}
-        />
-        <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">
-          m
-        </span>
+        <label htmlFor="length" className="block text-sm font-medium text-gray-700">
+          {t("length")}
+        </label>
+        <div className="relative mt-1">
+          <input
+            type="number"
+            id="length"
+            {...register("length", { valueAsNumber: true })}
+            className={`block w-full rounded-md border pr-10 ${
+              errors.length ? "border-red-600" : "border-gray-300"
+            } shadow-sm focus:border-green-500 focus:ring-green-500`}
+          />
+          <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">m</span>
+        </div>
+        {errors.length && <p className="mt-1 text-sm text-red-600">{t(errors.length.message ?? "")}</p>}
       </div>
-      {errors.length && <p className="mt-1 text-sm text-red-600">{t(errors.length.message ?? "")}</p>}
-    </div>
 
       {/* Width Field */}
       <div>
@@ -66,13 +64,11 @@ const ColumnDetailsForm: React.FC<ColumnDetailsFormProps> = ({ onSave, onCancel,
             type="number"
             id="width"
             {...register("width", { valueAsNumber: true })}
-            className={`block w-full pr-10 rounded-md border ${
+            className={`block w-full rounded-md border pr-10 ${
               errors.width ? "border-red-600" : "border-gray-300"
             } shadow-sm focus:border-green-500 focus:ring-green-500`}
           />
-          <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">
-            m
-          </span>
+          <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">m</span>
         </div>
         {errors.width && <p className="mt-1 text-sm text-red-600">{t(errors.width.message ?? "")}</p>}
       </div>
@@ -87,13 +83,11 @@ const ColumnDetailsForm: React.FC<ColumnDetailsFormProps> = ({ onSave, onCancel,
             type="number"
             id="height"
             {...register("height", { valueAsNumber: true })}
-            className={`block w-full pr-10 rounded-md border ${
+            className={`block w-full rounded-md border pr-10 ${
               errors.height ? "border-red-600" : "border-gray-300"
             } shadow-sm focus:border-green-500 focus:ring-green-500`}
           />
-          <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">
-            m
-          </span>
+          <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">m</span>
         </div>
         {errors.height && <p className="mt-1 text-sm text-red-600">{t(errors.height.message ?? "")}</p>}
       </div>
@@ -114,7 +108,6 @@ const ColumnDetailsForm: React.FC<ColumnDetailsFormProps> = ({ onSave, onCancel,
           <option value="" disabled>
             {t("conditionPlaceholder")}
           </option>
-          <option value="Seleccionar">{t("select")}</option>
           <option value="Bad">{t("bad")}</option>
           <option value="Good">{t("good")}</option>
         </select>
@@ -137,7 +130,7 @@ const ColumnDetailsForm: React.FC<ColumnDetailsFormProps> = ({ onSave, onCancel,
           <option value="" disabled>
             {t("typePlaceholder")}
           </option>
-          <option value="Column of 'arriostramiento'">{t("bracingColumn")}</option>
+          <option value="Bracing column">{t("bracingColumn")}</option>
           <option value="Independent column">{t("independentColumn")}</option>
         </select>
         {errors.type && <p className="mt-1 text-sm text-red-600">{t(errors.type.message ?? "")}</p>}

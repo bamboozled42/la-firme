@@ -33,7 +33,7 @@ export const wallDetailsFormSchema = z.object({
   window_size_y: z
     .number({ required_error: "windowSizeRequired", invalid_type_error: "windowSizeRequired" })
     .positive("windowSizePositive"),
-  material: z.enum(["KK", "P", "C", "Drywall", "Seleccionar"], {
+  material: z.enum(["KK", "P", "C", "Drywall"], {
     errorMap: () => ({ message: "materialRequired" }),
   }),
   height_type: z.enum(["High", "Low"], {
@@ -74,10 +74,10 @@ export const columnDetailsFormSchema = z.object({
   height: z
     .number({ required_error: "heightRequired", invalid_type_error: "heightRequired" })
     .positive("heightPositive"),
-  condition: z.enum(["Seleccionar", "Bad", "Good"], {
+  condition: z.enum(["Bad", "Good"], {
     errorMap: () => ({ message: "conditionRequired" }),
   }),
-  type: z.enum(["Column of 'arriostramiento'", "Independent column"], {
+  type: z.enum(["Bracing column", "Independent column"], {
     errorMap: () => ({ message: "typeRequired" }),
   }),
   vertical_cracks: z.boolean().default(false),
@@ -103,7 +103,7 @@ export const beamDetailsFormSchema = z.object({
   type: z.enum(["Curved sole", "Flat sole", "Inverted Sole", "Curved", "Flat", "Inverted"], {
     errorMap: () => ({ message: "typeRequired" }),
   }),
-  condition: z.enum(["Seleccionar", "Bad", "Good"], {
+  condition: z.enum(["Bad", "Good"], {
     errorMap: () => ({ message: "conditionRequired" }),
   }),
 });
