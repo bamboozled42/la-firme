@@ -617,18 +617,6 @@ export default function Dashboard({ params }: { params: { projectId: string } })
                 </SelectContent>
               </Select>
             </div>
-                        return floorNumberA - floorNumberB;
-                      })
-                      .map((floor: Floor) => (
-                        <SelectItem key={floor.floor_id} value={floor.floor_id.toString()}>
-                          {floor.name}
-                        </SelectItem>
-                      ))}
-                    <SelectItem value="all">{t("selectAllFloors")}</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
 
             {/* Add Floor Button */}
             <AddDialog
