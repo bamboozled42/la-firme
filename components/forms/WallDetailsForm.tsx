@@ -104,14 +104,19 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
               <input
                 type="number"
                 id="length"
+                step="any"
+                inputMode="decimal"
                 {...register("length", { valueAsNumber: true })}
                 className={`block w-full rounded-md border pr-10 ${
                   errors.length ? "border-red-600" : "border-gray-300"
-                } shadow-sm focus:border-green-500 focus:ring-green-500`}
+                } shadow-sm focus:border-green-500 focus:ring-green-500
+                  [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
               />
               <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">m</span>
             </div>
-            {errors.length && <p className="mt-1 text-sm text-red-600">{t(errors.length.message ?? "")}</p>}
+            {errors.length && (
+              <p className="mt-1 text-sm text-red-600">{t(errors.length.message ?? "")}</p>
+            )}
           </div>
 
           {/* Width Field */}
@@ -123,10 +128,14 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
               <input
                 type="number"
                 id="width"
+                step="any"
+                inputMode="decimal"
                 {...register("width", { valueAsNumber: true })}
                 className={`block w-full rounded-md border pr-10 ${
                   errors.width ? "border-red-600" : "border-gray-300"
-                } shadow-sm focus:border-green-500 focus:ring-green-500`}
+                } shadow-sm focus:border-green-500 focus:ring-green-500
+                [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
+
               />
               <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">m</span>
             </div>
@@ -142,10 +151,13 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
               <input
                 type="number"
                 id="height"
+                step="any"
+                inputMode="decimal"
                 {...register("height", { valueAsNumber: true })}
                 className={`block w-full rounded-md border pr-10 ${
                   errors.height ? "border-red-600" : "border-gray-300"
-                } shadow-sm focus:border-green-500 focus:ring-green-500`}
+                } shadow-sm focus:border-green-500 focus:ring-green-500
+                [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
               />
               <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">m</span>
             </div>
@@ -161,10 +173,13 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
               <input
                 type="number"
                 id="window_size_x"
+                step="any"
+                inputMode="decimal"
                 {...register("window_size_x", { valueAsNumber: true })}
                 className={`block w-full rounded-md border pr-10 ${
                   errors.window_size_x ? "border-red-600" : "border-gray-300"
-                } shadow-sm focus:border-green-500 focus:ring-green-500`}
+                } shadow-sm focus:border-green-500 focus:ring-green-500
+                [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
               />
               <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">m</span>
             </div>
@@ -182,10 +197,13 @@ const WallDetailsForm: React.FC<WallDetailsFormProps> = ({ onSave, onCancel, onD
               <input
                 type="number"
                 id="window_size_y"
+                step="any"
+                inputMode="decimal"
                 {...register("window_size_y", { valueAsNumber: true })}
                 className={`block w-full rounded-md border pr-10 ${
                   errors.window_size_y ? "border-red-600" : "border-gray-300"
-                } shadow-sm focus:border-green-500 focus:ring-green-500`}
+                } shadow-sm focus:border-green-500 focus:ring-green-500
+                [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
               />
               <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">m</span>
             </div>

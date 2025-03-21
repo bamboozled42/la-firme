@@ -45,10 +45,13 @@ const CeilingDetailsForm: React.FC<CeilingDetailsFormProps> = ({ onSave, onCance
           <input
             type="number"
             id="height"
+            step="any"
+            inputMode="decimal"
             {...register("height", { valueAsNumber: true })}
             className={`block w-full rounded-md border pr-10 ${
               errors.height ? "border-red-600" : "border-gray-300"
-            } shadow-sm focus:border-green-500 focus:ring-green-500`}
+            } shadow-sm focus:border-green-500 focus:ring-green-500
+            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
           />
           <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">m</span>
         </div>
@@ -64,10 +67,13 @@ const CeilingDetailsForm: React.FC<CeilingDetailsFormProps> = ({ onSave, onCance
           <input
             type="number"
             id="dimension_x"
+            step="any"
+            inputMode="decimal"
             {...register("dimension_x", { valueAsNumber: true })}
             className={`block w-full rounded-md border pr-10 ${
               errors.dimension_x ? "border-red-600" : "border-gray-300"
-            } shadow-sm focus:border-green-500 focus:ring-green-500`}
+            } shadow-sm focus:border-green-500 focus:ring-green-500
+            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
           />
           <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">m</span>
         </div>
@@ -83,10 +89,13 @@ const CeilingDetailsForm: React.FC<CeilingDetailsFormProps> = ({ onSave, onCance
           <input
             type="number"
             id="dimension_y"
+            step="any"
+            inputMode="decimal"
             {...register("dimension_y", { valueAsNumber: true })}
             className={`block w-full rounded-md border pr-10 ${
               errors.dimension_y ? "border-red-600" : "border-gray-300"
-            } shadow-sm focus:border-green-500 focus:ring-green-500`}
+            } shadow-sm focus:border-green-500 focus:ring-green-500
+            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
           />
           <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">m</span>
         </div>
