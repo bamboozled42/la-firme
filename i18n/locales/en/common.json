@@ -147,6 +147,7 @@
   "dimensionY": "Dimension Y",
   "jointDirection": "Direction of Joints",
   "jointDirectionPlaceholder": "Select direction",
+  "notVisible": "Not visible",
   "cracks": "Cracks",
   "beamNamePlaceholder": "Enter beam number",
   "supportLeft": "Support Left Side",

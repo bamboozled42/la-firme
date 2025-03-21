@@ -147,6 +147,7 @@
   "dimensionY": "Dimensión Y",
   "jointDirection": "Dirección de Juntas",
   "jointDirectionPlaceholder": "Seleccione dirección",
+  "notVisible": "No visible",
   "cracks": "Grietas",
   "beamNamePlaceholder": "Ingrese el número de viga",
   "supportLeft": "Soporte Lado Izquierdo",
