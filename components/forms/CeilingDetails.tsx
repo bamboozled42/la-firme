@@ -98,30 +98,19 @@ const CeilingDetailsForm: React.FC<CeilingDetailsFormProps> = ({ onSave, onCance
         <label htmlFor="direction_of_joints" className="block text-sm font-medium text-gray-700">
           {t("jointDirection")}
         </label>
-        <div className="mt-1 flex items-center space-x-4">
-          <label className="flex items-center space-x-2">
-            <input
-              type="radio"
-              value="X"
-              {...register("direction_of_joints")}
-              className={`h-4 w-4 border-gray-300 text-green-500 focus:ring-green-500 ${
-                errors.direction_of_joints ? "border-red-600" : ""
-              }`}
-            />
-            <span>X</span>
-          </label>
-          <label className="flex items-center space-x-2">
-            <input
-              type="radio"
-              value="Y"
-              {...register("direction_of_joints")}
-              className={`h-4 w-4 border-gray-300 text-green-500 focus:ring-green-500 ${
-                errors.direction_of_joints ? "border-red-600" : ""
-              }`}
-            />
-            <span>Y</span>
-          </label>
-        </div>
+        <select
+          id="direction_of_joints"
+          {...register("direction_of_joints")}
+          defaultValue=""
+          className={`mt-1 block w-full rounded-md border ${errors.direction_of_joints ? "border-red-600" : "border-gray-300"} shadow-sm focus:border-green-500 focus:ring-green-500`}
+        >
+          <option value="" disabled>
+            {t("jointDirectionPlaceholder")}
+          </option>
+          <option value="X">X</option>
+          <option value="Y">Y</option>
+          <option value="Not visible">{t("notVisible")}</option>
+        </select>
         {errors.direction_of_joints && (
           <p className="mt-1 text-sm text-red-600">{t(errors.direction_of_joints.message ?? "")}</p>
         )}

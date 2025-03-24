@@ -22,14 +22,14 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useTranslation } from "../../../i18n/client";
 import {
-  Beam,
-  Ceiling,
-  Column,
-  Wall,
+  type Beam,
+  type Ceiling,
+  type Column,
   type ElementTypeKeys,
   type Floor,
   type ProjectDashboardType,
   type StateAction,
+  type Wall,
 } from "../../../lib/utils";
 import AddDialog from "./add-subcomponent";
 import DeleteSubcomponentDialog from "./delete-subcomponent";
@@ -203,28 +203,26 @@ export default function Dashboard({ params }: { params: { projectId: string } })
 
       // Extract existing floorplan numbers and find the smallest missing number
       const existingNumbers = existingFiles
-      ?.map((file) => {
-        const match = file.name.match(/floorplan_(\d+)/); // Extract the number from the naming scheme
-        return match && match[1] ? parseInt(match[1], 10) : null;
-      })
-      .filter((num): num is number => num !== null) // Type guard to ensure only numbers
-      .sort((a, b) => a - b);
+        ?.map((file) => {
+          const match = file.name.match(/floorplan_(\d+)/); // Extract the number from the naming scheme
+          return match?.[1] ? parseInt(match[1], 10) : null;
+        })
+        .filter((num): num is number => num !== null) // Type guard to ensure only numbers
+        .sort((a, b) => a - b);
 
-    let newNumber = 1; // Start with 1
-    for (const num of existingNumbers) {
-      if (num === newNumber) {
-        newNumber++; // Increment if the number is already taken
-      } else {
-        break; // Found the first missing number
+      let newNumber = 1; // Start with 1
+      for (const num of existingNumbers) {
+        if (num === newNumber) {
+          newNumber++; // Increment if the number is already taken
+        } else {
+          break; // Found the first missing number
+        }
       }
-    }
 
       const newFileName = `floorplan_${newNumber}`;
 
       // Delete the existing image for the current floor (if any)
-      const currentFloor = projectData?.floors?.find(
-        (floor) => floor.floor_id.toString() === currentFloorId
-      );
+      const currentFloor = projectData?.floors?.find((floor) => floor.floor_id.toString() === currentFloorId);
 
       if (currentFloor?.floor_plan) {
         const existingPath = currentFloor.floor_plan.split("/").pop(); // Extract file name from the URL
@@ -585,8 +583,8 @@ export default function Dashboard({ params }: { params: { projectId: string } })
           <div className="mb-6 mt-4 flex flex-nowrap items-center gap-2">
             {/* Dropdown for selecting a floor */}
             <div className="flex-shrink-0">
-            <Select
-              value={currentFloorId ?? undefined} // Convert null to undefined
+              <Select
+                value={currentFloorId ?? undefined} // Convert null to undefined
                 onValueChange={(value) => changeFloor(value)}
               >
                 <SelectTrigger className="min-w-[140px] px-4 py-2">
@@ -622,7 +620,7 @@ export default function Dashboard({ params }: { params: { projectId: string } })
             <AddDialog
               Form1={FloorsForm}
               Form2={FloorDetailsForm}
-              form1Title={t("addFloorElementTitle")}
+              form1Title={t("newFloor")}
               form2Title={t("floorDetailsTitle")}
               form1Description={t("floorElementDescription")}
               form2Description={t("floorDetailsDescription")}
