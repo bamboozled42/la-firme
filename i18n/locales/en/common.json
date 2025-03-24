@@ -7,7 +7,7 @@
   "newFloor": "New Floor",
   "floorDetailsTitle": "Floor Details",
   "floorDetailsDescription": "Please provide detailed information about the floor.",
-  "floorElementDescription": "Please provide the basic information for the floor element.",
+  "floorElementDescription": "Please provide the name for the new floor.",
   "uploadButton": "Upload",
   "wallsTitle": "Walls",
   "newWall": "New Wall",
@@ -147,6 +147,7 @@
   "dimensionY": "Dimension Y",
   "jointDirection": "Direction of Joints",
   "jointDirectionPlaceholder": "Select direction",
+  "notVisible": "Not visible",
   "cracks": "Cracks",
   "beamNamePlaceholder": "Enter beam number",
   "supportLeft": "Support Left Side",
@@ -234,5 +235,4 @@
 
   "confirmDeleteBlank": "Are you sure you want to delete",
   "noUndo": "You cannot undo this action"
-
 }

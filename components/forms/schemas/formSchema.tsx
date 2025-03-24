@@ -120,7 +120,7 @@ export const ceilingDetailsFormSchema = z.object({
   dimension_y: z
     .number({ required_error: "dimYRequired", invalid_type_error: "dimYRequired" })
     .positive("dimYPositive"),
-  direction_of_joints: z.enum(["X", "Y"], {
+  direction_of_joints: z.enum(["X", "Y", "Not visible"], {
     errorMap: () => ({ message: "jointDirectionRequired" }),
   }),
   cracks: z.boolean().default(false),
