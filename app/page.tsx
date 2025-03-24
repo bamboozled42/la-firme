@@ -25,8 +25,8 @@ export default async function Home({ searchParams }: HomePageProps) {
     <div className="mt-24 flex flex-col items-center justify-center">
       <TypographyH2 className="mb-6 text-center">{t("welcome")}</TypographyH2>
 
-      <div className="mb-8 rounded-md bg-gray-950 p-3">
-        <Image src="/lafirmelogo.png" alt="La Firme Logo" width={600} height={600} className="rounded-lg shadow-lg" />
+      <div className="mb-8 rounded-md">
+        <Image src="/lafirmelogopurple.png" alt="La Firme Logo" width={600} height={600} className="rounded-lg shadow-lg" />
       </div>
       <div className="mt-8">
         {user ? (
