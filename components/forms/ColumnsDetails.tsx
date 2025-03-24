@@ -44,10 +44,13 @@ const ColumnDetailsForm: React.FC<ColumnDetailsFormProps> = ({ onSave, onCancel,
           <input
             type="number"
             id="length"
+            step="any"
+            inputMode="decimal"
             {...register("length", { valueAsNumber: true })}
             className={`block w-full rounded-md border pr-10 ${
               errors.length ? "border-red-600" : "border-gray-300"
-            } shadow-sm focus:border-green-500 focus:ring-green-500`}
+            } shadow-sm focus:border-green-500 focus:ring-green-500
+            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
           />
           <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">m</span>
         </div>
@@ -63,10 +66,13 @@ const ColumnDetailsForm: React.FC<ColumnDetailsFormProps> = ({ onSave, onCancel,
           <input
             type="number"
             id="width"
+            step="any"
+            inputMode="decimal"
             {...register("width", { valueAsNumber: true })}
             className={`block w-full rounded-md border pr-10 ${
               errors.width ? "border-red-600" : "border-gray-300"
-            } shadow-sm focus:border-green-500 focus:ring-green-500`}
+            } shadow-sm focus:border-green-500 focus:ring-green-500
+            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
           />
           <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">m</span>
         </div>
@@ -82,10 +88,13 @@ const ColumnDetailsForm: React.FC<ColumnDetailsFormProps> = ({ onSave, onCancel,
           <input
             type="number"
             id="height"
+            step="any"
+            inputMode="decimal"
             {...register("height", { valueAsNumber: true })}
             className={`block w-full rounded-md border pr-10 ${
               errors.height ? "border-red-600" : "border-gray-300"
-            } shadow-sm focus:border-green-500 focus:ring-green-500`}
+            } shadow-sm focus:border-green-500 focus:ring-green-500
+            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
           />
           <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">m</span>
         </div>
